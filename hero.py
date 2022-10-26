@@ -89,7 +89,7 @@ class Hero(StatesGroup):
     gm = False
 
     mission = 0
-    mission_rank = 'F'
+    mission_rank = 0
     progress = 0
     mission_count = 0
 
