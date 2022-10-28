@@ -1,5 +1,4 @@
 import asyncio
-from cgitb import text
 import logging
 from aiogram import Bot, Dispatcher, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
@@ -9,7 +8,8 @@ from aiogram.utils import executor
 
 from hero import Hero as hero
 from update import updateMods
-
+from mongodb import Finder
+import markups as nav
 
 logging.basicConfig(level=logging.INFO)
 
@@ -85,6 +85,7 @@ async def cmd_start(message: types.Message):
                     "ac": hero.ac,
                     "base_char": hero.base_char,
                     "rank": hero.rank,
+                    "mastery": hero.mastery,
 
                     "main_hand": hero.main_hand,
                     "off_hand": hero.off_hand,
@@ -141,16 +142,44 @@ async def cmd_mod(message: types.Message):
     updateMods(user_id)
     await message.answer('Готово')
 
+
 @dp.message_handler()
 async def cmd_prof(message: types.Message):
     user_id = message.from_user.id
+    finder = Finder(user_id)
+    gen_info = finder.generalInfo()
+    money = finder.money()
+    stats = finder.stats()
+    hp = finder.hpInfo()
+    magic = finder.magic()
+
     if message.text == 'Профиль':
         await message.delete()
         await message.answer(f"""
 -----------------------------------------
+Имя персонажа: {gen_info[0]}
+Раса: {gen_info[3]}
+Класс персонажа: {gen_info[1]}
+Специализация: {gen_info[2]}
 
+Уровень: {gen_info[4]}
+Опыт: {gen_info[5]}
+
+Здоровье: {hp[1]} из {hp[0]}
+Мана: {magic[0]} из {magic[1]}
+Класс брони: {gen_info[7]}
+Бонус мастерства: {gen_info[8]}
+
+Очки характеристик: {stats[6]}
 -----------------------------------------
-""")
+            Кошелёк
+Медные монеты: {money[0]}
+Серебряные монеты: {money[1]}
+Золотые монеты: {money[2]}
+Платиновые монеты: {money[3]}
+-----------------------------------------
+""", reply_markup=nav.profileMenu)
+
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)

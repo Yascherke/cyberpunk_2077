@@ -9,7 +9,7 @@ players = db["players"]
 
 def findUserStats(uid):
     for player in players.find({"_id": uid}):
-        return [player['strength'], player['dexterity'], player['intelligence'],player['wisdom'],player['charisma'],player['bodytype'] ]
+        return [player['strength'], player['dexterity'], player['intelligence'], player['wisdom'], player['charisma'], player['bodytype']]
 
 
 def updateMods(user_id):
@@ -18,23 +18,23 @@ def updateMods(user_id):
     print(player[0])
     if int(player[0]) == 1:
         players.update_one({"_id": user_id}, {"$set": {"mod_strength": -5}})
-    elif int(player[0]) == 2 or int(player[0]) == 3 :
+    elif int(player[0]) == 2 or int(player[0]) == 3:
         players.update_one({"_id": user_id}, {"$set": {"mod_strength": -4}})
-    elif int(player[0]) == 4 or int(player[0]) == 5 :
+    elif int(player[0]) == 4 or int(player[0]) == 5:
         players.update_one({"_id": user_id}, {"$set": {"mod_strength": -3}})
-    elif int(player[0]) == 6 or int(player[0]) == 7 :
+    elif int(player[0]) == 6 or int(player[0]) == 7:
         players.update_one({"_id": user_id}, {"$set": {"mod_strength": -2}})
-    elif int(player[0]) == 8 or int(player[0]) == 9 :
+    elif int(player[0]) == 8 or int(player[0]) == 9:
         players.update_one({"_id": user_id}, {"$set": {"mod_strength": -1}})
-    elif int(player[0]) == 10 or int(player[0]) == 11 :
+    elif int(player[0]) == 10 or int(player[0]) == 11:
         players.update_one({"_id": user_id}, {"$set": {"mod_strength": 0}})
-    elif int(player[0]) == 12 or int(player[0]) == 13 :
+    elif int(player[0]) == 12 or int(player[0]) == 13:
         players.update_one({"_id": user_id}, {"$set": {"mod_strength": +1}})
-    elif int(player[0]) == 14 or int(player[0]) == 15 :
+    elif int(player[0]) == 14 or int(player[0]) == 15:
         players.update_one({"_id": user_id}, {"$set": {"mod_strength": +2}})
-    elif int(player[0]) == 16 or int(player[0]) == 17 :
+    elif int(player[0]) == 16 or int(player[0]) == 17:
         players.update_one({"_id": user_id}, {"$set": {"mod_strength": +3}})
-    elif int(player[0]) == 18 or int(player[0]) == 19 :
+    elif int(player[0]) == 18 or int(player[0]) == 19:
         players.update_one({"_id": user_id}, {"$set": {"mod_strength": +4}})
     elif int(player[0]) == 20:
         players.update_one({"_id": user_id}, {"$set": {"mod_strength": +5}})
@@ -63,27 +63,37 @@ def updateMods(user_id):
         players.update_one({"_id": user_id}, {"$set": {"mod_dexterity": +5}})
     # интеллект
     if int(player[2]) == 1:
-        players.update_one({"_id": user_id}, {"$set": {"mod_intelligence": -5}})
+        players.update_one({"_id": user_id}, {
+                           "$set": {"mod_intelligence": -5}})
     elif int(player[2]) == 2 or int(player[0]) == 3:
-        players.update_one({"_id": user_id}, {"$set": {"mod_intelligence": -4}})
+        players.update_one({"_id": user_id}, {
+                           "$set": {"mod_intelligence": -4}})
     elif int(player[2]) == 4 or int(player[0]) == 5:
-        players.update_one({"_id": user_id}, {"$set": {"mod_intelligence": -3}})
+        players.update_one({"_id": user_id}, {
+                           "$set": {"mod_intelligence": -3}})
     elif int(player[2]) == 6 or int(player[0]) == 7:
-        players.update_one({"_id": user_id}, {"$set": {"mod_intelligence": -2}})
+        players.update_one({"_id": user_id}, {
+                           "$set": {"mod_intelligence": -2}})
     elif int(player[2]) == 8 or int(player[0]) == 9:
-        players.update_one({"_id": user_id}, {"$set": {"mod_intelligence": -1}})
+        players.update_one({"_id": user_id}, {
+                           "$set": {"mod_intelligence": -1}})
     elif int(player[2]) == 10 or int(player[0]) == 11:
         players.update_one({"_id": user_id}, {"$set": {"mod_intelligence": 0}})
     elif int(player[2]) == 12 or int(player[0]) == 13:
-        players.update_one({"_id": user_id}, {"$set": {"mod_intelligence": +1}})
+        players.update_one({"_id": user_id}, {
+                           "$set": {"mod_intelligence": +1}})
     elif int(player[2]) == 14 or int(player[0]) == 15:
-        players.update_one({"_id": user_id}, {"$set": {"mod_intelligence": +2}})
+        players.update_one({"_id": user_id}, {
+                           "$set": {"mod_intelligence": +2}})
     elif int(player[2]) == 16 or int(player[0]) == 17:
-        players.update_one({"_id": user_id}, {"$set": {"mod_intelligence": +3}})
+        players.update_one({"_id": user_id}, {
+                           "$set": {"mod_intelligence": +3}})
     elif int(player[2]) == 18 or int(player[0]) == 19:
-        players.update_one({"_id": user_id}, {"$set": {"mod_intelligence": +4}})
+        players.update_one({"_id": user_id}, {
+                           "$set": {"mod_intelligence": +4}})
     elif int(player[2]) == 20:
-        players.update_one({"_id": user_id}, {"$set": {"mod_intelligence": +5}})
+        players.update_one({"_id": user_id}, {
+                           "$set": {"mod_intelligence": +5}})
     # мудрость
     if int(player[3]) == 1:
         players.update_one({"_id": user_id}, {"$set": {"mod_wisdom": -5}})
