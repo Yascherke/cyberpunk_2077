@@ -1,4 +1,5 @@
 import asyncio
+from cgitb import text
 import logging
 from aiogram import Bot, Dispatcher, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
@@ -140,7 +141,16 @@ async def cmd_mod(message: types.Message):
     updateMods(user_id)
     await message.answer('Готово')
 
+@dp.message_handler()
+async def cmd_prof(message: types.Message):
+    user_id = message.from_user.id
+    if message.text == 'Профиль':
+        await message.delete()
+        await message.answer(f"""
+-----------------------------------------
 
+-----------------------------------------
+""")
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
