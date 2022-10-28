@@ -164,6 +164,7 @@ async def cmd_prof(message: types.Message):
 
 Уровень: {gen_info[4]}
 Опыт: {gen_info[5]}
+Ранг авантюриста: {gen_info[6]}
 
 Здоровье: {hp[1]} из {hp[0]}
 Мана: {magic[0]} из {magic[1]}
