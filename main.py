@@ -152,6 +152,7 @@ async def cmd_prof(message: types.Message):
     stats = finder.stats()
     hp = finder.hpInfo()
     magic = finder.magic()
+    mod_stats = finder.modStats()
 
     if message.text == 'Профиль':
         await message.delete()
@@ -180,6 +181,20 @@ async def cmd_prof(message: types.Message):
 Платиновые монеты: {money[3]}
 -----------------------------------------
 """, reply_markup=nav.profileMenu)
+
+    if message.text == 'Характеристики':
+        await message.delete()
+        await message.answer(f"""
+-----------------------------------------
+        Характеристики
+Сила: {stats[0]} | {mod_stats[0]}
+Ловкость: {stats[1]} | {mod_stats[1]}
+Интеллект: {stats[2]} | {mod_stats[2]}
+Мудрость: {stats[3]} | {mod_stats[3]}
+Харизма: {stats[4]} | {mod_stats[4]}
+Телосложение: {stats[5]} | {mod_stats[5]}
+-----------------------------------------
+""", reply_markup=nav.profileStats)
 
 
 if __name__ == '__main__':
