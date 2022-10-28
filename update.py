@@ -18,6 +18,7 @@ def updateMods(user_id):
     print(player[0])
     if int(player[0]) == 1:
         players.update_one({"_id": user_id}, {"$set": {"mod_strength": -5}})
+        players.update_one({"_id": user_id}, {"$set": {"sp_strength": -5}})
     elif int(player[0]) == 2 or int(player[0]) == 3 :
         players.update_one({"_id": user_id}, {"$set": {"mod_strength": -4}})
     elif int(player[0]) == 4 or int(player[0]) == 5 :
