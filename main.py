@@ -179,6 +179,8 @@ async def cmd_prof(message: types.Message):
 Серебряные монеты: {money[1]}
 Золотые монеты: {money[2]}
 Платиновые монеты: {money[3]}
+
+Очки характеристик: {stats[6]}
 -----------------------------------------
 """, reply_markup=nav.profileMenu)
 

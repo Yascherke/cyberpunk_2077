@@ -11,7 +11,7 @@ btnUpDex = KeyboardButton(text="Улучшить ловкость")
 btnUpInt = KeyboardButton(text="Улучшить ителлект")
 btnUpWis = KeyboardButton(text="Улучшить мудрость")
 btnUpChar = KeyboardButton(text="Улучшить харизму")
-btnUpBody = KeyboardButton(text="Улучшить телосложение")
+btnUpBody = KeyboardButton(text="Улучшить тело")
 btnBack = KeyboardButton(text="Вернуться назад")
 
 profileMenu.add(btnStats, btnEquip, btnBp)
