@@ -14,5 +14,5 @@ btnUpChar = KeyboardButton(text="Улучшить харизму")
 btnUpBody = KeyboardButton(text="Улучшить тело")
 btnBack = KeyboardButton(text="Вернуться назад")
 
-profileMenu.add(btnStats, btnEquip, btnBp)
+profileMenu.add(btnStats, btnEquip)
 profileStats.add(btnUpStr, btnUpDex, btnUpInt, btnUpWis, btnUpChar, btnUpBody, btnBack)
