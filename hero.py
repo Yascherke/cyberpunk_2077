@@ -4,66 +4,39 @@ from random import randint
 
 class Hero(StatesGroup):
 
-    def get_points():
-        return randint(65, 85)
+    def rollstats():
+        return randint(1,10)
 
     # Характеристики
-    strength = 1
-    dexterity = 1
-    intelligence = 1
-    wisdom = 1
-    charisma = 1
-    bodytype = 1
-
-    points = get_points()
-
-    # Модификатор характеристики
-    mod_strength = 0
-    mod_dexterity = 0
-    mod_intelligence = 0
-    mod_wisdom = 0
-    mod_charisma = 0
-    mod_bodytype = 0
-
-    # Спасброски
-    sp_strength = 0
-    sp_dexterity = 0
-    sp_intelligence = 0
-    sp_wisdom = 0
-    sp_charisma = 0
-    sp_bodytype = 0
+    intelligence = rollstats()
+    reaction = rollstats()
+    dexterity = rollstats()
+    technics = rollstats()
+    charisma = rollstats()
+    will = rollstats()
+    luck = rollstats()
+    speed = rollstats()
+    bodytype = rollstats()
+    empathy  = rollstats()
 
     # Основная информация
     hero_class = 0
-    spec = 0
-    race = 0
-
-    level = 1
-    exp = 0
-    rank = 'F'
+    rank = 'Житель'
+    rank_exp = 0
 
     max_hp = 0
     hp = 0
-    time_hp = 0
-    dice_hp = 0
-
-    ac = 10
-    mastery = 2
-
-    base_char = 'None'
+    severe_injury = 0
+    die_dice = 0
 
     # Экипировка
-    main_hand = 0
-    off_hand = 0
-    armor = 0
+    first_weapon = 0
+    second_weapon = 0
 
-    amulet = 0
-    ring1 = 0
-    ring2 = 0
-    accessory1 = 0
-    accessory2 = 0
+    head_armor = 0
+    body_armor = 0
 
-    # Рюкзак
+    # Карманы
     slot1 = 0
     slot2 = 0
     slot3 = 0
@@ -74,16 +47,11 @@ class Hero(StatesGroup):
     slot8 = 0
 
     # Дополнительная информация
-    copper_coin = 0
-    silver_coin = 0
-    gold_coin = 0
-    platinum_coin = 0
+    money = 0
+    tokens = 0
 
-    party = 0
-    guild = 0
-    guild_title = 0
-
-    location = 0
+    gang = 0
+    corp = 0
 
     admin = False
     gm = False
@@ -93,14 +61,8 @@ class Hero(StatesGroup):
     progress = 0
     mission_count = 0
 
-    title = 0
-    status = 0
-
     # Способности
     traits = []
-    mana = 0
-    max_mana = 0
-    cantrips = []
-    spells = []
+    implants = []
 
     name = State()

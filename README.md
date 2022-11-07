@@ -1,1 +1,1 @@
-"# woe_tg_bot" 
+"# cyberpunk2077_tg_bot" 

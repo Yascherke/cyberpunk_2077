@@ -1,5 +1,7 @@
 import asyncio
+from cgitb import text
 import logging
+import re
 from aiogram import Bot, Dispatcher, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher import FSMContext
@@ -7,13 +9,12 @@ from pymongo import MongoClient
 from aiogram.utils import executor
 
 from hero import Hero as hero
-from update import updateMods
 from mongodb import Finder
 import markups as nav
 
 logging.basicConfig(level=logging.INFO)
 
-API_TOKEN = "5620891819:AAFlR04CBqCnDu74oZLJAkbS8oCWX9SKkTE"
+API_TOKEN = "5667925194:AAErD4AwaG_4oRtPWX68Ar3rr8Qs-6uRCW8"
 bot = Bot(token=API_TOKEN)
 storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage)
@@ -51,50 +52,32 @@ async def cmd_start(message: types.Message):
                 players.insert_one({
                     "_id": uid,
                     "name": name,
-                    "strength": hero.strength,
-                    "dexterity": hero.dexterity,
                     "intelligence": hero.intelligence,
-                    "wisdom": hero.wisdom,
+                    "reaction": hero.reaction,
+                    "dexterity": hero.dexterity,
+                    "technics": hero.technics,
                     "charisma": hero.charisma,
+                    "will": hero.will,
+                    "luck": hero.luck,
+                    "speed": hero.speed,
                     "bodytype": hero.bodytype,
-                    "points": hero.points,
-
-                    "mod_strength": hero.mod_strength,
-                    "mod_dexterity": hero.mod_dexterity,
-                    "mod_intelligence": hero.mod_intelligence,
-                    "mod_wisdom": hero.mod_wisdom,
-                    "mod_charisma": hero.mod_charisma,
-                    "mod_bodytype": hero.mod_bodytype,
-
-                    "sp_strength": hero.sp_strength,
-                    "sp_dexterity": hero.sp_dexterity,
-                    "sp_intelligence": hero.sp_intelligence,
-                    "sp_wisdom": hero.sp_wisdom,
-                    "sp_charisma": hero.sp_charisma,
-                    "sp_bodytype": hero.sp_bodytype,
+                    "empathy": hero.empathy,
 
                     "hero_class": hero.hero_class,
-                    "spec": hero.spec,
-                    "race": hero.race,
-                    "level": hero.level,
-                    "exp": hero.exp,
+
                     "max_hp": hero.max_hp,
                     "hp": hero.hp,
-                    "time_hp": hero.time_hp,
-                    "dice_hp": hero.dice_hp,
-                    "ac": hero.ac,
-                    "base_char": hero.base_char,
-                    "rank": hero.rank,
-                    "mastery": hero.mastery,
+                    "severe_injury": hero.severe_injury,
+                    "die_dice": hero.die_dice,
 
-                    "main_hand": hero.main_hand,
-                    "off_hand": hero.off_hand,
-                    "armor": hero.armor,
-                    "amulet": hero.amulet,
-                    "ring1": hero.ring1,
-                    "ring2": hero.ring2,
-                    "accessory1": hero.accessory1,
-                    "accessory2": hero.accessory2,
+                    "rank": hero.rank,
+                    "rank_exp": hero.rank_exp,
+
+
+                    "first_weapon": hero.first_weapon,
+                    "second_weapon": hero.second_weapon,
+                    "head_armor": hero.head_armor,
+                    "body_armor": hero.body_armor,
 
                     "slot1": hero.slot1,
                     "slot2": hero.slot2,
@@ -105,25 +88,19 @@ async def cmd_start(message: types.Message):
                     "slot7": hero.slot7,
                     "slot8": hero.slot8,
 
-                    "copper_coin": hero.copper_coin,
-                    "silver_coin": hero.silver_coin,
-                    "gold_coin": hero.gold_coin,
-                    "platinum_coin": hero.platinum_coin,
-                    "party": hero.party,
-                    "guild": hero.guild,
-                    "guild_title": hero.guild_title,
-                    "location": hero.location,
-                    "title": hero.title,
-                    "status": hero.status,
+                    "money": hero.money,
+                    "tokens": hero.tokens,
+
+                    "gang": hero.gang,
+                    "corp": hero.corp,
+
                     "mission": hero.mission,
                     "mission_rank": hero.mission_rank,
                     "progress": hero.progress,
                     "mission_count": hero.mission_count,
+
                     "traits": hero.traits,
-                    "mana": hero.mana,
-                    "max_mana": hero.max_mana,
-                    "cantrips": hero.cantrips,
-                    "spells": hero.spells,
+                    "implants": hero.implants,
 
                     "admin": hero.admin,
                     "gm": hero.gm,
@@ -136,13 +113,6 @@ async def cmd_start(message: types.Message):
         await bot.send_message(message.chat.id, "У вас уже есть персонаж!")
 
 
-@dp.message_handler(commands=['update'])
-async def cmd_mod(message: types.Message):
-    user_id = message.from_user.id
-    updateMods(user_id)
-    await message.answer('Готово')
-
-
 @dp.message_handler()
 async def cmd_prof(message: types.Message):
     user_id = message.from_user.id
@@ -151,52 +121,57 @@ async def cmd_prof(message: types.Message):
     money = finder.money()
     stats = finder.stats()
     hp = finder.hpInfo()
-    magic = finder.magic()
-    mod_stats = finder.modStats()
+    skills = finder.skills()
+    other = finder.otherInfo()
 
-    if message.text == 'Профиль':
+    def myStats():
+        text = f"""
+-----------------------------------------
+        Характеристики
+
+Интеллект: {stats[0]} 
+Реакция: {stats[1]}
+Ловкость: {stats[2]} 
+Техника: {stats[3]} 
+Харизма: {stats[4]} 
+Воля: {stats[5]} 
+Удача: {stats[6]} 
+Скорость: {stats[7]} 
+Телосложение: {stats[8]}
+Эмпатия: {stats[9]} 
+
+-----------------------------------------
+"""
+        return text
+
+    if message.text == 'Профиль' or message.text == 'Вернуться назад':
         await message.delete()
         await message.answer(f"""
 -----------------------------------------
-Имя персонажа: {gen_info[0]}
-Раса: {gen_info[3]}
-Класс персонажа: {gen_info[1]}
-Специализация: {gen_info[2]}
+{gen_info[1]} {gen_info[0]}
 
-Уровень: {gen_info[4]}
-Опыт: {gen_info[5]}
-Ранг авантюриста: {gen_info[6]}
+Известность: {gen_info[2]}
+Очки известности: {gen_info[3]}
 
 Здоровье: {hp[1]} из {hp[0]}
-Мана: {magic[0]} из {magic[1]}
-Класс брони: {gen_info[7]}
-Бонус мастерства: {gen_info[8]}
+Тяжёлое ранение: {hp[2]}
+Испытание смерти: {hp[3]}
 
-Очки характеристик: {stats[6]}
+Корпораия: {other[1]}
+Банда: {stats[0]} 
+
 -----------------------------------------
             Кошелёк
-Медные монеты: {money[0]}
-Серебряные монеты: {money[1]}
-Золотые монеты: {money[2]}
-Платиновые монеты: {money[3]}
 
-Очки характеристик: {stats[6]}
+Евродоллары: {money[0]}
+Токены: {money[1]}
+
 -----------------------------------------
 """, reply_markup=nav.profileMenu)
 
     if message.text == 'Характеристики':
         await message.delete()
-        await message.answer(f"""
------------------------------------------
-        Характеристики
-Сила: {stats[0]} | {mod_stats[0]}
-Ловкость: {stats[1]} | {mod_stats[1]}
-Интеллект: {stats[2]} | {mod_stats[2]}
-Мудрость: {stats[3]} | {mod_stats[3]}
-Харизма: {stats[4]} | {mod_stats[4]}
-Телосложение: {stats[5]} | {mod_stats[5]}
------------------------------------------
-""", reply_markup=nav.profileStats)
+        await message.answer(myStats(), reply_markup=nav.back)
 
 
 if __name__ == '__main__':

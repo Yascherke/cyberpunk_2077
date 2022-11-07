@@ -15,27 +15,22 @@ class Finder:
     def stats(self):
         for player in players.find({"_id": self.uid}):
             print('Done')
-        return [player['strength'], player['dexterity'], player['intelligence'], player['wisdom'], player['charisma'], player['bodytype'], player['points']]
-
-    def modStats(self):
-        for player in players.find({"_id": self.uid}):
-            print('Done')
-        return [player['mod_strength'], player['mod_dexterity'], player['mod_intelligence'], player['mod_wisdom'], player['mod_charisma'], player['mod_bodytype']]
+        return [player['intelligence'], player['reaction'], player['dexterity'], player['technics'], player['charisma'], player['will'], player['luck'], player['speed'], player['bodytype'], player['empathy']]
 
     def generalInfo(self):
         for player in players.find({"_id": self.uid}):
             print('Done')
-        return [player['name'], player['hero_class'], player['spec'], player['race'], player['level'], player['exp'], player['rank'], player['ac'], player['mastery'], player['base_char']]
+        return [player['name'], player['hero_class'], player['rank'], player['rank_exp']]
 
     def hpInfo(self):
         for player in players.find({"_id": self.uid}):
             print('Done')
-        return [player['max_hp'], player['hp'], player['time_hp'], player['dice_hp']]
+        return [player['max_hp'], player['hp'], player['severe_injury'], player['die_dice']]
 
     def equipment(self):
         for player in players.find({"_id": self.uid}):
             print('Done')
-        return [player['main_hand'], player['off_hand'], player['armor'], player['amulet'], player['ring1'], player['ring2'], player['accessory1'], player['accessory2']]
+        return [player['first_weapon'], player['second_weapon'], player['head_armor'], player['body_armor']]
 
     def backpack(self):
         for player in players.find({"_id": self.uid}):
@@ -45,12 +40,12 @@ class Finder:
     def money(self):
         for player in players.find({"_id": self.uid}):
             print('Done')
-        return [player['copper_coin'], player['silver_coin'], player['gold_coin'], player['platinum_coin']]
+        return [player['money'], player['tokens']]
 
     def otherInfo(self):
         for player in players.find({"_id": self.uid}):
             print('Done')
-        return [player['party'], player['guild'], player['guild_title'], player['location']]
+        return [player['gang'], player['corp']]
 
     def missions(self):
         for player in players.find({"_id": self.uid}):
@@ -60,9 +55,9 @@ class Finder:
     def status(self):
         for player in players.find({"_id": self.uid}):
             print('Done')
-        return [player['location'], player['admin'], player['gm'], player['title'], player['status']]
+        return [player['admin'], player['gm'], player['title']]
 
-    def magic(self):
+    def skills(self):
         for player in players.find({"_id": self.uid}):
             print('Done')
-        return [player['mana'], player['max_mana'], player['traits'], player['cantrips'], player['spells']]
+        return [player['traits'], player['implants']]
