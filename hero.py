@@ -21,7 +21,7 @@ class Hero(StatesGroup):
 
     # Основная информация
     hero_class = 0
-    rank = 'Житель'
+    rank = 0
     rank_exp = 0
 
     max_hp = 0
