@@ -24,6 +24,7 @@ cluster = MongoClient(
 )
 db = cluster["WoE"]
 players = db["players"]
+roles = db["class"]
 
 
 def findUserParamByID(uid):
@@ -128,6 +129,7 @@ async def cmd_prof(message: types.Message):
     hp = finder.hpInfo()
     skills = finder.skills()
     other = finder.otherInfo()
+    role = finder.roles(gen_info[1])
 
     def myStats():
         text = f"""
@@ -153,7 +155,7 @@ async def cmd_prof(message: types.Message):
         await message.delete()
         await message.answer(f"""
 -----------------------------------------
-{gen_info[1]} {gen_info[0]}
+{role} {gen_info[0]}
 
 Известность: {gen_info[2]}
 Очки известности: {gen_info[3]}

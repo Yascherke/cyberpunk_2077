@@ -5,7 +5,7 @@ cluster = MongoClient(
 )
 db = cluster["WoE"]
 players = db["players"]
-
+roles = db["class"]
 
 class Finder:
 
@@ -20,7 +20,7 @@ class Finder:
     def generalInfo(self):
         for player in players.find({"_id": self.uid}):
             print('Done')
-        return [player['name'], player['hero_class'], player['rank'], player['rank_exp'], player['program'], player['home']]
+        return [player['name'], player['hero_class'], player['rank'], player['rank_exp'], player['car'], player['home']]
 
     def hpInfo(self):
         for player in players.find({"_id": self.uid}):
@@ -61,3 +61,8 @@ class Finder:
         for player in players.find({"_id": self.uid}):
             print('Done')
         return [player['traits'], player['implants'], player['programs'], player['humanity'], player['status']]
+
+    def roles(self, id):
+        for role in roles.find({"_id": id}):
+            return role["Name"]
+       
