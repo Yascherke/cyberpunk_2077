@@ -103,9 +103,12 @@ async def cmd_start(message: types.Message):
 
                     "traits": hero.traits,
                     "implants": hero.implants,
+                    "programs": hero.programs,
 
                     "admin": hero.admin,
                     "gm": hero.gm,
+                    "humanity": hero.humanity,
+                    "status": hero.status,
                 })
 
                 await state.finish()

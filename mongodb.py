@@ -60,4 +60,4 @@ class Finder:
     def skills(self):
         for player in players.find({"_id": self.uid}):
             print('Done')
-        return [player['traits'], player['implants'], player['programs']]
+        return [player['traits'], player['implants'], player['programs'], player['humanity'], player['status']]

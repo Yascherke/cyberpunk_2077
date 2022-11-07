@@ -58,6 +58,8 @@ class Hero(StatesGroup):
 
     admin = False
     gm = False
+    humanity = 0
+    status = 0
 
     mission = 0
     mission_rank = 0
