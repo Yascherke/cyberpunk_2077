@@ -29,6 +29,9 @@ class Hero(StatesGroup):
     severe_injury = 0
     die_dice = 0
 
+    car = 0
+    home = 0
+
     # Экипировка
     first_weapon = 0
     second_weapon = 0
@@ -64,5 +67,6 @@ class Hero(StatesGroup):
     # Способности
     traits = []
     implants = []
+    programs = []
 
     name = State()

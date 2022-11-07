@@ -64,6 +64,8 @@ async def cmd_start(message: types.Message):
                     "empathy": hero.empathy,
 
                     "hero_class": hero.hero_class,
+                    "car": hero.car,
+                    "home": hero.home,
 
                     "max_hp": hero.max_hp,
                     "hp": hero.hp,

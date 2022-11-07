@@ -20,7 +20,7 @@ class Finder:
     def generalInfo(self):
         for player in players.find({"_id": self.uid}):
             print('Done')
-        return [player['name'], player['hero_class'], player['rank'], player['rank_exp']]
+        return [player['name'], player['hero_class'], player['rank'], player['rank_exp'], player['program'], player['home']]
 
     def hpInfo(self):
         for player in players.find({"_id": self.uid}):
@@ -60,4 +60,4 @@ class Finder:
     def skills(self):
         for player in players.find({"_id": self.uid}):
             print('Done')
-        return [player['traits'], player['implants']]
+        return [player['traits'], player['implants'], player['programs']]
