@@ -1,7 +1,5 @@
 import asyncio
-from cgitb import text
 import logging
-import re
 from aiogram import Bot, Dispatcher, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher import FSMContext
@@ -12,6 +10,7 @@ from hero import Hero as hero
 from mongodb import Finder
 from view import View
 import markups as nav
+
 
 logging.basicConfig(level=logging.INFO)
 
@@ -125,8 +124,10 @@ async def cmd_prof(message: types.Message):
     user_id = message.from_user.id
     view = View(user_id)
 
+
     if message.text == 'Профиль' or message.text == 'Вернуться назад':
         await message.delete()
+        
         await message.answer(view.myProfile(), reply_markup=nav.profileMenu)
 
     if message.text == 'Характеристики':

@@ -77,7 +77,7 @@ class Finder:
     def ranks(self, id):
         for rank in ranks.find({"_id": id}):
             print('Done')
-        return [rank['name'], rank['rank_exp']]
+        return [rank['name'], rank['rank_exp'], rank["_id"]]
     
     def cars(self, id):
         for car in cars.find({"_id": id}):

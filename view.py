@@ -1,5 +1,5 @@
 from mongodb import Finder
-
+from update import updateRank
 
 class View:
 
@@ -33,10 +33,10 @@ class View:
         gen_info = finder.generalInfo()
         money = finder.money()
         hp = finder.hpInfo()
-        skills = finder.skills()
         other = finder.otherInfo()
         role = finder.roles(gen_info[1])
         rank = finder.ranks(gen_info[2])
+        updateRank(self.uid)
         text = f"""
     -----------------------------------------
     {role} {gen_info[0]}
@@ -88,7 +88,6 @@ class View:
     -----------------------------------------
     """
         return text
-
 
     def myEquip(self):
         finder = Finder(self.uid)
