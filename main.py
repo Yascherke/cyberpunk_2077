@@ -76,7 +76,6 @@ async def cmd_start(message: types.Message):
                     "rank": hero.rank,
                     "rank_exp": hero.rank_exp,
 
-
                     "first_weapon": hero.first_weapon,
                     "second_weapon": hero.second_weapon,
                     "head_armor": hero.head_armor,
@@ -110,6 +109,9 @@ async def cmd_start(message: types.Message):
                     "gm": hero.gm,
                     "humanity": hero.humanity,
                     "status": hero.status,
+
+                    "role_skill": hero.role_skill,
+                    "rs_rank": hero.rs_rank,
                 })
 
                 await state.finish()
@@ -124,10 +126,9 @@ async def cmd_prof(message: types.Message):
     user_id = message.from_user.id
     view = View(user_id)
 
-
     if message.text == 'Профиль' or message.text == 'Вернуться назад':
         await message.delete()
-        
+
         await message.answer(view.myProfile(), reply_markup=nav.profileMenu)
 
     if message.text == 'Характеристики':
@@ -137,7 +138,7 @@ async def cmd_prof(message: types.Message):
     if message.text == 'Имущество':
         await message.delete()
         await message.answer(view.myProperty(), reply_markup=nav.back)
-    
+
     if message.text == 'Экипировка':
         await message.delete()
         await message.answer(view.myEquip(), reply_markup=nav.back)

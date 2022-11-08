@@ -72,3 +72,7 @@ class Hero(StatesGroup):
     programs = []
 
     name = State()
+
+    role_skill = 0
+    rs_rank = 0
+    
