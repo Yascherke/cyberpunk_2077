@@ -6,6 +6,10 @@ cluster = MongoClient(
 db = cluster["WoE"]
 players = db["players"]
 roles = db["class"]
+ranks = db["rank"]
+cars = db["cars"]
+houses = db["house"]
+corps = db["corps"]
 
 class Finder:
 
@@ -65,4 +69,24 @@ class Finder:
     def roles(self, id):
         for role in roles.find({"_id": id}):
             return role["Name"]
+    
+    def corps(self, id):
+        for corp in corps.find({"_id": id}):
+            return corp["name"]
+
+    def ranks(self, id):
+        for rank in ranks.find({"_id": id}):
+            print('Done')
+        return [rank['name'], rank['rank_exp']]
+    
+    def cars(self, id):
+        for car in cars.find({"_id": id}):
+            print('Done')
+        return [car['name'], car['cost']]
+
+    def houses(self, id):
+        for house in houses.find({"_id": id}):
+            print('Done')
+        return [house['name'], house['cost']]
+
        

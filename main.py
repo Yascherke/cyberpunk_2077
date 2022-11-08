@@ -10,6 +10,7 @@ from aiogram.utils import executor
 
 from hero import Hero as hero
 from mongodb import Finder
+from view import View
 import markups as nav
 
 logging.basicConfig(level=logging.INFO)
@@ -122,63 +123,23 @@ async def cmd_start(message: types.Message):
 @dp.message_handler()
 async def cmd_prof(message: types.Message):
     user_id = message.from_user.id
-    finder = Finder(user_id)
-    gen_info = finder.generalInfo()
-    money = finder.money()
-    stats = finder.stats()
-    hp = finder.hpInfo()
-    skills = finder.skills()
-    other = finder.otherInfo()
-    role = finder.roles(gen_info[1])
-
-    def myStats():
-        text = f"""
------------------------------------------
-        Характеристики
-
-Интеллект: {stats[0]} 
-Реакция: {stats[1]}
-Ловкость: {stats[2]} 
-Техника: {stats[3]} 
-Харизма: {stats[4]} 
-Воля: {stats[5]} 
-Удача: {stats[6]} 
-Скорость: {stats[7]} 
-Телосложение: {stats[8]}
-Эмпатия: {stats[9]} 
-
------------------------------------------
-"""
-        return text
+    view = View(user_id)
 
     if message.text == 'Профиль' or message.text == 'Вернуться назад':
         await message.delete()
-        await message.answer(f"""
------------------------------------------
-{role} {gen_info[0]}
-
-Известность: {gen_info[2]}
-Очки известности: {gen_info[3]}
-
-Здоровье: {hp[1]} из {hp[0]}
-Тяжёлое ранение: {hp[2]}
-Испытание смерти: {hp[3]}
-
-Корпораия: {other[1]}
-Банда: {stats[0]} 
-
------------------------------------------
-            Кошелёк
-
-Евродоллары: {money[0]}
-Токены: {money[1]}
-
------------------------------------------
-""", reply_markup=nav.profileMenu)
+        await message.answer(view.myProfile(), reply_markup=nav.profileMenu)
 
     if message.text == 'Характеристики':
         await message.delete()
-        await message.answer(myStats(), reply_markup=nav.back)
+        await message.answer(view.myStats(), reply_markup=nav.back)
+
+    if message.text == 'Имущество':
+        await message.delete()
+        await message.answer(view.myProperty(), reply_markup=nav.back)
+    
+    if message.text == 'Экипировка':
+        await message.delete()
+        await message.answer(view.myEquip(), reply_markup=nav.back)
 
 
 if __name__ == '__main__':
