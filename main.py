@@ -25,6 +25,9 @@ cluster = MongoClient(
 db = cluster["WoE"]
 players = db["players"]
 roles = db["class"]
+wtypes = db["wtypes"]
+weapons = db["weapons"]
+armor = db["armor"]
 
 
 def findUserParamByID(uid):
@@ -49,46 +52,42 @@ async def cmd_start(message: types.Message):
                 data['Name'] = message.text
                 uid = message.from_user.id
                 name = data['Name']
+                stats = hero.getStats()
+                view = View(uid)
 
                 players.insert_one({
                     "_id": uid,
                     "name": name,
-                    "intelligence": hero.intelligence,
-                    "reaction": hero.reaction,
-                    "dexterity": hero.dexterity,
-                    "technics": hero.technics,
-                    "charisma": hero.charisma,
-                    "will": hero.will,
-                    "luck": hero.luck,
-                    "speed": hero.speed,
-                    "bodytype": hero.bodytype,
-                    "empathy": hero.empathy,
+                    "intelligence": stats[0],
+                    "reaction": stats[1],
+                    "dexterity": stats[2],
+                    "technics": stats[3],
+                    "charisma": stats[4],
+                    "will": stats[5],
+                    "luck": stats[6],
+                    "speed": stats[7],
+                    "bodytype": stats[8],
+                    "empathy": stats[9],
 
                     "hero_class": hero.hero_class,
                     "car": hero.car,
                     "home": hero.home,
 
-                    "max_hp": hero.max_hp,
-                    "hp": hero.hp,
-                    "severe_injury": hero.severe_injury,
-                    "die_dice": hero.die_dice,
+                    "max_hp": stats[10],
+                    "hp": stats[11],
+                    "severe_injury": stats[12],
+                    "die_dice": stats[13],
 
                     "rank": hero.rank,
                     "rank_exp": hero.rank_exp,
 
                     "first_weapon": hero.first_weapon,
                     "second_weapon": hero.second_weapon,
+
                     "head_armor": hero.head_armor,
                     "body_armor": hero.body_armor,
-
-                    "slot1": hero.slot1,
-                    "slot2": hero.slot2,
-                    "slot3": hero.slot3,
-                    "slot4": hero.slot4,
-                    "slot5": hero.slot5,
-                    "slot6": hero.slot6,
-                    "slot7": hero.slot7,
-                    "slot8": hero.slot8,
+                    "head_stat": hero.head_stat,
+                    "body_stat": hero.body_stat,
 
                     "money": hero.money,
                     "tokens": hero.tokens,
@@ -101,24 +100,83 @@ async def cmd_start(message: types.Message):
                     "progress": hero.progress,
                     "mission_count": hero.mission_count,
 
+                    "traits_db": hero.traits,
+                    "implants_db": hero.implants,
+                    "programs_db": hero.programs,
+
                     "traits": hero.traits,
                     "implants": hero.implants,
                     "programs": hero.programs,
 
                     "admin": hero.admin,
                     "gm": hero.gm,
-                    "humanity": hero.humanity,
+                    "humanity": stats[14],
                     "status": hero.status,
 
                     "role_skill": hero.role_skill,
                     "rs_rank": hero.rs_rank,
+
+                    "slot1": hero.slot1,
+                    "slot2": hero.slot2,
+                    "slot3": hero.slot3,
+                    "slot4": hero.slot4,
+                    "slot5": hero.slot5,
+                    "slot6": hero.slot6,
+                    "slot7": hero.slot7,
+                    "slot8": hero.slot8,
+                    "slot9": hero.slot9,
+                    "slot10": hero.slot10,
+
+                    "pistol_magazine": hero.pistol_magazine,
+                    "hpistol_magazine": hero.hpistol_magazine,
+                    "shpistol_magazine": hero.shpistol_magazine,
+                    "shotgun_magazine": hero.shotgun_magazine,
+                    "rifle_magazine": hero.rifle_magazine,
+                    "arrow_magazine": hero.arrow_magazine,
+                    "granade_magazine": hero.granade_magazine,
+                    "rocket_magazine": hero.rocket_magazine,
+
+                    "pistol_ammo": hero.pistol_ammo,
+                    "hpistol_ammo": hero.hpistol_ammo,
+                    "shpistol_ammo": hero.shpistol_ammo,
+                    "shotgun_ammo": hero.shotgun_ammo,
+                    "rifle_ammo": hero.rifle_ammo,
+                    "arrow_ammo": hero.arrow_ammo,
+                    "granade_ammo": hero.granade_ammo,
+                    "rocket_ammo": hero.rocket_ammo,
                 })
 
                 await state.finish()
             await asyncio.sleep(1)
             await message.answer(f'Удачной игры!')
+            await message.answer(view.myProfile(), reply_markup=nav.profileMenu)
+
     else:
         await bot.send_message(message.chat.id, "У вас уже есть персонаж!")
+
+
+@dp.message_handler(commands=['get'])
+async def cmd_start(message: types.Message):
+    armor.insert_many([
+        {
+            "_id": 0,
+            "name": "Отсутствует",
+            "sp": 0,
+            "price": 0
+        },
+        {
+            "_id": 1,
+            "name": "Кожаный костюм",
+            "sp": 4,
+            "price": 400
+        },
+        {
+            "_id": 2,
+            "name": "Кевлар",
+            "sp": 0,
+            "price": 800            
+        },
+    ])
 
 
 @dp.message_handler()

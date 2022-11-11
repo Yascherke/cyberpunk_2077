@@ -34,12 +34,12 @@ class Finder:
     def equipment(self):
         for player in players.find({"_id": self.uid}):
             print('Done')
-        return [player['first_weapon'], player['second_weapon'], player['head_armor'], player['body_armor']]
+        return [player['first_weapon'], player['second_weapon'], player['head_armor'], player['body_armor'], player['head_stat'], player['body_stat']]
 
     def backpack(self):
         for player in players.find({"_id": self.uid}):
             print('Done')
-        return [player['slot1'], player['slot2'], player['slot3'], player['slot4'], player['slot5'], player['slot6'], player['slot7'], player['slot8']]
+        return [player['slot1'], player['slot2'], player['slot3'], player['slot4'], player['slot5'], player['slot6'], player['slot7'], player['slot8'], player['slot9'], player['slot10']]
 
     def money(self):
         for player in players.find({"_id": self.uid}):
@@ -64,7 +64,7 @@ class Finder:
     def skills(self):
         for player in players.find({"_id": self.uid}):
             print('Done')
-        return [player['traits'], player['implants'], player['programs'], player['humanity'], player['status']]
+        return [player['traits'], player['implants'], player['programs'], player['humanity'], player['status'], player['role_skill'], player['rs_rank']]
 
     def roles(self, id):
         for role in roles.find({"_id": id}):
@@ -89,4 +89,19 @@ class Finder:
             print('Done')
         return [house['name'], house['cost']]
 
-       
+    def ammo(self):
+        for player in players.find({"_id": self.uid}):
+            print('Done')
+        return [player['pistol_ammo'], player['hpistol_ammo'], player['shpistol_ammo'], player['shotgun_ammo'], player['rifle_ammo'], player['arrow_ammo'], player['granade_ammo'], player['rocket_ammo']]
+
+    def magazine(self):
+        for player in players.find({"_id": self.uid}):
+            print('Done')
+        return [player['pistol_magazine'], player['hpistol_magazine'], player['shpistol_magazine'], player['shotgun_magazine'], player['rifle_magazine'], player['arrow_magazine'], player['granade_magazine'], player['rocket_magazine']]
+
+    def dbSkills(self):
+        for player in players.find({"_id": self.uid}):
+            print('Done')
+        return [player['traits_db'], player['implants_db'], player['programs_db']]
+
+
