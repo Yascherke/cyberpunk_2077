@@ -7,11 +7,14 @@ from pymongo import MongoClient
 from aiogram.utils import executor
 
 from hero import Hero as hero
+from mongodb import Finder
+from view import View
+import markups as nav
 
 
 logging.basicConfig(level=logging.INFO)
 
-API_TOKEN = "5620891819:AAFlR04CBqCnDu74oZLJAkbS8oCWX9SKkTE"
+API_TOKEN = "5667925194:AAErD4AwaG_4oRtPWX68Ar3rr8Qs-6uRCW8"
 bot = Bot(token=API_TOKEN)
 storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage)
@@ -21,6 +24,10 @@ cluster = MongoClient(
 )
 db = cluster["WoE"]
 players = db["players"]
+roles = db["class"]
+wtypes = db["wtypes"]
+weapons = db["weapons"]
+armor = db["armor"]
 
 
 def findUserParamByID(uid):
@@ -45,53 +52,69 @@ async def cmd_start(message: types.Message):
                 data['Name'] = message.text
                 uid = message.from_user.id
                 name = data['Name']
+                stats = hero.getStats()
+                view = View(uid)
 
                 players.insert_one({
                     "_id": uid,
                     "name": name,
-                    "strength": hero.strength,
-                    "dexterity": hero.dexterity,
-                    "intelligence": hero.intelligence,
-                    "wisdom": hero.wisdom,
-                    "charisma": hero.charisma,
-                    "bodytype": hero.bodytype,
-                    "points": hero.points,
-
-                    "mod_strength": hero.mod_strength,
-                    "mod_dexterity": hero.mod_dexterity,
-                    "mod_intelligence": hero.mod_intelligence,
-                    "mod_wisdom": hero.mod_wisdom,
-                    "mod_charisma": hero.mod_charisma,
-                    "mod_bodytype": hero.mod_bodytype,
-
-                    "sp_strength": hero.sp_strength,
-                    "sp_dexterity": hero.sp_dexterity,
-                    "sp_intelligence": hero.sp_intelligence,
-                    "sp_wisdom": hero.sp_wisdom,
-                    "sp_charisma": hero.sp_charisma,
-                    "sp_bodytype": hero.sp_bodytype,
+                    "intelligence": stats[0],
+                    "reaction": stats[1],
+                    "dexterity": stats[2],
+                    "technics": stats[3],
+                    "charisma": stats[4],
+                    "will": stats[5],
+                    "luck": stats[6],
+                    "speed": stats[7],
+                    "bodytype": stats[8],
+                    "empathy": stats[9],
 
                     "hero_class": hero.hero_class,
-                    "spec": hero.spec,
-                    "race": hero.race,
-                    "level": hero.level,
-                    "exp": hero.exp,
-                    "max_hp": hero.max_hp,
-                    "hp": hero.hp,
-                    "time_hp": hero.time_hp,
-                    "dice_hp": hero.dice_hp,
-                    "ac": hero.ac,
-                    "base_char": hero.base_char,
-                    "rank": hero.rank,
+                    "car": hero.car,
+                    "home": hero.home,
 
-                    "main_hand": hero.main_hand,
-                    "off_hand": hero.off_hand,
-                    "armor": hero.armor,
-                    "amulet": hero.amulet,
-                    "ring1": hero.ring1,
-                    "ring2": hero.ring2,
-                    "accessory1": hero.accessory1,
-                    "accessory2": hero.accessory2,
+                    "max_hp": stats[10],
+                    "hp": stats[11],
+                    "severe_injury": stats[12],
+                    "die_dice": stats[13],
+
+                    "rank": hero.rank,
+                    "rank_exp": hero.rank_exp,
+
+                    "first_weapon": hero.first_weapon,
+                    "second_weapon": hero.second_weapon,
+
+                    "head_armor": hero.head_armor,
+                    "body_armor": hero.body_armor,
+                    "head_stat": hero.head_stat,
+                    "body_stat": hero.body_stat,
+
+                    "money": hero.money,
+                    "tokens": hero.tokens,
+
+                    "gang": hero.gang,
+                    "corp": hero.corp,
+
+                    "mission": hero.mission,
+                    "mission_rank": hero.mission_rank,
+                    "progress": hero.progress,
+                    "mission_count": hero.mission_count,
+
+                    "traits_db": hero.traits,
+                    "implants_db": hero.implants,
+                    "programs_db": hero.programs,
+
+                    "traits": hero.traits,
+                    "implants": hero.implants,
+                    "programs": hero.programs,
+
+                    "admin": hero.admin,
+                    "gm": hero.gm,
+                    "humanity": stats[14],
+                    "status": hero.status,
+
+                    "role_skill": hero.role_skill,
+                    "rs_rank": hero.rs_rank,
 
                     "slot1": hero.slot1,
                     "slot2": hero.slot2,
@@ -101,36 +124,82 @@ async def cmd_start(message: types.Message):
                     "slot6": hero.slot6,
                     "slot7": hero.slot7,
                     "slot8": hero.slot8,
+                    "slot9": hero.slot9,
+                    "slot10": hero.slot10,
 
-                    "copper_coin": hero.copper_coin,
-                    "silver_coin": hero.silver_coin,
-                    "gold_coin": hero.gold_coin,
-                    "platinum_coin": hero.platinum_coin,
-                    "party": hero.party,
-                    "guild": hero.guild,
-                    "guild_title": hero.guild_title,
-                    "location": hero.location,
-                    "title": hero.title,
-                    "status": hero.status,
-                    "mission": hero.mission,
-                    "mission_rank": hero.mission_rank,
-                    "progress": hero.progress,
-                    "mission_count": hero.mission_count,
-                    "traits": hero.traits,
-                    "mana": hero.mana,
-                    "max_mana": hero.max_mana,
-                    "cantrips": hero.cantrips,
-                    "spells": hero.spells,
+                    "pistol_magazine": hero.pistol_magazine,
+                    "hpistol_magazine": hero.hpistol_magazine,
+                    "shpistol_magazine": hero.shpistol_magazine,
+                    "shotgun_magazine": hero.shotgun_magazine,
+                    "rifle_magazine": hero.rifle_magazine,
+                    "arrow_magazine": hero.arrow_magazine,
+                    "granade_magazine": hero.granade_magazine,
+                    "rocket_magazine": hero.rocket_magazine,
 
-                    "admin": hero.admin,
-                    "gm": hero.gm,
+                    "pistol_ammo": hero.pistol_ammo,
+                    "hpistol_ammo": hero.hpistol_ammo,
+                    "shpistol_ammo": hero.shpistol_ammo,
+                    "shotgun_ammo": hero.shotgun_ammo,
+                    "rifle_ammo": hero.rifle_ammo,
+                    "arrow_ammo": hero.arrow_ammo,
+                    "granade_ammo": hero.granade_ammo,
+                    "rocket_ammo": hero.rocket_ammo,
                 })
 
                 await state.finish()
             await asyncio.sleep(1)
             await message.answer(f'Удачной игры!')
+            await message.answer(view.myProfile(), reply_markup=nav.profileMenu)
+
     else:
         await bot.send_message(message.chat.id, "У вас уже есть персонаж!")
+
+
+@dp.message_handler(commands=['get'])
+async def cmd_start(message: types.Message):
+    armor.insert_many([
+        {
+            "_id": 0,
+            "name": "Отсутствует",
+            "sp": 0,
+            "price": 0
+        },
+        {
+            "_id": 1,
+            "name": "Кожаный костюм",
+            "sp": 4,
+            "price": 400
+        },
+        {
+            "_id": 2,
+            "name": "Кевлар",
+            "sp": 0,
+            "price": 800            
+        },
+    ])
+
+
+@dp.message_handler()
+async def cmd_prof(message: types.Message):
+    user_id = message.from_user.id
+    view = View(user_id)
+
+    if message.text == 'Профиль' or message.text == 'Вернуться назад':
+        await message.delete()
+
+        await message.answer(view.myProfile(), reply_markup=nav.profileMenu)
+
+    if message.text == 'Характеристики':
+        await message.delete()
+        await message.answer(view.myStats(), reply_markup=nav.back)
+
+    if message.text == 'Имущество':
+        await message.delete()
+        await message.answer(view.myProperty(), reply_markup=nav.back)
+
+    if message.text == 'Экипировка':
+        await message.delete()
+        await message.answer(view.myEquip(), reply_markup=nav.back)
 
 
 if __name__ == '__main__':

@@ -1,69 +1,93 @@
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from random import randint
+from statistics import mean
 
 
 class Hero(StatesGroup):
 
-    def get_points():
-        return randint(65, 85)
-
     # Характеристики
-    strength = 1
-    dexterity = 1
-    intelligence = 1
-    wisdom = 1
-    charisma = 1
-    bodytype = 1
+    def getStats():
+        def roll():
+            stat = []
+            n = 0
+            while n != 3:
+                n += 1
+                stat.append(randint(1, 8))
 
-    points = get_points()
+            stat = max(stat)
+            return stat
 
-    # Модификатор характеристики
-    mod_strength = 0
-    mod_dexterity = 0
-    mod_intelligence = 0
-    mod_wisdom = 0
-    mod_charisma = 0
-    mod_bodytype = 0
+        intelligence = roll()
+        reaction = roll()
+        dexterity = roll()
+        technics = roll()
+        charisma = roll()
+        will = roll()
+        luck = roll()
+        speed = roll()
+        bodytype = roll()
+        empathy = roll()
 
-    # Спасброски
-    sp_strength = 0
-    sp_dexterity = 0
-    sp_intelligence = 0
-    sp_wisdom = 0
-    sp_charisma = 0
-    sp_bodytype = 0
+        max_hp = 10 + (5 * (round(mean([bodytype, will]))))
+        hp = max_hp
+        severe_injury = round(max_hp / 2)
+        die_dice = round(max_hp / 5)
+        humanity = empathy * 10
+
+        return [
+            intelligence, 
+            reaction, 
+            dexterity, 
+            technics, 
+            charisma,
+            will,
+            luck,
+            speed,
+            bodytype,
+            empathy,
+            max_hp,
+            hp,
+            severe_injury,
+            die_dice,
+            humanity
+            ]
 
     # Основная информация
     hero_class = 0
-    spec = 0
-    race = 0
+    rank = 0
+    rank_exp = 0
 
-    level = 1
-    exp = 0
-    rank = 'F'
-
-    max_hp = 0
-    hp = 0
-    time_hp = 0
-    dice_hp = 0
-
-    ac = 10
-    mastery = 2
-
-    base_char = 'None'
+    car = 0
+    home = 0
 
     # Экипировка
-    main_hand = 0
-    off_hand = 0
-    armor = 0
+    first_weapon = 0
+    second_weapon = 0
 
-    amulet = 0
-    ring1 = 0
-    ring2 = 0
-    accessory1 = 0
-    accessory2 = 0
+    pistol_magazine = 0
+    hpistol_magazine = 0
+    shpistol_magazine = 0
+    shotgun_magazine = 0
+    rifle_magazine = 0
+    arrow_magazine = 0
+    granade_magazine = 0
+    rocket_magazine = 0
 
-    # Рюкзак
+    pistol_ammo = 0
+    hpistol_ammo = 0
+    shpistol_ammo = 0
+    shotgun_ammo = 0
+    rifle_ammo = 0
+    arrow_ammo = 0
+    granade_ammo = 0
+    rocket_ammo = 0
+
+    head_armor = 0
+    body_armor = 0
+    head_stat = 0
+    body_stat = 0
+
+    # Карманы
     slot1 = 0
     slot2 = 0
     slot3 = 0
@@ -72,35 +96,35 @@ class Hero(StatesGroup):
     slot6 = 0
     slot7 = 0
     slot8 = 0
+    slot9 = 0
+    slot10 = 0
 
     # Дополнительная информация
-    copper_coin = 0
-    silver_coin = 0
-    gold_coin = 0
-    platinum_coin = 0
+    money = 0
+    tokens = 0
 
-    party = 0
-    guild = 0
-    guild_title = 0
-
-    location = 0
+    gang = 0
+    corp = 0
 
     admin = False
     gm = False
+    status = 0
 
     mission = 0
     mission_rank = 0
     progress = 0
     mission_count = 0
 
-    title = 0
-    status = 0
-
     # Способности
+    traits_db = []
+    implants_db = []
+    programs_db = []
+
     traits = []
-    mana = 0
-    max_mana = 0
-    cantrips = []
-    spells = []
+    implants = []
+    programs = []
+
+    role_skill = 0
+    rs_rank = 0
 
     name = State()
