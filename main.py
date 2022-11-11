@@ -11,6 +11,7 @@ from mongodb import Finder
 from view import View
 import markups as nav
 
+from ws import keep_alive
 
 logging.basicConfig(level=logging.INFO)
 
