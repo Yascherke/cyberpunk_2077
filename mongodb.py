@@ -59,7 +59,7 @@ class Finder:
     def status(self):
         for player in players.find({"_id": self.uid}):
             print('Done')
-        return [player['admin'], player['gm'], player['title']]
+        return [player['admin'], player['gm'], player['status']]
 
     def skills(self):
         for player in players.find({"_id": self.uid}):

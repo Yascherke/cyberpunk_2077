@@ -35,10 +35,10 @@ class Hero(StatesGroup):
         humanity = empathy * 10
 
         return [
-            intelligence, 
-            reaction, 
-            dexterity, 
-            technics, 
+            intelligence,
+            reaction,
+            dexterity,
+            technics,
             charisma,
             will,
             luck,
@@ -50,7 +50,23 @@ class Hero(StatesGroup):
             severe_injury,
             die_dice,
             humanity
-            ]
+        ]
+
+    def moneyRoll():
+        def roll():
+            money = []
+            mod = []
+            n = 0
+            while n != 6:
+                n += 1
+                money.append(randint(1, 100))
+                mod.append(randint(1, 20))
+            money = max(money)
+            mod = max(mod)
+            res = money * mod
+            return res
+        money = roll()
+        return money
 
     # Основная информация
     hero_class = 0
@@ -100,7 +116,6 @@ class Hero(StatesGroup):
     slot10 = 0
 
     # Дополнительная информация
-    money = 0
     tokens = 0
 
     gang = 0
@@ -128,3 +143,5 @@ class Hero(StatesGroup):
     rs_rank = 0
 
     name = State()
+
+
