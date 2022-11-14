@@ -5,6 +5,7 @@ from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher import FSMContext
 from pymongo import MongoClient
 from aiogram.utils import executor
+import re
 
 from hero import Hero as hero
 from mongodb import Finder
@@ -175,6 +176,39 @@ async def cmd_start(message: types.Message):
     else:
         await message.answer("У вас недостаточно прав.")
 
+@dp.message_handler(commands=['выдать'])
+async def cmd_start(message: types.Message):
+    uid = message.from_user.id
+    msg = message.get_args()
+    rep = {" для ": ",", " на ": ","}
+    rep = dict((re.escape(k), v) for k, v in rep.items()) 
+    pattern = re.compile("|".join(rep.keys()))
+    msg = pattern.sub(lambda m: rep[re.escape(m.group(0))], msg)
+    getter = msg.replace(',', ',').split(',')
+    name = getter[0]
+    perk = getSkill(name)
+    p_name = str(getter[2])
+    finder = Finder(uid)
+    status = finder.status()
+    if status[0] == True:
+        players.update_one({"name": p_name}, {
+                           "$push": {"traits": {"name": perk[0], "lvl": int(getter[1])}}})
+        await message.answer("Роль выдана")
+    else:
+        await message.answer("У вас недостаточно прав.")
+
+@dp.message_handler(commands=['навык'])
+async def cmd_start(message: types.Message):
+    msg = message.get_args()
+    perk = getSkill(msg)
+    await message.answer(f"""
+Навык: {perk[0]}
+
+Характеристика: {perk[2]}
+
+Описание: {perk[3]}
+    """)
+    
 
 @dp.message_handler(commands=['get'])
 async def cmd_start(message: types.Message):
