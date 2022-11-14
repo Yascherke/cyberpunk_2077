@@ -11,7 +11,7 @@ from hero import Hero as hero
 from mongodb import Finder
 from view import View
 import markups as nav
-from system import *
+from system import getRole, getSkill
 
 from ws import keep_alive
 
