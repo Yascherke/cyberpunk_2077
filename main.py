@@ -193,7 +193,7 @@ async def cmd_start(message: types.Message):
     status = finder.status()
     if status[0] == True:
         players.update_one({"name": p_name}, {
-                           "$push": {"traits": {"name": perk[0], "lvl": int(getter[1])}}})
+                           "$push": {"traits": {"name": perk[0], "lvl": int(getter[1]), "base": perk[1]}}})
         await message.answer("Роль выдана")
     else:
         await message.answer("У вас недостаточно прав.")
