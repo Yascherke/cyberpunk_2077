@@ -6,10 +6,11 @@ back = ReplyKeyboardMarkup(resize_keyboard=True)
 btnStats = KeyboardButton(text="Характеристики")
 btnEquip = KeyboardButton(text="Экипировка")
 btnBp = KeyboardButton(text="Имущество")
+btnSkills = KeyboardButton(text="Навыки")
 
 btnBack = KeyboardButton(text="Вернуться назад")
 
 
-profileMenu.add(btnStats, btnEquip, btnBp)
+profileMenu.add(btnStats, btnEquip, btnBp, btnSkills)
 back.add(btnBack)
 
