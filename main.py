@@ -11,7 +11,7 @@ from hero import Hero as hero
 from mongodb import Finder
 from view import View
 import markups as nav
-from system import *
+from system import getRole, getSkill
 
 from ws import keep_alive
 
@@ -176,12 +176,13 @@ async def cmd_start(message: types.Message):
     else:
         await message.answer("У вас недостаточно прав.")
 
+
 @dp.message_handler(commands=['выдать'])
 async def cmd_start(message: types.Message):
     uid = message.from_user.id
     msg = message.get_args()
     rep = {" для ": ",", " на ": ","}
-    rep = dict((re.escape(k), v) for k, v in rep.items()) 
+    rep = dict((re.escape(k), v) for k, v in rep.items())
     pattern = re.compile("|".join(rep.keys()))
     msg = pattern.sub(lambda m: rep[re.escape(m.group(0))], msg)
     getter = msg.replace(',', ',').split(',')
@@ -197,6 +198,7 @@ async def cmd_start(message: types.Message):
     else:
         await message.answer("У вас недостаточно прав.")
 
+
 @dp.message_handler(commands=['навык'])
 async def cmd_start(message: types.Message):
     msg = message.get_args()
@@ -204,16 +206,15 @@ async def cmd_start(message: types.Message):
     await message.answer(f"""
 Навык: {perk[0]}
 
-Характеристика: {perk[2]}
+Характеристика: {perk[1]}
 
-Описание: {perk[3]}
+Описание: {perk[2]}
     """)
-    
+
 
 @dp.message_handler(commands=['get'])
 async def cmd_start(message: types.Message):
     pass
-
 
 @dp.message_handler()
 async def cmd_prof(message: types.Message):
@@ -236,6 +237,11 @@ async def cmd_prof(message: types.Message):
     if message.text == 'Экипировка':
         await message.delete()
         await message.answer(view.myEquip(), reply_markup=nav.back)
+        
+    if message.text == 'Навыки':
+        await message.delete()
+        await message.answer(view.mySkills(), reply_markup=nav.back)
+
 
 
 if __name__ == '__main__':

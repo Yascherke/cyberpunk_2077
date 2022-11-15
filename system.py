@@ -20,7 +20,14 @@ def getRole(getter):
 def getSkill(getter):
     for skill in skills.find({"name": getter}):
         print("Done")
-    return [skill['name'], skill['lvl'], skill['base'], skill['desc']]
+    return [skill['name'],  skill['base'], skill['desc']]
     
-    
-    
+def catchSkill(uid):
+    skill_base = []
+    for player in players.find({"_id": uid}):
+        traits = player["traits"]
+        for n in traits:
+           print(n)
+           x = list(n.values())
+           skill_base.append(x)
+    return skill_base
