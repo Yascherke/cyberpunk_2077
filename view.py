@@ -110,13 +110,17 @@ class View:
         return text
 
     def mySkills(self):
-        catch = catchSkill(self.uid)
         
-
+        catch = catchSkill(self.uid)
+        def slist(prop):
+            text = ''
+            for x in prop:
+                text += f"""{x}\n"""
+            return text
         text = f"""
 --------------------------------------------------------------
                     Навыки
-{catch}           
+{slist(catch)}           
         
 --------------------------------------------------------------
         """
