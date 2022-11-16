@@ -115,13 +115,13 @@ class View:
         def slist(prop):
             text = ''
             for x in prop:
-                text += f"""{x}\n"""
+                text += f"""{x}\n\n"""
             return text
         text = f"""
 --------------------------------------------------------------
                     Навыки
+
 {slist(catch)}           
-        
 --------------------------------------------------------------
         """
         return text

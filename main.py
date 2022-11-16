@@ -11,7 +11,7 @@ from hero import Hero as hero
 from mongodb import Finder
 from view import View
 import markups as nav
-from system import getRole, getSkill
+from system import getRole, getSkill, send_money, send_exp, bank, give
 
 from ws import keep_alive
 
@@ -210,6 +210,56 @@ async def cmd_start(message: types.Message):
 
 Описание: {perk[2]}
     """)
+
+@dp.message_handler(commands=['перечислить'])
+async def sendmon(message: types.Message):
+    uid = message.from_user.id
+    find = Finder(uid)
+    userMon = find.money()
+    msg = message.get_args()
+    getter = msg.replace(' для ', ',').split(',')
+    money = int(getter[0])
+    if userMon[0] >= money:
+        send_money(uid, msg)
+        await message.answer("Перевод проведен успешно")
+    else:
+        await message.answer("У вас недостаточно эдди")
+
+@dp.message_handler(commands=['известность'])
+async def sendmon(message: types.Message):
+    uid = message.from_user.id
+    find = Finder(uid)
+    status = find.status()
+    msg = message.get_args()
+    if status[0] != False or status[1] != False:
+        send_exp(uid, msg)
+        await message.answer("Известность повышена")
+    else:
+        await message.answer("У вас нет прав")
+
+@dp.message_handler(commands=['банк'])
+async def sendmon(message: types.Message):
+    uid = message.from_user.id
+    find = Finder(uid)
+    status = find.status()
+    msg = message.get_args()
+    if status[0] != False or status[1] != False:
+        bank(uid, msg)
+        await message.answer("Средства перечислены")
+    else:
+        await message.answer("У вас нет прав")
+
+@dp.message_handler(commands=['банк'])
+async def sendmon(message: types.Message):
+    uid = message.from_user.id
+    find = Finder(uid)
+    status = find.status()
+    msg = message.get_args()
+    if status[0] != False or status[1] != False:
+        bank(uid, msg)
+        await message.answer("Средства перечислены")
+    else:
+        await message.answer("У вас нет прав")
 
 
 @dp.message_handler(commands=['get'])

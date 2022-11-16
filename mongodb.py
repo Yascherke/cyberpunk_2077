@@ -104,4 +104,17 @@ class Finder:
             print('Done')
         return [player['traits_db'], player['implants_db'], player['programs_db']]
 
+    def moneyByName(self, name):
+        for player in players.find({"name": name}):
+            print('Done')
+        return [player['money'], player['tokens']]
 
+    def generalByName(self, name):
+        for player in players.find({"name": name}):
+            print('Done')
+        return [player['name'], player['hero_class'], player['rank'], player['rank_exp'], player['car'], player['home']]
+
+    def backpackByName(self, name):
+        for player in players.find({"name": name}):
+            print('Done')
+        return [player['slot1'], player['slot2'], player['slot3'], player['slot4'], player['slot5'], player['slot6'], player['slot7'], player['slot8'], player['slot9'], player['slot10']]
