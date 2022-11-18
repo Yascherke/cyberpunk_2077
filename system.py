@@ -112,7 +112,6 @@ def equip_wp(uid, msg):
     except:
         return False
 
-    
     if owner_item != 0 and player_wp[0] == 0 and getter[1] == "Основное" or getter[1] == "основное":
         if player_wp[0] != 0:
             return 1
@@ -122,7 +121,6 @@ def equip_wp(uid, msg):
             players.update_one({"_id": uid}, {
                 "$set": {"slot"+str(slot): 0}})
             return True
-
 
     if owner_item != 0 and player_wp[1] == 0 and getter[1] == "Дополнительное" or getter[1] == "дополнительное":
         if player_wp[1] != 0:
@@ -135,6 +133,7 @@ def equip_wp(uid, msg):
             return True
     else:
         return False
+
 
 def equip_armor(uid, msg):
 
@@ -150,7 +149,6 @@ def equip_armor(uid, msg):
     except:
         return False
 
-    
     if owner_item != 0 and player_armor[0] == 0 and getter[1] == "Тело" or getter[1] == "тело":
         if player_armor[3] != 0:
             return 1
@@ -165,7 +163,6 @@ def equip_armor(uid, msg):
     else:
         return False
 
-
     # if owner_item != 0 and player_armor[1] == 0 and getter[1] == "Голова" or getter[1] == "Голова":
     #     if player_armor[1] != 0:
     #         return 1
@@ -177,3 +174,37 @@ def equip_armor(uid, msg):
     #         return True
     # else:
     #     return False
+
+
+def output(uid, msg):
+
+    find = Finder(uid)
+    player_armor = find.equipment()
+    player_wp = find.equipment()
+    msg = msg
+
+    if msg == "Тело" or msg == "тело":
+        if player_armor[3] != 0:
+            players.update_one({"_id": uid}, {
+                "$set": {"body_armor": 0}})
+            players.update_one({"_id": uid}, {
+                "$set": {"body_stat": 0}})
+        else:
+            return False
+
+    if  msg == "Основное" or msg == "основное":
+        if player_wp[0] != 0:
+            players.update_one({"_id": uid}, {
+                "$set": {"first_weapon": 0}})
+            return True
+        else:
+            return False
+
+    if  msg == "Дополнительное" or msg == "дополнительное":
+        if player_wp[1] != 0:
+            players.update_one({"_id": uid}, {
+                "$set": {"second_weapon": 0}})
+            return True
+
+        else:
+            return False

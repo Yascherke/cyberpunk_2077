@@ -11,7 +11,7 @@ from hero import Hero as hero
 from mongodb import Finder
 from view import View
 import markups as nav
-from system import getRole, getSkill, send_money, send_exp, bank, giveItem, equip_wp, equip_armor
+from system import getRole, getSkill, send_money, send_exp, bank, giveItem, equip_wp, equip_armor, output
 
 from ws import keep_alive
 
@@ -305,6 +305,18 @@ async def equipwp(message: types.Message):
         await message.answer(f"У вас уже есть броня. Сначала нужно выбросить предыдущую.")
     else:
         await message.answer("Это не броня")
+
+@dp.message_handler(commands=['снять'])
+async def output_eq(message: types.Message):
+    uid = message.from_user.id
+    msg = message.get_args()
+    print(uid, msg)
+    func = output(uid, msg)
+
+    if func is True:
+        await message.answer(f"Вы избавились от предмета")
+    else:
+        await message.answer("Слот пуст")
 
 @dp.message_handler(commands=['get'])
 async def cmd_start(message: types.Message):
