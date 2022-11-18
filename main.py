@@ -11,7 +11,7 @@ from hero import Hero as hero
 from mongodb import Finder
 from view import View
 import markups as nav
-from system import getRole, getSkill, send_money, send_exp, bank, give
+from system import getRole, getSkill, send_money, send_exp, bank, giveItem
 
 from ws import keep_alive
 
@@ -173,6 +173,7 @@ async def cmd_start(message: types.Message):
         players.update_one({"name": p_name}, {
                            "$set": {"hero_class": player_role}})
         await message.answer("Роль выдана")
+        await message.delete()
     else:
         await message.answer("У вас недостаточно прав.")
 
@@ -195,6 +196,7 @@ async def cmd_start(message: types.Message):
         players.update_one({"name": p_name}, {
                            "$push": {"traits": {"name": perk[0], "lvl": int(getter[1]), "base": perk[1]}}})
         await message.answer("Навык выдан")
+        await message.delete()
     else:
         await message.answer("У вас недостаточно прав.")
 
@@ -222,8 +224,27 @@ async def sendmon(message: types.Message):
     if userMon[0] >= money:
         send_money(uid, msg)
         await message.answer("Перевод проведен успешно")
+        await message.delete()
     else:
         await message.answer("У вас недостаточно эдди")
+
+@dp.message_handler(commands=['отдать'])
+async def sendmon(message: types.Message):
+    uid = message.from_user.id
+    msg = message.get_args()
+    find = Finder(uid)
+    getter = msg.replace(' для ', ',').split(',')
+    slot = int(getter[0])
+    owner = find.backpack()
+    for_key = slot-1
+    owner_item = owner[for_key]
+    func = giveItem(uid, msg)
+
+    if func is True:
+        await message.answer(f"Вы передали предмет {owner_item} в руки {getter[1]}")
+        await message.delete()
+    else:
+        await message.answer("У вас не вышло")
 
 @dp.message_handler(commands=['известность'])
 async def sendmon(message: types.Message):
@@ -234,6 +255,7 @@ async def sendmon(message: types.Message):
     if status[0] != False or status[1] != False:
         send_exp(uid, msg)
         await message.answer("Известность повышена")
+        await message.delete()
     else:
         await message.answer("У вас нет прав")
 
@@ -246,20 +268,10 @@ async def sendmon(message: types.Message):
     if status[0] != False or status[1] != False:
         bank(uid, msg)
         await message.answer("Средства перечислены")
+        await message.delete()
     else:
         await message.answer("У вас нет прав")
 
-@dp.message_handler(commands=['банк'])
-async def sendmon(message: types.Message):
-    uid = message.from_user.id
-    find = Finder(uid)
-    status = find.status()
-    msg = message.get_args()
-    if status[0] != False or status[1] != False:
-        bank(uid, msg)
-        await message.answer("Средства перечислены")
-    else:
-        await message.answer("У вас нет прав")
 
 
 @dp.message_handler(commands=['get'])

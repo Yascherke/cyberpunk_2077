@@ -69,3 +69,31 @@ def bank(uid, msg):
                        }})
 
 
+def giveItem(uid, msg):
+    find = Finder(uid)
+    getter = msg.replace(' для ', ',').split(',')
+    slot = int(getter[0])
+
+    player_bp = find.backpackByName(getter[1])
+    owner = find.backpack()
+
+    for_key = slot-1
+    owner_item = owner[for_key]
+
+    count = 0
+    for item in player_bp:
+        if item == 0 and owner_item != 0:
+            print(owner_item)
+            players.update_one({"name": getter[1]}, {
+                "$set": {"slot"+str(count+1): owner_item}})
+            players.update_one({"_id": uid}, {
+                "$set": {"slot"+str(slot): 0}})
+            return True
+        elif owner_item == 0:
+            return False
+        else:
+            if count < 10:
+                count += 1
+            else:
+                return False
+            
