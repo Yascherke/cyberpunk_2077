@@ -96,4 +96,84 @@ def giveItem(uid, msg):
                 count += 1
             else:
                 return False
-            
+
+
+def equip_wp(uid, msg):
+
+    find = Finder(uid)
+    getter = msg.replace(' как ', ',').split(',')
+    slot = int(getter[0])
+    owner = find.backpack()
+    for_key = slot-1
+    owner_item = owner[for_key]
+    player_wp = find.equipment()
+    try:
+        getWeapon = find.weapon(owner_item)
+    except:
+        return False
+
+    
+    if owner_item != 0 and player_wp[0] == 0 and getter[1] == "Основное" or getter[1] == "основное":
+        if player_wp[0] != 0:
+            return 1
+        else:
+            players.update_one({"_id": uid}, {
+                "$set": {"first_weapon": getWeapon[1]}})
+            players.update_one({"_id": uid}, {
+                "$set": {"slot"+str(slot): 0}})
+            return True
+
+
+    if owner_item != 0 and player_wp[1] == 0 and getter[1] == "Дополнительное" or getter[1] == "дополнительное":
+        if player_wp[1] != 0:
+            return 1
+        else:
+            players.update_one({"_id": uid}, {
+                "$set": {"second_weapon": getWeapon[1]}})
+            players.update_one({"_id": uid}, {
+                "$set": {"slot"+str(slot): 0}})
+            return True
+    else:
+        return False
+
+def equip_armor(uid, msg):
+
+    find = Finder(uid)
+    getter = msg.replace(' на ', ',').split(',')
+    slot = int(getter[0])
+    owner = find.backpack()
+    for_key = slot-1
+    owner_item = owner[for_key]
+    player_armor = find.equipment()
+    try:
+        getArmor = find.armor(owner_item)
+    except:
+        return False
+
+    
+    if owner_item != 0 and player_armor[0] == 0 and getter[1] == "Тело" or getter[1] == "тело":
+        if player_armor[3] != 0:
+            return 1
+        else:
+            players.update_one({"_id": uid}, {
+                "$set": {"body_armor": getArmor[1]}})
+            players.update_one({"_id": uid}, {
+                "$set": {"body_stat": getArmor[2]}})
+            players.update_one({"_id": uid}, {
+                "$set": {"slot"+str(slot): 0}})
+            return True
+    else:
+        return False
+
+
+    # if owner_item != 0 and player_armor[1] == 0 and getter[1] == "Голова" or getter[1] == "Голова":
+    #     if player_armor[1] != 0:
+    #         return 1
+    #     else:
+    #         players.update_one({"_id": uid}, {
+    #             "$set": {"second_weapon": getWeapon[1]}})
+    #         players.update_one({"_id": uid}, {
+    #             "$set": {"slot"+str(slot): 0}})
+    #         return True
+    # else:
+    #     return False
