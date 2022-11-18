@@ -10,6 +10,8 @@ ranks = db["rank"]
 cars = db["cars"]
 houses = db["house"]
 corps = db["corps"]
+weapons = db["weapons"]
+armor = db["armor"]
 
 class Finder:
 
@@ -118,3 +120,15 @@ class Finder:
         for player in players.find({"name": name}):
             print('Done')
         return [player['slot1'], player['slot2'], player['slot3'], player['slot4'], player['slot5'], player['slot6'], player['slot7'], player['slot8'], player['slot9'], player['slot10']]
+
+    def weapon(self, name):
+        for weapon in weapons.find({"name": name}):
+            print('Done')
+        return [weapon['_id'], weapon['name'], weapon['type']]
+
+    def armor(self, name):
+        for arm in armor.find({"name": name}):
+            print('Done')
+        return [arm['_id'], arm['name'], arm['sp'], arm['price']]
+
+
