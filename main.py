@@ -11,7 +11,8 @@ from hero import Hero as hero
 from mongodb import Finder
 from view import View
 import markups as nav
-from system import getRole, getSkill, send_money, send_exp, bank, giveItem, equip_wp, equip_armor, output
+from system import getRole, getSkill, send_money, send_exp, bank, giveItem, equip_wp, equip_armor, output, buyArmor, buyWp
+from fight import initiate, shot, reloading, getDamage, hit
 
 from ws import keep_alive
 
@@ -86,16 +87,12 @@ async def cmd_start(message: types.Message):
                     "rank": hero.rank,
                     "rank_exp": hero.rank_exp,
 
-                    "first_weapon": hero.first_weapon,
-                    "second_weapon": hero.second_weapon,
+                    "weapon": hero.weapon,
 
-                    "head_armor": hero.head_armor,
-                    "body_armor": hero.body_armor,
-                    "head_stat": hero.head_stat,
-                    "body_stat": hero.body_stat,
+                    "armor": hero.armor,
+                    "sp": hero.sp,
 
                     "money": money,
-                    "tokens": hero.tokens,
 
                     "gang": hero.gang,
                     "corp": hero.corp,
@@ -117,6 +114,8 @@ async def cmd_start(message: types.Message):
                     "gm": hero.gm,
                     "humanity": stats[14],
                     "status": hero.status,
+                    
+                    "trauma": hero.trauma,
 
                     "role_skill": hero.role_skill,
                     "rs_rank": hero.rs_rank,
@@ -132,22 +131,10 @@ async def cmd_start(message: types.Message):
                     "slot9": hero.slot9,
                     "slot10": hero.slot10,
 
-                    "pistol_magazine": hero.pistol_magazine,
-                    "hpistol_magazine": hero.hpistol_magazine,
-                    "shpistol_magazine": hero.shpistol_magazine,
-                    "shotgun_magazine": hero.shotgun_magazine,
-                    "rifle_magazine": hero.rifle_magazine,
-                    "arrow_magazine": hero.arrow_magazine,
-                    "granade_magazine": hero.granade_magazine,
-                    "rocket_magazine": hero.rocket_magazine,
+                    "magazine": hero.magazine,
+                    "max_magazine": hero.max_magazine,
 
-                    "pistol_ammo": hero.pistol_ammo,
-                    "hpistol_ammo": hero.hpistol_ammo,
-                    "shpistol_ammo": hero.shpistol_ammo,
-                    "shotgun_ammo": hero.shotgun_ammo,
-                    "rifle_ammo": hero.rifle_ammo,
-                    "arrow_ammo": hero.arrow_ammo,
-                    "granade_ammo": hero.granade_ammo,
+                    "ammo": hero.ammo,
                     "rocket_ammo": hero.rocket_ammo,
                 })
 
@@ -273,8 +260,7 @@ async def equipwp(message: types.Message):
     uid = message.from_user.id
     msg = message.get_args()
     find = Finder(uid)
-    getter = msg.replace(' как ', ',').split(',')
-    slot = int(getter[0])
+    slot = int(msg)
     owner = find.backpack()
     for_key = slot-1
     owner_item = owner[for_key]
@@ -282,8 +268,6 @@ async def equipwp(message: types.Message):
 
     if func is True:
         await message.answer(f"Вы экипировали {owner_item}")
-    if func == 1:
-        await message.answer(f"У вас уже есть оружие. Сначала нужно выбросить предыдущее.")
     else:
         await message.answer("Это не оружие")
 
@@ -292,8 +276,7 @@ async def equipwp(message: types.Message):
     uid = message.from_user.id
     msg = message.get_args()
     find = Finder(uid)
-    getter = msg.replace(' на ', ',').split(',')
-    slot = int(getter[0])
+    slot = int(msg)
     owner = find.backpack()
     for_key = slot-1
     owner_item = owner[for_key]
@@ -301,8 +284,6 @@ async def equipwp(message: types.Message):
 
     if func is True:
         await message.answer(f"Вы экипировали {owner_item}")
-    if func == 1:
-        await message.answer(f"У вас уже есть броня. Сначала нужно выбросить предыдущую.")
     else:
         await message.answer("Это не броня")
 
@@ -317,6 +298,75 @@ async def output_eq(message: types.Message):
         await message.answer(f"Вы избавились от предмета")
     else:
         await message.answer("Слот пуст")
+
+@dp.message_handler(commands=['выстрелить'])
+async def cmd_shot(message: types.Message):
+    uid = message.from_user.id
+    msg = message.get_args()
+    print(uid, msg)
+    func = shot(uid)
+
+    if await message.answer(f"Вы нанесли {func} урона") != False:
+        print("Done")
+    else:
+        await message.answer(f"У вас не вышло")
+    
+@dp.message_handler(commands=['попадание'])
+async def cmd_hit(message: types.Message):
+    msg = message.get_args()
+
+    await message.answer(f"Попадание: {hit(msg)}")
+    
+@dp.message_handler(commands=['инициатива'])
+async def cmd_initiate(message: types.Message):
+    uid = message.from_user.id
+
+    await message.answer(f"Инициатива: {initiate(uid)}")
+
+
+@dp.message_handler(commands=['перезарядка'])
+async def cmd_reload(message: types.Message):
+    uid = message.from_user.id
+    func = reloading(uid)
+
+    if func is True:
+        await message.answer(f"Вы перезарядили оружие")
+    else:
+        await message.answer("У вас не вышло")
+
+@dp.message_handler(commands=['урон'])
+async def bank(message: types.Message):
+    uid = message.from_user.id
+    find = Finder(uid)
+    status = find.status()
+    msg = message.get_args()
+    if status[0] != False or status[1] != False:
+        getDamage(uid, msg)
+        await message.answer("Урон вычтен")
+    else:
+        await message.answer("У вас нет прав")
+
+@dp.message_handler(commands=['купить_оружие'])
+async def cmd_wp(message: types.Message):
+    uid = message.from_user.id
+    msg = message.get_args()
+    func = buyWp(uid, msg)
+
+    if func is True:
+        await message.answer(f"Вы купили оружие")
+    else:
+        await message.answer("У вас не вышло")
+
+@dp.message_handler(commands=['купить_броню'])
+async def cmd_armor(message: types.Message):
+    uid = message.from_user.id
+    msg = message.get_args()
+    func = buyArmor(uid, msg)
+
+    if func is True:
+        await message.answer(f"Вы купили броню")
+    else:
+        await message.answer("У вас не вышло")
 
 @dp.message_handler(commands=['get'])
 async def cmd_start(message: types.Message):
