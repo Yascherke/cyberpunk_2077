@@ -92,19 +92,24 @@ class View:
         finder = Finder(self.uid)
         skills = finder.skills()
         equip = finder.equipment()
+        magazine = finder.magazine()
+        ammo = finder.ammo()
 
         text = f"""
 ------------------------------------------------
                     Экипировка
 
-        Оружие: {equip[0]}
+    Оружие: {equip[0]}
+    Магазин: {magazine[0]} из {magazine[1]}
 
-        Защита головы: {equip[1]} | {equip[2]}
+    Защита головы: {equip[1]} | {equip[2]}
 
+    Патроны: {ammo[0]}
+    Ракеты: {ammo[1]}
 ------------------------------------------------
         
-        Импланты: {skills[1]}
-        Программы: {skills[2]}
+    Импланты: {skills[1]}
+    Программы: {skills[2]}
 ------------------------------------------------
         """
         return text

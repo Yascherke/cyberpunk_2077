@@ -11,7 +11,7 @@ from hero import Hero as hero
 from mongodb import Finder
 from view import View
 import markups as nav
-from system import getRole, getSkill, send_money, send_exp, bank, giveItem, equip_wp, equip_armor, output
+from system import getRole, getSkill, send_money, send_exp, bank, giveItem, equip_wp, equip_armor, output, buyArmor, buyWp
 from fight import initiate, shot, reloading, getDamage, hit
 
 from ws import keep_alive
@@ -260,8 +260,7 @@ async def equipwp(message: types.Message):
     uid = message.from_user.id
     msg = message.get_args()
     find = Finder(uid)
-    getter = msg.replace(' как ', ',').split(',')
-    slot = int(getter[0])
+    slot = int(msg)
     owner = find.backpack()
     for_key = slot-1
     owner_item = owner[for_key]
@@ -277,8 +276,7 @@ async def equipwp(message: types.Message):
     uid = message.from_user.id
     msg = message.get_args()
     find = Finder(uid)
-    getter = msg.replace(' на ', ',').split(',')
-    slot = int(getter[0])
+    slot = int(msg)
     owner = find.backpack()
     for_key = slot-1
     owner_item = owner[for_key]
@@ -302,7 +300,7 @@ async def output_eq(message: types.Message):
         await message.answer("Слот пуст")
 
 @dp.message_handler(commands=['выстрелить'])
-async def cmd_start(message: types.Message):
+async def cmd_shot(message: types.Message):
     uid = message.from_user.id
     msg = message.get_args()
     print(uid, msg)
@@ -314,20 +312,20 @@ async def cmd_start(message: types.Message):
         await message.answer(f"У вас не вышло")
     
 @dp.message_handler(commands=['попадание'])
-async def cmd_start(message: types.Message):
+async def cmd_hit(message: types.Message):
     msg = message.get_args()
 
     await message.answer(f"Попадание: {hit(msg)}")
     
 @dp.message_handler(commands=['инициатива'])
-async def cmd_start(message: types.Message):
+async def cmd_initiate(message: types.Message):
     uid = message.from_user.id
 
     await message.answer(f"Инициатива: {initiate(uid)}")
 
 
 @dp.message_handler(commands=['перезарядка'])
-async def cmd_start(message: types.Message):
+async def cmd_reload(message: types.Message):
     uid = message.from_user.id
     func = reloading(uid)
 
@@ -347,6 +345,28 @@ async def bank(message: types.Message):
         await message.answer("Урон вычтен")
     else:
         await message.answer("У вас нет прав")
+
+@dp.message_handler(commands=['купить_оружие'])
+async def cmd_wp(message: types.Message):
+    uid = message.from_user.id
+    msg = message.get_args()
+    func = buyWp(uid, msg)
+
+    if func is True:
+        await message.answer(f"Вы купили оружие")
+    else:
+        await message.answer("У вас не вышло")
+
+@dp.message_handler(commands=['купить_броню'])
+async def cmd_armor(message: types.Message):
+    uid = message.from_user.id
+    msg = message.get_args()
+    func = buyArmor(uid, msg)
+
+    if func is True:
+        await message.answer(f"Вы купили броню")
+    else:
+        await message.answer("У вас не вышло")
 
 @dp.message_handler(commands=['get'])
 async def cmd_start(message: types.Message):

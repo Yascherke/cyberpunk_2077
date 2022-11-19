@@ -110,7 +110,7 @@ class Finder:
     def moneyByName(self, name):
         for player in players.find({"name": name}):
             print('Done')
-        return [player['money'], player['tokens']]
+        return player['money']
 
     def generalByName(self, name):
         for player in players.find({"name": name}):
@@ -135,4 +135,4 @@ class Finder:
     def wtype(self, type):
         for wtype in wtypes.find({"_id": type}):
             print('Done')
-        return [wtype['_id'], wtype['name'], wtype['wp_skill'], wtype['damage'], wtype['magazine'], wtype['type'], wtype['alt'], wtype['prop'], wtype['grip']]
+        return [wtype['_id'], wtype['name'], wtype['wp_skill'], wtype['damage'], wtype['magazine'], wtype['type'], wtype['alt'], wtype['prop'], wtype['grip'], wtype['price']]

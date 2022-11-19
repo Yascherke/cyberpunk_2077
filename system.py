@@ -101,8 +101,7 @@ def giveItem(uid, msg):
 def equip_wp(uid, msg):
 
     find = Finder(uid)
-    getter = msg.replace(' как ', ',').split(',')
-    slot = int(getter[0])
+    slot = int(msg)
     owner = find.backpack()
     for_key = slot-1
     owner_item = owner[for_key]
@@ -114,7 +113,7 @@ def equip_wp(uid, msg):
     except:
         return False
 
-    if owner_item != 0 and player_wp[0] == 0 and getter[1] == "Основное" or getter[1] == "основное":
+    if owner_item != 0 and player_wp[0] == 0:
 
         players.update_one({"_id": uid}, {
             "$set": {"weapon": getWeapon[1]}})
@@ -130,8 +129,7 @@ def equip_wp(uid, msg):
 def equip_armor(uid, msg):
 
     find = Finder(uid)
-    getter = msg.replace(' на ', ',').split(',')
-    slot = int(getter[0])
+    slot = int(msg)
     owner = find.backpack()
     for_key = slot-1
     owner_item = owner[for_key]
@@ -141,7 +139,7 @@ def equip_armor(uid, msg):
     except:
         return False
 
-    if owner_item != 0 and player_armor[1] == 0 and getter[1] == "Тело" or getter[1] == "тело":
+    if owner_item != 0 and player_armor[1] == 0:
         if player_armor[1] != 0:
             return 1
         else:
@@ -183,3 +181,50 @@ def output(uid, msg):
             return True
         else:
             return False
+
+
+def buyWp(uid, msg):
+    find = Finder(uid)
+    money = find.money()
+    player_bp = find.backpack()
+    try:
+        getWeapon = find.weapon(msg)
+        wtype = find.wtype(getWeapon[2])
+    except:
+        return False
+
+    count = 0
+    for item in player_bp:
+        if item == 0 and money >= int(wtype[9]):
+            players.update_one({"_id": uid}, {
+                "$set": {"slot"+str(count+1): getWeapon[1]}})
+            players.update_one({"_id": uid}, {
+                "$set": {"money": int(money) - int(wtype[9])}})
+            return True
+        else:
+            if count < 10:
+                count += 1
+            else:
+                return False
+def buyArmor(uid, msg):
+    find = Finder(uid)
+    money = find.money()
+    player_bp = find.backpack()
+    try:
+        getArmor= find.armor(msg)
+    except:
+        return False
+
+    count = 0
+    for item in player_bp:
+        if item == 0 and money >= getArmor[3]:
+            players.update_one({"_id": uid}, {
+                "$set": {"slot"+str(count+1): getArmor[1]}})
+            players.update_one({"_id": uid}, {
+                "$set": {"money": int(money) - int(getArmor[3])}})
+            return True
+        else:
+            if count < 10:
+                count += 1
+            else:
+                return False
