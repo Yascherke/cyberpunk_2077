@@ -10,7 +10,7 @@ class Hero(StatesGroup):
         def roll():
             stat = []
             n = 0
-            while n != 3:
+            while n != 6:
                 n += 1
                 stat.append(randint(1, 8))
 
@@ -76,32 +76,20 @@ class Hero(StatesGroup):
     car = 0
     home = 0
 
+    trauma = 'Отсутствует'
+
     # Экипировка
-    first_weapon = 0
-    second_weapon = 0
+    weapon = 0
 
-    pistol_magazine = 0
-    hpistol_magazine = 0
-    shpistol_magazine = 0
-    shotgun_magazine = 0
-    rifle_magazine = 0
-    arrow_magazine = 0
-    granade_magazine = 0
-    rocket_magazine = 0
+    magazine = 0
+    max_magazine = 0
 
-    pistol_ammo = 0
-    hpistol_ammo = 0
-    shpistol_ammo = 0
-    shotgun_ammo = 0
-    rifle_ammo = 0
-    arrow_ammo = 0
-    granade_ammo = 0
+    ammo = 0
     rocket_ammo = 0
+   
 
-    head_armor = 0
-    body_armor = 0
-    head_stat = 0
-    body_stat = 0
+    armor = 0
+    sp = 0
 
     # Карманы
     slot1 = 0
@@ -140,7 +128,7 @@ class Hero(StatesGroup):
     programs = []
 
     role_skill = 0
-    rs_rank = 0
+    rs_rank = 1
 
     name = State()
 

@@ -12,6 +12,7 @@ houses = db["house"]
 corps = db["corps"]
 weapons = db["weapons"]
 armor = db["armor"]
+wtypes = db["wtypes"]
 
 class Finder:
 
@@ -36,7 +37,7 @@ class Finder:
     def equipment(self):
         for player in players.find({"_id": self.uid}):
             print('Done')
-        return [player['first_weapon'], player['second_weapon'], player['head_armor'], player['body_armor'], player['head_stat'], player['body_stat']]
+        return [player['weapon'], player['armor'], player['sp']]
 
     def backpack(self):
         for player in players.find({"_id": self.uid}):
@@ -46,7 +47,7 @@ class Finder:
     def money(self):
         for player in players.find({"_id": self.uid}):
             print('Done')
-        return [player['money'], player['tokens']]
+        return player['money']
 
     def otherInfo(self):
         for player in players.find({"_id": self.uid}):
@@ -94,12 +95,12 @@ class Finder:
     def ammo(self):
         for player in players.find({"_id": self.uid}):
             print('Done')
-        return [player['pistol_ammo'], player['hpistol_ammo'], player['shpistol_ammo'], player['shotgun_ammo'], player['rifle_ammo'], player['arrow_ammo'], player['granade_ammo'], player['rocket_ammo']]
+        return [player['ammo'], player['rocket_ammo']]
 
     def magazine(self):
         for player in players.find({"_id": self.uid}):
             print('Done')
-        return [player['pistol_magazine'], player['hpistol_magazine'], player['shpistol_magazine'], player['shotgun_magazine'], player['rifle_magazine'], player['arrow_magazine'], player['granade_magazine'], player['rocket_magazine']]
+        return [player['magazine'], player['max_magazine']]
 
     def dbSkills(self):
         for player in players.find({"_id": self.uid}):
@@ -131,4 +132,7 @@ class Finder:
             print('Done')
         return [arm['_id'], arm['name'], arm['sp'], arm['price']]
 
-
+    def wtype(self, type):
+        for wtype in wtypes.find({"_id": type}):
+            print('Done')
+        return [wtype['_id'], wtype['name'], wtype['wp_skill'], wtype['damage'], wtype['magazine'], wtype['type'], wtype['alt'], wtype['prop'], wtype['grip']]
