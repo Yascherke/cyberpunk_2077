@@ -302,8 +302,6 @@ async def output_eq(message: types.Message):
 @dp.message_handler(commands=['выстрелить'])
 async def cmd_shot(message: types.Message):
     uid = message.from_user.id
-    msg = message.get_args()
-    print(uid, msg)
     func = shot(uid)
 
     if await message.answer(f"Вы нанесли {func} урона") != False:
