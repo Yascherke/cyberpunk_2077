@@ -11,11 +11,12 @@ from hero import Hero as hero
 from mongodb import Finder
 from view import View
 import markups as nav
-from system import getRole, getSkill, send_money, send_exp, bank, giveItem, equip_wp, equip_armor, output, buyArmor, buyWp
+from system import getRole, getSkill, send_money, send_exp, bank_gm, giveItem, equip_wp, equip_armor, output, buyArmor, buyWp
 from fight import initiate, shot, reloading, getDamage, hit
 
 from ws import keep_alive
 
+keep_alive()
 logging.basicConfig(level=logging.INFO)
 
 API_TOKEN = "5667925194:AAErD4AwaG_4oRtPWX68Ar3rr8Qs-6uRCW8"
@@ -24,8 +25,8 @@ storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage)
 
 cluster = MongoClient(
-    "mongodb+srv://Nere:0662@woe.vj1q67r.mongodb.net/test"
-)
+"mongodb+srv://Nere:0662@woe.vj1q67r.mongodb.net/test&ssl=true&ssl_cert_reqs=CERT_NONE", connect=False)
+
 db = cluster["WoE"]
 players = db["players"]
 roles = db["class"]
@@ -250,7 +251,7 @@ async def bank(message: types.Message):
     status = find.status()
     msg = message.get_args()
     if status[0] != False or status[1] != False:
-        bank(uid, msg)
+        bank_gm(uid, msg)
         await message.answer("Средства перечислены")
     else:
         await message.answer("У вас нет прав")
