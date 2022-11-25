@@ -11,8 +11,8 @@ from hero import Hero as hero
 from mongodb import Finder
 from view import View
 import markups as nav
-from system import getRole, getSkill, send_money, send_exp, bank, giveItem, equip_wp, equip_armor, output, buyArmor, buyWp
-from fight import initiate, shot, reloading, getDamage, hit
+from system import getRole, getSkill, send_money, send_exp, bank, giveItem, equip_wp, equip_armor, output, buyArmor, buyWp, buy_ammo, send_ammo
+from fight import initiate, shot, reloading, getDamage, hit, autoshot
 
 from ws import keep_alive
 
@@ -336,13 +336,9 @@ async def cmd_reload(message: types.Message):
 async def bank(message: types.Message):
     uid = message.from_user.id
     find = Finder(uid)
-    status = find.status()
     msg = message.get_args()
-    if status[0] != False or status[1] != False:
-        getDamage(uid, msg)
-        await message.answer("Урон вычтен")
-    else:
-        await message.answer("У вас нет прав")
+    getDamage(uid, msg)
+    await message.answer("Урон вычтен")
 
 @dp.message_handler(commands=['купить_оружие'])
 async def cmd_wp(message: types.Message):
@@ -365,6 +361,42 @@ async def cmd_armor(message: types.Message):
         await message.answer(f"Вы купили броню")
     else:
         await message.answer("У вас не вышло")
+
+@dp.message_handler(commands=['купить_патроны'])
+async def cmd_wp(message: types.Message):
+    uid = message.from_user.id
+    msg = message.get_args()
+    func = buy_ammo(uid, msg)
+
+    if func is True:
+        await message.answer(f"Вы купили патроны")
+    else:
+        await message.answer("У вас не вышло")
+
+@dp.message_handler(commands=['автоогонь'])
+async def cmd_auto(message: types.Message):
+    uid = message.from_user.id
+    msg = message.get_args()
+    func = autoshot(uid, msg)
+
+    if await message.answer(f"Вы нанесли {func} урона") != False:
+        print("Done")
+    else:
+        await message.answer(f"У вас не вышло")
+
+@dp.message_handler(commands=['дать_патроны'])
+async def sendmon(message: types.Message):
+    uid = message.from_user.id
+    find = Finder(uid)
+    ammo = find.ammo()
+    msg = message.get_args()
+    getter = msg.replace(' для ', ',').split(',')
+    send_ammos = int(getter[0])
+    if ammo[0] >= send_ammos:
+        send_ammo(uid, msg)
+        await message.answer("Перевод проведен успешно")
+    else:
+        await message.answer("У вас недостаточно эдди")
 
 @dp.message_handler(commands=['get'])
 async def cmd_start(message: types.Message):

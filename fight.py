@@ -42,6 +42,24 @@ def shot(uid):
     else:
         return False
 
+def autoshot(uid, msg):
+    find = Finder(uid)
+    equip = find.equipment()
+    magazine = find.magazine()
+
+    try:
+        getWeapon = find.weapon(equip[0])
+        wtype = find.wtype(getWeapon[2])
+    except:
+        return False
+
+    if magazine[0] >= 3:
+        players.update_one({"_id": uid}, {
+            "$set": {"magazine": magazine[0] - 3}})
+        roll = d20.roll(str(wtype[3])+"d6 * "+str(msg))
+        return roll
+    else:
+        return False
 
 def reloading(uid):
     find = Finder(uid)
@@ -61,14 +79,17 @@ def reloading(uid):
 
 def getDamage(uid, msg):
     find = Finder(uid)
-    getter = msg.replace(' для ', ',').split(',')
     getHp = find.hpInfo()
     equip = find.equipment()
+    dmg = int(msg) - equip[2]
 
-    hp = equip[2] + getHp[1] - int(getter[0])
+    if dmg <= 0:
+        return True
+    else:
+        hp = getHp[1] - dmg
 
-    players.update_one({"name": getter[1]}, {
-            "$set": {"hp": int(hp)}})
+        players.update_one({"_id": uid}, {
+                "$set": {"hp": int(hp)}})
 
 def hit(msg):
     getter = msg.replace(' и ', ',').split(',')

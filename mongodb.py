@@ -136,3 +136,8 @@ class Finder:
         for wtype in wtypes.find({"_id": type}):
             print('Done')
         return [wtype['_id'], wtype['name'], wtype['wp_skill'], wtype['damage'], wtype['magazine'], wtype['type'], wtype['alt'], wtype['prop'], wtype['grip'], wtype['price']]
+
+    def ammoByName(self, name):
+        for player in players.find({"name": name}):
+            print('Done')
+        return [player['ammo'], player['rocket_ammo']]

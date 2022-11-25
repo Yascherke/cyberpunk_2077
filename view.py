@@ -102,7 +102,7 @@ class View:
     Оружие: {equip[0]}
     Магазин: {magazine[0]} из {magazine[1]}
 
-    Защита головы: {equip[1]} | {equip[2]}
+    Защита: {equip[1]} | {equip[2]}
 
     Патроны: {ammo[0]}
     Ракеты: {ammo[1]}
