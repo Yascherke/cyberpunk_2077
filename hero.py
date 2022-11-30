@@ -124,11 +124,11 @@ class Hero(StatesGroup):
     programs_db = []
 
     traits = []
-    implants = []
-    programs = []
+    implants = 0
+    programs = 0
 
     role_skill = 0
-    rs_rank = 1
+    rs_rank = 0
 
     name = State()
 

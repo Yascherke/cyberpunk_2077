@@ -13,6 +13,24 @@ corps = db["corps"]
 weapons = db["weapons"]
 armor = db["armor"]
 wtypes = db["wtypes"]
+db = cluster["WoE"]
+players = db["players"]
+roles = db["class"]
+wtypes = db["wtypes"]
+weapons = db["weapons"]
+armor = db["armor"]
+skills = db["skills"]
+rockerboys = db["rockerboys"]
+solos = db["solos"]
+netrunners = db["netrunners"]
+techs = db["techs"]
+reapers = db["reapers"]
+medias = db["medias"]
+ekzeks = db["ekzeks"]
+police = db["police"]
+fixer = db["fixer"]
+nomads = db["nomads"]
+
 
 class Finder:
 
@@ -72,7 +90,7 @@ class Finder:
     def roles(self, id):
         for role in roles.find({"_id": id}):
             return role["Name"]
-    
+
     def corps(self, id):
         for corp in corps.find({"_id": id}):
             return corp["name"]
@@ -81,7 +99,7 @@ class Finder:
         for rank in ranks.find({"_id": id}):
             print('Done')
         return [rank['name'], rank['rank_exp'], rank["_id"]]
-    
+
     def cars(self, id):
         for car in cars.find({"_id": id}):
             print('Done')
@@ -115,12 +133,30 @@ class Finder:
     def generalByName(self, name):
         for player in players.find({"name": name}):
             print('Done')
-        return [player['name'], player['hero_class'], player['rank'], player['rank_exp'], player['car'], player['home']]
+        return [
+            player['name'],
+            player['hero_class'],
+            player['rank'],
+            player['rank_exp'],
+            player['car'],
+            player['home'],
+            player['_id']
+            ]
 
     def backpackByName(self, name):
         for player in players.find({"name": name}):
             print('Done')
-        return [player['slot1'], player['slot2'], player['slot3'], player['slot4'], player['slot5'], player['slot6'], player['slot7'], player['slot8'], player['slot9'], player['slot10']]
+        return [
+            player['slot1'],
+            player['slot2'],
+            player['slot3'],
+            player['slot4'],
+            player['slot5'],
+            player['slot6'],
+            player['slot7'],
+            player['slot8'],
+            player['slot9'],
+            player['slot10']]
 
     def weapon(self, name):
         for weapon in weapons.find({"name": name}):
@@ -135,4 +171,48 @@ class Finder:
     def wtype(self, type):
         for wtype in wtypes.find({"_id": type}):
             print('Done')
-        return [wtype['_id'], wtype['name'], wtype['wp_skill'], wtype['damage'], wtype['magazine'], wtype['type'], wtype['alt'], wtype['prop'], wtype['grip'], wtype['price']]
+        return [
+            wtype['_id'],
+            wtype['name'],
+            wtype['wp_skill'],
+            wtype['damage'],
+            wtype['magazine'],
+            wtype['type'],
+            wtype['alt'],
+            wtype['prop'],
+            wtype['grip'],
+            wtype['price']
+            ]
+
+    def ammoByName(self, name):
+        for player in players.find({"name": name}):
+            print('Done')
+        return [player['ammo'], player['rocket_ammo']]
+
+    def getIdByName(self, name):
+        for player in players.find({"name": name}):
+            print('Done')
+        return player['_id']
+
+    def getNRunner(self):
+        for nr in netrunners.find({"_id": self.uid}):
+            print('Done')
+        return [
+            nr['plyer'],
+            nr['name'],
+            nr['lvl'],
+            nr['exp'],
+            nr['action'],
+            nr['deka'],
+            nr['program1'],
+            nr['program2'],
+            nr['program3'],
+            nr['program4'],
+            nr['program5'],
+            nr['program6'],
+            nr['program7'],
+            nr['program8'],
+            nr['program9'],
+            nr['program10'],
+            nr['program11']
+        ]

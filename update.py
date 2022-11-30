@@ -31,3 +31,5 @@ def updateRank(uid):
             players.update_one({"_id": uid}, {"$set": {"rank": 9}})
         if gen_info[3] >= 128000:
             players.update_one({"_id": uid}, {"$set": {"rank": 10}})
+        
+        

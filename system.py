@@ -11,6 +11,17 @@ wtypes = db["wtypes"]
 weapons = db["weapons"]
 armor = db["armor"]
 skills = db["skills"]
+rockerboys = db["rockerboys"]
+solos = db["solos"]
+netrunners = db["netrunners"]
+techs = db["techs"]
+reapers = db["reapers"]
+medias = db["medias"]
+ekzeks = db["ekzeks"]
+police = db["police"]
+fixer = db["fixer"]
+nomads = db["nomads"]
+
 
 
 def getRole(getter):
@@ -68,6 +79,33 @@ def bank_gm(uid, msg):
                            "money": player + money
                        }})
 
+def send_ammo(uid, msg):
+    getter = msg.replace(' для ', ',').split(',')
+    find = Finder(uid)
+    player2 = find.ammo()
+    player1 = find.ammoByName(getter[1])
+    before = int(player1[0])
+    before1 = int(player2[0])
+    money = int(getter[0])
+    players.update_one({"_id": uid}, {"$set": {"ammo": before1 - money}})
+    players.update_one({"name": getter[1]}, {
+                       "$set": {"ammo": before + money}})
+
+def buy_ammo(uid, msg):
+    find = Finder(uid)
+    player = find.ammo()
+    money = find.money()
+    before = int(player[0])
+    before1 = int(money)
+    ammo = int(msg)
+    price = ammo * 75
+    if money - price >= 0:
+        players.update_one({"_id": uid}, {"$set": {"ammo": before1 - price}})
+        players.update_one({"_id": uid}, {
+                        "$set": {"ammo": before + ammo}})
+        return True
+    else:
+        return False
 
 def giveItem(uid, msg):
     find = Finder(uid)
@@ -162,7 +200,7 @@ def output(uid, msg):
     msg = msg
 
     if msg == "Броню" or msg == "броню":
-        if player_armor[3] != 0:
+        if player_armor[2] != 0:
             players.update_one({"_id": uid}, {
                 "$set": {"armor": 0}})
             players.update_one({"_id": uid}, {
@@ -206,6 +244,7 @@ def buyWp(uid, msg):
                 count += 1
             else:
                 return False
+                
 def buyArmor(uid, msg):
     find = Finder(uid)
     money = find.money()
