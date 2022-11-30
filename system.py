@@ -11,6 +11,17 @@ wtypes = db["wtypes"]
 weapons = db["weapons"]
 armor = db["armor"]
 skills = db["skills"]
+rockerboys = db["rockerboys"]
+solos = db["solos"]
+netrunners = db["netrunners"]
+techs = db["techs"]
+reapers = db["reapers"]
+medias = db["medias"]
+ekzeks = db["ekzeks"]
+police = db["police"]
+fixer = db["fixer"]
+nomads = db["nomads"]
+
 
 
 def getRole(getter):
@@ -233,6 +244,7 @@ def buyWp(uid, msg):
                 count += 1
             else:
                 return False
+                
 def buyArmor(uid, msg):
     find = Finder(uid)
     money = find.money()

@@ -97,3 +97,17 @@ def hit(msg):
     roll = d20.roll(f"1d10+{str(getter[0])}+"+str(getter[1]))
 
     return roll
+
+def enemyHit(msg):
+    getter = msg.replace(' и ', ',').split(',')
+
+    roll = d20.roll(f"1d10+{str(getter[0])}+"+str(getter[1]))
+
+    return roll
+
+def enemyShot(msg):
+
+    roll = d20.roll(str(msg)+"d6")
+
+    return roll
+

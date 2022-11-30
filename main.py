@@ -12,7 +12,7 @@ from mongodb import Finder
 from view import View
 import markups as nav
 from system import getRole, getSkill, send_money, send_exp, bank, giveItem, equip_wp, equip_armor, output, buyArmor, buyWp, buy_ammo, send_ammo
-from fight import initiate, shot, reloading, getDamage, hit, autoshot
+from fight import initiate, shot, reloading, getDamage, hit, autoshot, enemyHit, enemyShot
 
 from ws import keep_alive
 
@@ -33,6 +33,16 @@ wtypes = db["wtypes"]
 weapons = db["weapons"]
 armor = db["armor"]
 skills = db["skills"]
+rockerboys = db["rockerboys"]
+solos = db["solos"]
+netrunners = db["netrunners"]
+techs = db["techs"]
+reapers = db["reapers"]
+medias = db["medias"]
+ekzeks = db["ekzeks"]
+police = db["police"]
+fixer = db["fixer"]
+nomads = db["nomads"]
 
 
 def findUserParamByID(uid):
@@ -114,7 +124,7 @@ async def cmd_start(message: types.Message):
                     "gm": hero.gm,
                     "humanity": stats[14],
                     "status": hero.status,
-                    
+
                     "trauma": hero.trauma,
 
                     "role_skill": hero.role_skill,
@@ -153,12 +163,139 @@ async def cmd_start(message: types.Message):
     msg = message.get_args()
     getter = msg.replace(' для ', ',').split(',')
     player_role = getRole(getter)
+    find = Finder(uid)
     p_name = str(getter[1])
-    finder = Finder(uid)
-    status = finder.status()
+    pid = find.getIdByName(p_name)
+    status = find.status()
     if status[0] == True:
         players.update_one({"name": p_name}, {
                            "$set": {"hero_class": player_role}})
+
+        if getter[0] == "Рокебой":
+            rockerboys.insert_one({
+                "_id": pid,
+                "player": getter[1],
+                "name": "Харизма",
+                "lvl": 1,
+                "exp": 0,
+            })
+
+        if getter[0] == "Соло":
+            solos.insert_one({
+                "_id": pid,
+                "player": getter[1],
+                "name": "Боевое чутьё",
+                "lvl": 1,
+                "exp": 0,
+            })
+
+        if getter[0] == "Нетраннер":
+            netrunners.insert_one({
+                "_id": pid,
+                "player": getter[1],
+                "name": "Интерфейс",
+                "lvl": 1,
+                "exp": 0,
+                "action": 2,
+                "deka": "Отсутствует",
+                "program1": 0,
+                "program2": 0,
+                "program3": 0,
+                "program4": 0,
+                "program5": 0,
+                "program6": 0,
+                "program7": 0,
+                "program8": 0,
+                "program9": 0,
+                "program10": 0,
+                "program11": 0,
+            })
+
+        if getter[0] == "Техник":
+            techs.insert_one({
+                "_id": pid,
+                "player": getter[1],
+                "name": "Мастер",
+                "lvl": 1,
+                "exp": 0,
+                "points": 0,
+                "fullmaster": 1,
+                "modern": 1,
+                "crafter": 1,
+                "creator": 1,
+            })
+
+        if getter[0] == "Рипер":
+            reapers.insert_one({
+                "_id": pid,
+                "player": getter[1],
+                "name": "Медицина",
+                "lvl": 1,
+                "exp": 0,
+                "points": 0,
+                "surgeon": 1,
+                "pharmacist": 1,
+                "сryo": 1,
+            })
+
+        if getter[0] == "Медиа":
+            medias.insert_one({
+                "_id": pid,
+                "player": getter[1],
+                "name": "Убедительность",
+                "lvl": 1,
+                "exp": 0,
+            })
+
+        if getter[0] == "Экзек":
+            ekzeks.insert_one({
+                "_id": pid,
+                "player": getter[1],
+                "name": "Соло",
+                "lvl": 1,
+                "exp": 0,
+                "slave1": 0,
+                "slave2": 0,
+                "slave3": 0,
+
+            })
+
+        if getter[0] == "Законник":
+            police.insert_one({
+                "_id": pid,
+                "player": getter[1],
+                "name": "Подкрепление",
+                "lvl": 1,
+                "exp": 0,
+            })
+
+        if getter[0] == "Фиксер":
+            fixer.insert_one({
+                "_id": pid,
+                "player": getter[1],
+                "name": "Делец",
+                "lvl": 1,
+                "exp": 0,
+            })
+
+        if getter[0] == "Кочевник":
+            nomads.insert_one({
+                "_id": pid,
+                "player": getter[1],
+                "name": "Мото",
+                "lvl": 1,
+                "exp": 0,
+                "car1": 0,
+                "car2": 0,
+                "car3": 0,
+                "car4": 0,
+
+                "car_info1": [],
+                "car_info2": [],
+                "car_info3": [],
+                "car_info4": [],
+            })
+
         await message.answer("Роль выдана")
         await message.delete()
     else:
@@ -200,6 +337,7 @@ async def cmd_start(message: types.Message):
 Описание: {perk[2]}
     """)
 
+
 @dp.message_handler(commands=['перечислить'])
 async def sendmon(message: types.Message):
     uid = message.from_user.id
@@ -213,6 +351,7 @@ async def sendmon(message: types.Message):
         await message.answer("Перевод проведен успешно")
     else:
         await message.answer("У вас недостаточно эдди")
+
 
 @dp.message_handler(commands=['отдать'])
 async def give(message: types.Message):
@@ -231,6 +370,7 @@ async def give(message: types.Message):
     else:
         await message.answer("У вас не вышло")
 
+
 @dp.message_handler(commands=['известность'])
 async def sendfame(message: types.Message):
     uid = message.from_user.id
@@ -243,6 +383,7 @@ async def sendfame(message: types.Message):
     else:
         await message.answer("У вас нет прав")
 
+
 @dp.message_handler(commands=['банк'])
 async def bank(message: types.Message):
     uid = message.from_user.id
@@ -254,6 +395,7 @@ async def bank(message: types.Message):
         await message.answer("Средства перечислены")
     else:
         await message.answer("У вас нет прав")
+
 
 @dp.message_handler(commands=['оружие'])
 async def equipwp(message: types.Message):
@@ -271,6 +413,7 @@ async def equipwp(message: types.Message):
     else:
         await message.answer("Это не оружие")
 
+
 @dp.message_handler(commands=['броня'])
 async def equipwp(message: types.Message):
     uid = message.from_user.id
@@ -287,6 +430,7 @@ async def equipwp(message: types.Message):
     else:
         await message.answer("Это не броня")
 
+
 @dp.message_handler(commands=['снять'])
 async def output_eq(message: types.Message):
     uid = message.from_user.id
@@ -299,6 +443,7 @@ async def output_eq(message: types.Message):
     else:
         await message.answer("Слот пуст")
 
+
 @dp.message_handler(commands=['выстрелить'])
 async def cmd_shot(message: types.Message):
     uid = message.from_user.id
@@ -308,13 +453,15 @@ async def cmd_shot(message: types.Message):
         print("Done")
     else:
         await message.answer(f"У вас не вышло")
-    
+
+
 @dp.message_handler(commands=['попадание'])
 async def cmd_hit(message: types.Message):
     msg = message.get_args()
 
     await message.answer(f"Попадание: {hit(msg)}")
-    
+
+
 @dp.message_handler(commands=['инициатива'])
 async def cmd_initiate(message: types.Message):
     uid = message.from_user.id
@@ -332,6 +479,7 @@ async def cmd_reload(message: types.Message):
     else:
         await message.answer("У вас не вышло")
 
+
 @dp.message_handler(commands=['урон'])
 async def bank(message: types.Message):
     uid = message.from_user.id
@@ -339,6 +487,7 @@ async def bank(message: types.Message):
     msg = message.get_args()
     getDamage(uid, msg)
     await message.answer("Урон вычтен")
+
 
 @dp.message_handler(commands=['купить_оружие'])
 async def cmd_wp(message: types.Message):
@@ -351,6 +500,7 @@ async def cmd_wp(message: types.Message):
     else:
         await message.answer("У вас не вышло")
 
+
 @dp.message_handler(commands=['купить_броню'])
 async def cmd_armor(message: types.Message):
     uid = message.from_user.id
@@ -361,6 +511,7 @@ async def cmd_armor(message: types.Message):
         await message.answer(f"Вы купили броню")
     else:
         await message.answer("У вас не вышло")
+
 
 @dp.message_handler(commands=['купить_патроны'])
 async def cmd_wp(message: types.Message):
@@ -373,6 +524,7 @@ async def cmd_wp(message: types.Message):
     else:
         await message.answer("У вас не вышло")
 
+
 @dp.message_handler(commands=['автоогонь'])
 async def cmd_auto(message: types.Message):
     uid = message.from_user.id
@@ -383,6 +535,23 @@ async def cmd_auto(message: types.Message):
         print("Done")
     else:
         await message.answer(f"У вас не вышло")
+
+
+@dp.message_handler(commands=['противник_выстрел'])
+async def cmd_enshot(message: types.Message):
+    msg = message.get_args()
+    func = enemyShot(msg)
+
+    await message.answer(f"Противник нанес {func} урона")
+
+@dp.message_handler(commands=['противник_попадание'])
+async def cmd_enhit(message: types.Message):
+    msg = message.get_args()
+    func = enemyShot(msg)
+
+    await message.answer(f"Попадание противника: {func}")
+
+
 
 @dp.message_handler(commands=['дать_патроны'])
 async def sendmon(message: types.Message):
@@ -398,9 +567,11 @@ async def sendmon(message: types.Message):
     else:
         await message.answer("У вас недостаточно эдди")
 
+
 @dp.message_handler(commands=['get'])
 async def cmd_start(message: types.Message):
     pass
+
 
 @dp.message_handler()
 async def cmd_prof(message: types.Message):
@@ -422,11 +593,10 @@ async def cmd_prof(message: types.Message):
     if message.text == 'Экипировка':
         await message.delete()
         await message.answer(view.myEquip(), reply_markup=nav.back)
-        
+
     if message.text == 'Навыки':
         await message.delete()
         await message.answer(view.mySkills(), reply_markup=nav.back)
-
 
 
 if __name__ == '__main__':
