@@ -12,7 +12,7 @@ from mongodb import Finder
 from view import View
 import markups as nav
 
-from system import getRole, getSkill, send_money, send_exp, bank, giveItem, equip_wp, equip_armor, output, buyArmor, buyWp, buy_ammo, send_ammo
+from system import getRole, getSkill, send_money, send_exp, bank_gm, giveItem, equip_wp, equip_armor, output, buyArmor, buyWp, buy_ammo, send_ammo
 from fight import initiate, shot, reloading, getDamage, hit, autoshot, enemyHit, enemyShot
 
 from ws import keep_alive
