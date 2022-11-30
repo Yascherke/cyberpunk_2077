@@ -69,14 +69,14 @@ def send_exp(uid, msg):
                        "$set": {"rank_exp": player[3] + exp}})
 
 
-def bank(uid, msg):
+def bank_gm(uid, msg):
     getter = msg.replace(' для ', ',').split(',')
     find = Finder(uid)
     player = find.moneyByName(getter[1])
     money = int(getter[0])
     players.update_one({"name": getter[1]},
                        {"$set": {
-                           "money": player[0] + money
+                           "money": player + money
                        }})
 
 def send_ammo(uid, msg):

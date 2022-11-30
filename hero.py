@@ -10,7 +10,7 @@ class Hero(StatesGroup):
         def roll():
             stat = []
             n = 0
-            while n != 6:
+            while n != 3:
                 n += 1
                 stat.append(randint(1, 8))
 
