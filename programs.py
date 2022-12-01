@@ -22,7 +22,7 @@ ekzeks = db["ekzeks"]
 police = db["police"]
 fixer = db["fixer"]
 nomads = db["nomads"]
-
+programs = db["programs"]
 
 class Interface:
 
@@ -38,21 +38,25 @@ class Interface:
         return roll
 
     def buyProgram(uid, msg):
+        getter = msg.replace(' для ', ',').split(',')
         find = Finder(uid)
-        money = find.money()
-        deka = find.getNRunner()
+        player = find.getIdByName(getter[1])
+        finder = Finder(player)
+        money = finder.money()
+        deka = finder.nrPrograms()
+
         try:
-            getProgram = []
+            getProgram = finder.getProgram(getter[0])
         except:
             return False
 
         count = 0
         for item in deka:
-            if item == 0 and money >= 100:
-                netrunners.update_one({"_id": uid}, {
-                    "$set": {"program"+str(count+1): getProgram}})
-                netrunners.update_one({"_id": uid}, {
-                    "$set": {"money": int(money) - int(getProgram)}})
+            if item == 0 and int(money) >= getProgram[6]:
+                netrunners.update_one({"_id": player}, {
+                    "$set": {"program"+str(count+1): getProgram[0]}})
+                players.update_one({"_id": player}, {
+                    "$set": {"money": int(money) - int(getProgram[6])}})
                 return True
             else:
                 if count < 11:

@@ -7,10 +7,11 @@ btnStats = KeyboardButton(text="Характеристики")
 btnEquip = KeyboardButton(text="Экипировка")
 btnBp = KeyboardButton(text="Имущество")
 btnSkills = KeyboardButton(text="Навыки")
+btnRole = KeyboardButton(text="Способность")
 
 btnBack = KeyboardButton(text="Вернуться назад")
 
 
-profileMenu.add(btnStats, btnEquip, btnBp, btnSkills)
+profileMenu.add(btnStats, btnEquip, btnBp, btnSkills, btnRole)
 back.add(btnBack)
 
