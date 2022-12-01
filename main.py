@@ -14,6 +14,7 @@ import markups as nav
 
 from system import getRole, getSkill, send_money, send_exp, bank_gm, giveItem, equip_wp, equip_armor, output, buyArmor, buyWp, buy_ammo, send_ammo
 from fight import initiate, shot, reloading, getDamage, hit, autoshot, enemyHit, enemyShot
+from programs import Interface
 
 from ws import keep_alive
 
@@ -26,7 +27,7 @@ storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage)
 
 cluster = MongoClient(
-"mongodb+srv://Nere:0662@woe.vj1q67r.mongodb.net/test&ssl=true&ssl_cert_reqs=CERT_NONE", connect=False)
+    "mongodb+srv://Nere:0662@woe.vj1q67r.mongodb.net/test&ssl=true&ssl_cert_reqs=CERT_NONE", connect=False)
 
 db = cluster["WoE"]
 players = db["players"]
@@ -45,6 +46,7 @@ ekzeks = db["ekzeks"]
 police = db["police"]
 fixer = db["fixer"]
 nomads = db["nomads"]
+programs = db["programs"]
 
 
 def findUserParamByID(uid):
@@ -348,7 +350,7 @@ async def sendmon(message: types.Message):
     msg = message.get_args()
     getter = msg.replace(' для ', ',').split(',')
     money = int(getter[0])
-    if userMon[0] >= money:
+    if userMon >= money:
         send_money(uid, msg)
         await message.answer("Перевод проведен успешно")
     else:
@@ -485,7 +487,6 @@ async def cmd_reload(message: types.Message):
 @dp.message_handler(commands=['урон'])
 async def bank(message: types.Message):
     uid = message.from_user.id
-    find = Finder(uid)
     msg = message.get_args()
     getDamage(uid, msg)
     await message.answer("Урон вычтен")
@@ -546,13 +547,13 @@ async def cmd_enshot(message: types.Message):
 
     await message.answer(f"Противник нанес {func} урона")
 
+
 @dp.message_handler(commands=['противник_попадание'])
 async def cmd_enhit(message: types.Message):
     msg = message.get_args()
-    func = enemyShot(msg)
+    func = enemyHit(msg)
 
     await message.answer(f"Попадание противника: {func}")
-
 
 
 @dp.message_handler(commands=['дать_патроны'])
@@ -570,15 +571,71 @@ async def sendmon(message: types.Message):
         await message.answer("У вас недостаточно эдди")
 
 
+@dp.message_handler(commands=['выдать_программу'])
+async def cmd_prog(message: types.Message):
+    uid = message.from_user.id
+    msg = message.get_args()
+    find = Finder(uid)
+    status = find.status()
+    inter = Interface(uid)
+    func = inter.buyProgram(msg)
+
+    if status[0] != False or status[1] != False and func is True:
+        
+        await message.answer(f"Программа выдана")
+    else:
+        await message.answer("У вас не вышло")
+
+
+@dp.message_handler(commands=['купить_деку'])
+async def cmd_deka(message: types.Message):
+    uid = message.from_user.id
+    find = Finder(uid)
+    userMon = find.money()
+    msg = message.get_args()
+
+    if int(msg) == 1:
+        if userMon >= 1000:
+            netrunners.update_one({"_id": uid}, {
+                "$set": {"deka": "Кибердека низкого качества"}})
+            players.update_one({"_id": uid}, {
+                "$set": {"money": int(userMon) - 1000}})
+            await message.answer("Кибердека низкого качества куплена")
+        else:
+            await message.answer("У вас недостаточно эдди")
+
+    if int(msg) == 2:
+        if userMon >= 5000:
+            netrunners.update_one({"_id": uid}, {
+                "$set": {"deka": "Кибердека"}})
+            players.update_one({"_id": uid}, {
+                "$set": {"money": int(userMon) - 5000}})
+            await message.answer("Кибердека куплена")
+        else:
+            await message.answer("У вас недостаточно эдди")
+
+    if int(msg) == 3:
+        if userMon >= 10000:
+            netrunners.update_one({"_id": uid}, {
+                "$set": {"deka": "Кибердека высокого качества"}})
+            players.update_one({"_id": uid}, {
+                "$set": {"money": int(userMon) - 10000}})
+            await message.answer("Кибердека высокого качества куплена")
+        else:
+            await message.answer("У вас недостаточно эдди")
+
 @dp.message_handler(commands=['get'])
-async def cmd_start(message: types.Message):
+async def cmd_get(message: types.Message):
     pass
 
 
 @dp.message_handler()
 async def cmd_prof(message: types.Message):
     user_id = message.from_user.id
+    find = Finder(user_id)
+    inter = Interface(user_id)
     view = View(user_id)
+    runner = find.getNRunner()
 
     if message.text == 'Профиль' or message.text == 'Вернуться назад':
         await message.delete()
@@ -600,6 +657,13 @@ async def cmd_prof(message: types.Message):
         await message.delete()
         await message.answer(view.mySkills(), reply_markup=nav.back)
 
+    if message.text == 'Способность':
+        await message.delete()
+        if runner[1] == "Интерфейс":
+            inter.updateAction()
+            await message.answer(view.netrunner(), reply_markup=nav.back)
 
+        else:
+            await message.answer("СКОРО", reply_markup=nav.back)
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)

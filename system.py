@@ -21,7 +21,7 @@ ekzeks = db["ekzeks"]
 police = db["police"]
 fixer = db["fixer"]
 nomads = db["nomads"]
-
+programs = db["programs"]
 
 
 def getRole(getter):
@@ -52,8 +52,8 @@ def send_money(uid, msg):
     find = Finder(uid)
     player2 = find.money()
     player1 = find.moneyByName(getter[1])
-    before = int(player1[0])
-    before1 = int(player2[0])
+    before = int(player1)
+    before1 = int(player2)
     money = int(getter[0])
     players.update_one({"_id": uid}, {"$set": {"money": before1 - money}})
     players.update_one({"name": getter[1]}, {

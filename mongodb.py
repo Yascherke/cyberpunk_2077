@@ -30,7 +30,7 @@ ekzeks = db["ekzeks"]
 police = db["police"]
 fixer = db["fixer"]
 nomads = db["nomads"]
-
+programs = db["programs"]
 
 class Finder:
 
@@ -198,12 +198,19 @@ class Finder:
         for nr in netrunners.find({"_id": self.uid}):
             print('Done')
         return [
-            nr['plyer'],
+            nr['player'],
             nr['name'],
             nr['lvl'],
             nr['exp'],
             nr['action'],
             nr['deka'],
+        ]
+
+    def nrPrograms(self):
+        for nr in netrunners.find({"_id": self.uid}):
+            print('Done')
+        return [
+
             nr['program1'],
             nr['program2'],
             nr['program3'],
@@ -216,3 +223,17 @@ class Finder:
             nr['program10'],
             nr['program11']
         ]
+
+    def getProgram(self, msg):
+        for nr in programs.find({"name": msg}):
+            print('Done')
+        return [
+            nr['name'],
+            nr['class'],
+            nr['atk'],
+            nr['def'],
+            nr['rez'],
+            nr['effect'],
+            nr['price'],
+        ]
+
