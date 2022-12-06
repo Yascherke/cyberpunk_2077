@@ -8,7 +8,10 @@ cluster = MongoClient(
 db = cluster["WoE"]
 players = db["players"]
 roles = db["class"]
-wtypes = db["wtypes"]
+ranks = db["rank"]
+cars = db["cars"]
+houses = db["house"]
+corps = db["corps"]
 weapons = db["weapons"]
 armor = db["armor"]
 skills = db["skills"]
@@ -23,6 +26,9 @@ police = db["police"]
 fixer = db["fixer"]
 nomads = db["nomads"]
 programs = db["programs"]
+inventory = db["inventory"]
+
+
 
 class Interface:
 
@@ -86,22 +92,22 @@ class Interface:
         gen_info = finder.getNRunner()
         
         if gen_info[3] < 250:
-            players.update_one({"_id": self.uid}, {"$set": {"rank": 1}})
+            netrunners.update_one({"_id": self.uid}, {"$set": {"lvl": 1}})
         if gen_info[3] >= 250 and gen_info[3] < 500:
-            players.update_one({"_id": self.uid}, {"$set": {"rank": 2}})
+            netrunners.update_one({"_id": self.uid}, {"$set": {"lvl": 2}})
         if gen_info[3] >= 500 and gen_info[3] < 1000:
-            players.update_one({"_id": self.uid}, {"$set": {"rank": 3}})
+            netrunners.update_one({"_id": self.uid}, {"$set": {"lvl": 3}})
         if gen_info[3] >= 1000 and gen_info[3] < 2000:
-            players.update_one({"_id": self.uid}, {"$set": {"rank": 4}})
+            netrunners.update_one({"_id": self.uid}, {"$set": {"lvl": 4}})
         if gen_info[3] >= 2000 and gen_info[3] < 4000:
-            players.update_one({"_id": self.uid}, {"$set": {"rank": 5}})
+            netrunners.update_one({"_id": self.uid}, {"$set": {"lvl": 5}})
         if gen_info[3] >= 4000 and gen_info[3] < 8000:
-            players.update_one({"_id": self.uid}, {"$set": {"rank": 6}})
+            netrunners.update_one({"_id": self.uid}, {"$set": {"lvl": 6}})
         if gen_info[3] >= 8000 and gen_info[3] < 10000:
-            players.update_one({"_id": self.uid}, {"$set": {"rank": 7}})
+            netrunners.update_one({"_id": self.uid}, {"$set": {"lvl": 7}})
         if gen_info[3] >= 10000 and gen_info[3] < 15000:
-            players.update_one({"_id": self.uid}, {"$set": {"rank": 8}})      
+            netrunners.update_one({"_id": self.uid}, {"$set": {"lvl": 8}})      
         if gen_info[3] >= 15000 and gen_info[3] < 20000:
-            players.update_one({"_id": self.uid}, {"$set": {"rank": 9}})
+            netrunners.update_one({"_id": self.uid}, {"$set": {"lvl": 9}})
         if gen_info[3] >= 30000:
-            players.update_one({"_id": self.uid}, {"$set": {"rank": 10}})
+            netrunners.update_one({"_id": self.uid}, {"$set": {"lvl": 10}})

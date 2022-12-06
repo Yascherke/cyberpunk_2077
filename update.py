@@ -6,7 +6,27 @@ cluster = MongoClient(
 )
 db = cluster["WoE"]
 players = db["players"]
+roles = db["class"]
 ranks = db["rank"]
+cars = db["cars"]
+houses = db["house"]
+corps = db["corps"]
+weapons = db["weapons"]
+armor = db["armor"]
+skills = db["skills"]
+rockerboys = db["rockerboys"]
+solos = db["solos"]
+netrunners = db["netrunners"]
+techs = db["techs"]
+reapers = db["reapers"]
+medias = db["medias"]
+ekzeks = db["ekzeks"]
+police = db["police"]
+fixer = db["fixer"]
+nomads = db["nomads"]
+programs = db["programs"]
+inventory = db["inventory"]
+
 
 def updateRank(uid):
         finder = Finder(uid)

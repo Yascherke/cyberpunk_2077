@@ -1,5 +1,7 @@
 import asyncio
 import logging
+from math import ceil
+from statistics import mean
 from aiogram import Bot, Dispatcher, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher import FSMContext
@@ -10,15 +12,16 @@ import re
 from hero import Hero as hero
 from mongodb import Finder
 from view import View
-import markups as nav
-
-from system import getRole, getSkill, send_money, send_exp, bank_gm, giveItem, equip_wp, equip_armor, output, buyArmor, buyWp, buy_ammo, send_ammo
-from fight import initiate, shot, reloading, getDamage, hit, autoshot, enemyHit, enemyShot
 from programs import Interface
+from admin import Admin
+from roles import Role
+
+import markups as nav
+from system import getRole, getSkill, send_money, send_exp, bank_gm, output, buy_ammo, giveItem, equip_wp, equip_armor, buyWp, buyArmor
+
 
 from ws import keep_alive
 
-keep_alive()
 logging.basicConfig(level=logging.INFO)
 
 API_TOKEN = "5667925194:AAErD4AwaG_4oRtPWX68Ar3rr8Qs-6uRCW8"
@@ -27,12 +30,15 @@ storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage)
 
 cluster = MongoClient(
-    "mongodb+srv://Nere:0662@woe.vj1q67r.mongodb.net/test&ssl=true&ssl_cert_reqs=CERT_NONE", connect=False)
+    "mongodb+srv://Nere:0662@woe.vj1q67r.mongodb.net/test")
 
 db = cluster["WoE"]
 players = db["players"]
 roles = db["class"]
-wtypes = db["wtypes"]
+ranks = db["rank"]
+cars = db["cars"]
+houses = db["house"]
+corps = db["corps"]
 weapons = db["weapons"]
 armor = db["armor"]
 skills = db["skills"]
@@ -47,6 +53,8 @@ police = db["police"]
 fixer = db["fixer"]
 nomads = db["nomads"]
 programs = db["programs"]
+
+implants = db["implants"]
 
 
 def findUserParamByID(uid):
@@ -71,85 +79,196 @@ async def cmd_start(message: types.Message):
                 data['Name'] = message.text
                 uid = message.from_user.id
                 name = data['Name']
-                stats = hero.getStats()
                 money = hero.moneyRoll()
                 view = View(uid)
 
                 players.insert_one({
                     "_id": uid,
                     "name": name,
-                    "intelligence": stats[0],
-                    "reaction": stats[1],
-                    "dexterity": stats[2],
-                    "technics": stats[3],
-                    "charisma": stats[4],
-                    "will": stats[5],
-                    "luck": stats[6],
-                    "speed": stats[7],
-                    "bodytype": stats[8],
-                    "empathy": stats[9],
+                    "intelligence": 0,
+                    "reaction": 0,
+                    "dexterity": 0,
+                    "technics": 0,
+                    "cool": 0,
+                    "will": 0,
+                    "luck": 0,
+                    "speed": 0,
+                    "bodytype": 0,
+                    "empathy": 0,
 
                     "hero_class": hero.hero_class,
                     "car": hero.car,
+                    "car_info": hero.car_info,
                     "home": hero.home,
 
-                    "max_hp": stats[10],
-                    "hp": stats[11],
-                    "severe_injury": stats[12],
-                    "die_dice": stats[13],
+                    "trauma": hero.trauma,
+
+                    "max_hp": 0,
+                    "hp": 0,
+                    "severe_injury": 0,
+                    "die_dice": 0,
+
+                    "crit_dmg": hero.crit_dmg,
 
                     "rank": hero.rank,
                     "rank_exp": hero.rank_exp,
 
                     "weapon": hero.weapon,
+                    "mag_mod": 0,
+                    "scope": 0,
+                    "barrel": 0,
+                    "connector": 0,
 
                     "armor": hero.armor,
+                    "main_sp": hero.main_sp,
                     "sp": hero.sp,
 
                     "money": money,
 
                     "gang": hero.gang,
                     "corp": hero.corp,
-
-                    "mission": hero.mission,
-                    "mission_rank": hero.mission_rank,
-                    "progress": hero.progress,
-                    "mission_count": hero.mission_count,
-
-                    "traits_db": hero.traits,
-                    "implants_db": hero.implants,
-                    "programs_db": hero.programs,
+                    "organ": hero.organ,
 
                     "traits": hero.traits,
-                    "implants": hero.implants,
+                    "implants": uid,
                     "programs": hero.programs,
+                    "notes": hero.notes,
 
                     "admin": hero.admin,
                     "gm": hero.gm,
-                    "humanity": stats[14],
+                    "humanity": 0,
                     "status": hero.status,
 
                     "trauma": hero.trauma,
 
-                    "role_skill": hero.role_skill,
-                    "rs_rank": hero.rs_rank,
+                    "role_name": hero.role_name,
 
-                    "slot1": hero.slot1,
-                    "slot2": hero.slot2,
-                    "slot3": hero.slot3,
-                    "slot4": hero.slot4,
-                    "slot5": hero.slot5,
-                    "slot6": hero.slot6,
-                    "slot7": hero.slot7,
-                    "slot8": hero.slot8,
-                    "slot9": hero.slot9,
-                    "slot10": hero.slot10,
+                    "ammo_bb": hero.ammo_bb,
+                    "ammo_toxin": hero.ammo_toxin,
+                    "ammo_emp": hero.ammo_emp,
+                    "ammo_expansive": hero.ammo_expansive,
+                    "ammo_stun": hero.ammo_stun,
+                    "ammo_fire": hero.ammo_fire,
+                    "ammo_poison": hero.ammo_poison,
+                    "ammo_rubber": hero.ammo_rubber,
+                    "ammo_sleep": hero.ammo_sleep,
+                    "ammo_smart": hero.ammo_smart,
+                    "ammo_smoke": hero.ammo_smoke,
+                    "ammo_eye": hero.ammo_eye,
 
                     "magazine": hero.magazine,
                     "max_magazine": hero.max_magazine,
 
                     "ammo": hero.ammo,
+                    "ammo_type": hero.ammo_type,
                     "rocket_ammo": hero.rocket_ammo,
+
+                    "main_int": 0,
+                    "main_rea": 0,
+                    "main_dex": 0,
+                    "main_tec": 0,
+                    "main_coo": 0,
+                    "main_wil": 0,
+                    "main_luc": 0,
+                    "main_spe": 0,
+                    "main_bod": 0,
+                    "main_emp": 0,
+
+                    "slot1": 0,
+                    "slot2": 0,
+                    "slot3": 0,
+                    "slot4": 0,
+                    "slot5": 0,
+                    "slot6": 0,
+                    "slot7": 0,
+                    "slot8": 0,
+                    "slot9": 0,
+                    "slot10": 0,
+                    "slot11": 0,
+                    "slot12": 0,
+                    "slot13": 0,
+                    "slot14": 0,
+                    "slot15": 0,
+                })
+                implants.insert_one({
+                    "_id": uid,
+                    "name": name,
+
+                    "audio": "Мясо",
+                    "audio_slot1": 0,
+                    "audio_slot2": 0,
+                    "audio_slot3": 0,
+
+                    "right_eye": "Мясо",
+                    "right_eye_slot1": 0,
+                    "right_eye_slot2": 0,
+                    "right_eye_slot3": 0,
+
+                    "left_eye": "Мясо",
+                    "left_eye_slot1": 0,
+                    "left_eye_slot2": 0,
+                    "left_eye_slot3": 0,
+
+                    "neural": "Мясо",
+                    "neural_slot1": 0,
+                    "neural_slot2": 0,
+                    "neural_slot3": 0,
+                    "neural_slot4": 0,
+                    "neural_slot5": 0,
+
+                    "right_arm": "Мясо",
+                    "right_arm_slot1": 0,
+                    "right_arm_slot2": 0,
+                    "right_arm_slot3": 0,
+                    "right_arm_slot4": 0,
+
+                    "left_arm": "Мясо",
+                    "left_arm_slot1": 0,
+                    "left_arm_slot2": 0,
+                    "left_arm_slot3": 0,
+                    "left_arm_slot4": 0,
+
+                    "right_leg": "Мясо",
+                    "right_leg_slot1": 0,
+                    "right_leg_slot2": 0,
+                    "right_leg_slot3": 0,
+
+                    "left_leg": "Мясо",
+                    "left_leg_slot1": 0,
+                    "left_leg_slot2": 0,
+                    "left_leg_slot3": 0,
+
+                    "inside_slot1": 0,
+                    "inside_slot2": 0,
+                    "inside_slot3": 0,
+                    "inside_slot4": 0,
+                    "inside_slot5": 0,
+                    "inside_slot6": 0,
+                    "inside_slot7": 0,
+
+                    "outside_slot1": 0,
+                    "outside_slot2": 0,
+                    "outside_slot3": 0,
+                    "outside_slot4": 0,
+                    "outside_slot5": 0,
+                    "outside_slot6": 0,
+                    "outside_slot7": 0,
+
+                    "style_slot1": 0,
+                    "style_slot2": 0,
+                    "style_slot3": 0,
+                    "style_slot4": 0,
+                    "style_slot5": 0,
+                    "style_slot6": 0,
+                    "style_slot7": 0,
+
+                    "borg_slot1": 0,
+                    "borg_slot2": 0,
+                    "borg_slot3": 0,
+                    "borg_slot4": 0,
+                    "borg_slot5": 0,
+                    "borg_slot6": 0,
+                    "borg_slot7": 0,
                 })
 
                 await state.finish()
@@ -183,6 +302,8 @@ async def cmd_start(message: types.Message):
                 "lvl": 1,
                 "exp": 0,
             })
+            players.update_one({"_id": uid}, {
+                "$set": {"role_name": "Рокебой"}})
 
         if getter[0] == "Соло":
             solos.insert_one({
@@ -192,6 +313,8 @@ async def cmd_start(message: types.Message):
                 "lvl": 1,
                 "exp": 0,
             })
+            players.update_one({"_id": uid}, {
+                "$set": {"role_name": "Соло"}})
 
         if getter[0] == "Нетраннер":
             netrunners.insert_one({
@@ -213,7 +336,23 @@ async def cmd_start(message: types.Message):
                 "program9": 0,
                 "program10": 0,
                 "program11": 0,
+                "program12": 0,
+                "program13": 0,
+                "program14": 0,
+                "program15": 0,
+                "equip1": 0,
+                "equip2": 0,
+                "equip3": 0,
+                "equip4": 0,
+                "equip5": 0,
+                "equip6": 0,
+                "equip7": 0,
+                "equip8": 0,
+                "equip9": 0,
+                "equip10": 0,
             })
+            players.update_one({"_id": uid}, {
+                "$set": {"role_name": "Нетраннер"}})
 
         if getter[0] == "Техник":
             techs.insert_one({
@@ -222,25 +361,28 @@ async def cmd_start(message: types.Message):
                 "name": "Мастер",
                 "lvl": 1,
                 "exp": 0,
-                "points": 0,
-                "fullmaster": 1,
-                "modern": 1,
-                "crafter": 1,
-                "creator": 1,
+                "points": 2,
+                "modern": 0,
+                "crafter": 0,
+                "creator": 0,
             })
+            players.update_one({"_id": uid}, {
+                "$set": {"role_name": "Техник"}})
 
-        if getter[0] == "Рипер":
+        if getter[0] == "Медтехник":
             reapers.insert_one({
                 "_id": pid,
                 "player": getter[1],
                 "name": "Медицина",
-                "lvl": 1,
+                "lvl": 0,
                 "exp": 0,
                 "points": 0,
-                "surgeon": 1,
-                "pharmacist": 1,
-                "сryo": 1,
+                "surgeon": 0,
+                "pharmacist": 0,
+                "сryo": 0,
             })
+            players.update_one({"_id": uid}, {
+                "$set": {"role_name": "Медтехник"}})
 
         if getter[0] == "Медиа":
             medias.insert_one({
@@ -250,19 +392,22 @@ async def cmd_start(message: types.Message):
                 "lvl": 1,
                 "exp": 0,
             })
+            players.update_one({"_id": uid}, {
+                "$set": {"role_name": "Медиа"}})
 
         if getter[0] == "Экзек":
             ekzeks.insert_one({
                 "_id": pid,
                 "player": getter[1],
-                "name": "Соло",
+                "name": "Командная Работа",
                 "lvl": 1,
                 "exp": 0,
                 "slave1": 0,
                 "slave2": 0,
                 "slave3": 0,
-
             })
+            players.update_one({"_id": uid}, {
+                "$set": {"role_name": "Экзек"}})
 
         if getter[0] == "Законник":
             police.insert_one({
@@ -272,6 +417,8 @@ async def cmd_start(message: types.Message):
                 "lvl": 1,
                 "exp": 0,
             })
+            players.update_one({"_id": uid}, {
+                "$set": {"role_name": "Законник"}})
 
         if getter[0] == "Фиксер":
             fixer.insert_one({
@@ -281,6 +428,8 @@ async def cmd_start(message: types.Message):
                 "lvl": 1,
                 "exp": 0,
             })
+            players.update_one({"_id": uid}, {
+                "$set": {"role_name": "Фиксер"}})
 
         if getter[0] == "Кочевник":
             nomads.insert_one({
@@ -299,6 +448,8 @@ async def cmd_start(message: types.Message):
                 "car_info3": [],
                 "car_info4": [],
             })
+            players.update_one({"_id": uid}, {
+                "$set": {"role_name": "Кочевник"}})
 
         await message.answer("Роль выдана")
         await message.delete()
@@ -323,6 +474,115 @@ async def cmd_start(message: types.Message):
     if status[0] == True:
         players.update_one({"name": p_name}, {
                            "$push": {"traits": {"name": perk[0], "lvl": int(getter[1]), "base": perk[1]}}})
+        await message.answer("Навык выдан")
+        await message.delete()
+    else:
+        await message.answer("У вас недостаточно прав.")
+
+
+@dp.message_handler(commands=['считать_статы'])
+async def sendfame(message: types.Message):
+    uid = message.from_user.id
+    find = Finder(uid)
+    status = find.status()
+    stats = find.stats()
+    msg = message.get_args()
+    hp = 10 + (5 * (ceil(mean([stats[8], stats[5]]))))
+    severe_injury = round(hp / 2)
+    die_dice = round(hp / 5)
+    humanity = stats[9] * 10
+    if status[0] != False or status[1] != False:
+        players.update_one({"name": msg}, {
+            "$set": {"max_hp": hp}})
+        players.update_one({"name": msg}, {
+            "$set": {"hp": hp}})
+        players.update_one({"name": msg}, {
+            "$set": {"severe_injury": severe_injury}})
+        players.update_one({"name": msg}, {
+            "$set": {"die_dice": die_dice}})
+        players.update_one({"name": msg}, {
+            "$set": {"humanity": humanity}})
+
+        await message.answer("Статы посчитаны")
+    else:
+        await message.answer("У вас нет прав")
+
+
+@dp.message_handler(commands=['стат'])
+async def cmd_start(message: types.Message):
+    uid = message.from_user.id
+    msg = message.get_args()
+    rep = {" для ": ",", " на ": ","}
+    rep = dict((re.escape(k), v) for k, v in rep.items())
+    pattern = re.compile("|".join(rep.keys()))
+    msg = pattern.sub(lambda m: rep[re.escape(m.group(0))], msg)
+    getter = msg.replace(',', ',').split(',')
+    p_name = str(getter[2])
+    stat = int(getter[1])
+    finder = Finder(uid)
+    status = finder.status()
+    if status[0] is True or status[1] is True:
+
+        if getter[0] == "Интеллект":
+            players.update_one({"name": p_name}, {
+                "$set": {"intelligence": stat}})
+            players.update_one({"name": p_name}, {
+                "$set": {"main_int": stat}})
+
+        if getter[0] == "Реакция":
+            players.update_one({"name": p_name}, {
+                "$set": {"reaction": stat}})
+            players.update_one({"name": p_name}, {
+                "$set": {"main_rea": stat}})
+
+        if getter[0] == "Ловкость":
+            players.update_one({"name": p_name}, {
+                "$set": {"dexterity": stat}})
+            players.update_one({"name": p_name}, {
+                "$set": {"main_dex": stat}})
+
+        if getter[0] == "Техника":
+            players.update_one({"name": p_name}, {
+                "$set": {"technics": stat}})
+            players.update_one({"name": p_name}, {
+                "$set": {"main_tec": stat}})
+
+        if getter[0] == "Крутость":
+            players.update_one({"name": p_name}, {
+                "$set": {"cool": stat}})
+            players.update_one({"name": p_name}, {
+                "$set": {"main_coo": stat}})
+
+        if getter[0] == "Воля":
+            players.update_one({"name": p_name}, {
+                "$set": {"will": stat}})
+            players.update_one({"name": p_name}, {
+                "$set": {"main_wil": stat}})
+
+        if getter[0] == "Удача":
+            players.update_one({"name": p_name}, {
+                "$set": {"luck": stat}})
+            players.update_one({"name": p_name}, {
+                "$set": {"main_luc": stat}})
+
+        if getter[0] == "Скорость":
+            players.update_one({"name": p_name}, {
+                "$set": {"speed": stat}})
+            players.update_one({"name": p_name}, {
+                "$set": {"main_spe": stat}})
+
+        if getter[0] == "Телосложение":
+            players.update_one({"name": p_name}, {
+                "$set": {"bodytype": stat}})
+            players.update_one({"name": p_name}, {
+                "$set": {"main_bod": stat}})
+
+        if getter[0] == "Эмпатия":
+            players.update_one({"name": p_name}, {
+                "$set": {"empathy": stat}})
+            players.update_one({"name": p_name}, {
+                "$set": {"main_emp": stat}})
+
         await message.answer("Навык выдан")
         await message.delete()
     else:
@@ -355,24 +615,6 @@ async def sendmon(message: types.Message):
         await message.answer("Перевод проведен успешно")
     else:
         await message.answer("У вас недостаточно эдди")
-
-
-@dp.message_handler(commands=['отдать'])
-async def give(message: types.Message):
-    uid = message.from_user.id
-    msg = message.get_args()
-    find = Finder(uid)
-    getter = msg.replace(' для ', ',').split(',')
-    slot = int(getter[0])
-    owner = find.backpack()
-    for_key = slot-1
-    owner_item = owner[for_key]
-    func = giveItem(uid, msg)
-
-    if func is True:
-        await message.answer(f"Вы передали {owner_item} в руки {getter[1]}")
-    else:
-        await message.answer("У вас не вышло")
 
 
 @dp.message_handler(commands=['известность'])
@@ -448,74 +690,6 @@ async def output_eq(message: types.Message):
         await message.answer("Слот пуст")
 
 
-@dp.message_handler(commands=['выстрелить'])
-async def cmd_shot(message: types.Message):
-    uid = message.from_user.id
-    func = shot(uid)
-
-    if await message.answer(f"Вы нанесли {func} урона") != False:
-        print("Done")
-    else:
-        await message.answer(f"У вас не вышло")
-
-
-@dp.message_handler(commands=['попадание'])
-async def cmd_hit(message: types.Message):
-    msg = message.get_args()
-
-    await message.answer(f"Попадание: {hit(msg)}")
-
-
-@dp.message_handler(commands=['инициатива'])
-async def cmd_initiate(message: types.Message):
-    uid = message.from_user.id
-
-    await message.answer(f"Инициатива: {initiate(uid)}")
-
-
-@dp.message_handler(commands=['перезарядка'])
-async def cmd_reload(message: types.Message):
-    uid = message.from_user.id
-    func = reloading(uid)
-
-    if func is True:
-        await message.answer(f"Вы перезарядили оружие")
-    else:
-        await message.answer("У вас не вышло")
-
-
-@dp.message_handler(commands=['урон'])
-async def bank(message: types.Message):
-    uid = message.from_user.id
-    msg = message.get_args()
-    getDamage(uid, msg)
-    await message.answer("Урон вычтен")
-
-
-@dp.message_handler(commands=['купить_оружие'])
-async def cmd_wp(message: types.Message):
-    uid = message.from_user.id
-    msg = message.get_args()
-    func = buyWp(uid, msg)
-
-    if func is True:
-        await message.answer(f"Вы купили оружие")
-    else:
-        await message.answer("У вас не вышло")
-
-
-@dp.message_handler(commands=['купить_броню'])
-async def cmd_armor(message: types.Message):
-    uid = message.from_user.id
-    msg = message.get_args()
-    func = buyArmor(uid, msg)
-
-    if func is True:
-        await message.answer(f"Вы купили броню")
-    else:
-        await message.answer("У вас не вышло")
-
-
 @dp.message_handler(commands=['купить_патроны'])
 async def cmd_wp(message: types.Message):
     uid = message.from_user.id
@@ -528,49 +702,6 @@ async def cmd_wp(message: types.Message):
         await message.answer("У вас не вышло")
 
 
-@dp.message_handler(commands=['автоогонь'])
-async def cmd_auto(message: types.Message):
-    uid = message.from_user.id
-    msg = message.get_args()
-    func = autoshot(uid, msg)
-
-    if await message.answer(f"Вы нанесли {func} урона") != False:
-        print("Done")
-    else:
-        await message.answer(f"У вас не вышло")
-
-
-@dp.message_handler(commands=['противник_выстрел'])
-async def cmd_enshot(message: types.Message):
-    msg = message.get_args()
-    func = enemyShot(msg)
-
-    await message.answer(f"Противник нанес {func} урона")
-
-
-@dp.message_handler(commands=['противник_попадание'])
-async def cmd_enhit(message: types.Message):
-    msg = message.get_args()
-    func = enemyHit(msg)
-
-    await message.answer(f"Попадание противника: {func}")
-
-
-@dp.message_handler(commands=['дать_патроны'])
-async def sendmon(message: types.Message):
-    uid = message.from_user.id
-    find = Finder(uid)
-    ammo = find.ammo()
-    msg = message.get_args()
-    getter = msg.replace(' для ', ',').split(',')
-    send_ammos = int(getter[0])
-    if ammo[0] >= send_ammos:
-        send_ammo(uid, msg)
-        await message.answer("Перевод проведен успешно")
-    else:
-        await message.answer("У вас недостаточно эдди")
-
-
 @dp.message_handler(commands=['выдать_программу'])
 async def cmd_prog(message: types.Message):
     uid = message.from_user.id
@@ -581,48 +712,122 @@ async def cmd_prog(message: types.Message):
     func = inter.buyProgram(msg)
 
     if status[0] != False or status[1] != False and func is True:
-        
+
         await message.answer(f"Программа выдана")
     else:
         await message.answer("У вас не вышло")
 
 
-@dp.message_handler(commands=['купить_деку'])
-async def cmd_deka(message: types.Message):
+@dp.message_handler(commands=['выдать_предмет'])
+async def cmd_prog(message: types.Message):
     uid = message.from_user.id
+    msg = message.get_args()
     find = Finder(uid)
-    userMon = find.money()
+    status = find.status()
+    admin = Admin(uid)
+    func = admin.giveItem(msg)
+
+    if status[0] != False or status[1] != False and func is True:
+
+        await message.answer(f"Предмет выдана")
+    else:
+        await message.answer("У вас не вышло")
+
+
+@dp.message_handler(commands=['опыт'])
+async def cmd_start(message: types.Message):
+    uid = message.from_user.id
+    msg = message.get_args()
+    getter = msg.replace(' для ', ',').split(',')
+    finder = Finder(uid)
+    status = finder.status()
+    adm = Admin(uid)
+    func = adm.giveExp(msg)
+    if status[0] == True:
+        await message.answer(f"{getter[1]} получил {func} опыта")
+
+    else:
+        await message.answer("У вас недостаточно прав.")
+
+
+@dp.message_handler(commands=['дать'])
+async def give(message: types.Message):
+    uid = message.from_user.id
+    msg = message.get_args()
+    find = Finder(uid)
+    getter = msg.replace(' для ', ',').split(',')
+    slot = int(getter[0])
+    owner = find.backpack()
+    for_key = slot-1
+    owner_item = owner[for_key]
+    func = giveItem(uid, msg)
+
+    if func is True:
+        await message.answer(f"Вы передали {owner_item} в руки {getter[1]}")
+    else:
+        await message.answer("У вас не вышло")
+
+
+@dp.message_handler(commands=['купить_оружие'])
+async def cmd_wp(message: types.Message):
+    uid = message.from_user.id
+    msg = message.get_args()
+    func = buyWp(uid, msg)
+    find = Finder(uid)
+    status = find.status()
+
+    if func is True and status[0] is True or status[1] is True:
+        await message.answer(f"Вы купили оружие")
+    else:
+        await message.answer("У вас не вышло")
+
+
+@dp.message_handler(commands=['купить_броню'])
+async def cmd_armor(message: types.Message):
+    uid = message.from_user.id
+    msg = message.get_args()
+    func = buyArmor(uid, msg)
+    find = Finder(uid)
+    status = find.status()
+
+    if func is True and status[0] is True or status[1] is True:
+        await message.answer(f"Вы купили броню")
+    else:
+        await message.answer("У вас не вышло")
+
+
+@dp.message_handler(commands=['дать'])
+async def give(message: types.Message):
+    uid = message.from_user.id
+    msg = message.get_args()
+    find = Finder(uid)
+    getter = msg.replace(' для ', ',').split(',')
+    slot = int(getter[0])
+    owner = find.backpack()
+    for_key = slot-1
+    owner_item = owner[for_key]
+    func = giveItem(uid, msg)
+
+    if func is True:
+        await message.answer(f"Вы передали {owner_item} в руки {getter[1]}")
+    else:
+        await message.answer("У вас не вышло")
+
+
+@dp.message_handler(commands=['прокачать'])
+async def give(message: types.Message):
+    uid = message.from_user.id
     msg = message.get_args()
 
-    if int(msg) == 1:
-        if userMon >= 1000:
-            netrunners.update_one({"_id": uid}, {
-                "$set": {"deka": "Кибердека низкого качества"}})
-            players.update_one({"_id": uid}, {
-                "$set": {"money": int(userMon) - 1000}})
-            await message.answer("Кибердека низкого качества куплена")
-        else:
-            await message.answer("У вас недостаточно эдди")
+    if msg == "Модернизация" or msg == "Изготовитель" or msg == "Изобретатель":
+        Role.techPoint(msg)
+        await message.answer(f"Вы улучшили навык")
+    elif msg == "Хирургия" or msg == "Фармацевтика" or msg == "Изобретатель":
+        Role.medPoint(msg)
+        await message.answer(f"Вы улучшили навык")
+    else:
+        await message.answer("У вас не вышло")
 
-    if int(msg) == 2:
-        if userMon >= 5000:
-            netrunners.update_one({"_id": uid}, {
-                "$set": {"deka": "Кибердека"}})
-            players.update_one({"_id": uid}, {
-                "$set": {"money": int(userMon) - 5000}})
-            await message.answer("Кибердека куплена")
-        else:
-            await message.answer("У вас недостаточно эдди")
-
-    if int(msg) == 3:
-        if userMon >= 10000:
-            netrunners.update_one({"_id": uid}, {
-                "$set": {"deka": "Кибердека высокого качества"}})
-            players.update_one({"_id": uid}, {
-                "$set": {"money": int(userMon) - 10000}})
-            await message.answer("Кибердека высокого качества куплена")
-        else:
-            await message.answer("У вас недостаточно эдди")
 
 @dp.message_handler(commands=['get'])
 async def cmd_get(message: types.Message):
@@ -633,9 +838,8 @@ async def cmd_get(message: types.Message):
 async def cmd_prof(message: types.Message):
     user_id = message.from_user.id
     find = Finder(user_id)
-    inter = Interface(user_id)
     view = View(user_id)
-    runner = find.getNRunner()
+    role = find.skills()
 
     if message.text == 'Профиль' or message.text == 'Вернуться назад':
         await message.delete()
@@ -657,13 +861,32 @@ async def cmd_prof(message: types.Message):
         await message.delete()
         await message.answer(view.mySkills(), reply_markup=nav.back)
 
+    if message.text == 'Импланты':
+        await message.delete()
+        await message.answer(view.implants(), reply_markup=nav.back)
+
     if message.text == 'Способность':
         await message.delete()
-        if runner[1] == "Интерфейс":
-            inter.updateAction()
+        if role[4] == "Рокербой":
+            await message.answer(view.rockeboy(), reply_markup=nav.back)
+        if role[4] == "Соло":
+            await message.answer(view.solo(), reply_markup=nav.back)
+        if role[4] == "Нетраннер":
             await message.answer(view.netrunner(), reply_markup=nav.back)
+        if role[4] == "Техник":
+            await message.answer(view.tech(), reply_markup=nav.back)
+        if role[4] == "Рипер":
+            await message.answer(view.reaper(), reply_markup=nav.back)
+        if role[4] == "Медиа":
+            await message.answer(view.media(), reply_markup=nav.back)
+        if role[4] == "Законник":
+            await message.answer(view.police(), reply_markup=nav.back)
+        if role[4] == "Экзек":
+            await message.answer(view.ekzek(), reply_markup=nav.back)
+        if role[4] == "Фиксер":
+            await message.answer(view.fixer(), reply_markup=nav.back)
+        if role[4] == "Кочевник":
+            await message.answer(view.nomad(), reply_markup=nav.back)
 
-        else:
-            await message.answer("СКОРО", reply_markup=nav.back)
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
