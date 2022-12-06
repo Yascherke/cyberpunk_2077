@@ -7,7 +7,10 @@ cluster = MongoClient(
 db = cluster["WoE"]
 players = db["players"]
 roles = db["class"]
-wtypes = db["wtypes"]
+ranks = db["rank"]
+cars = db["cars"]
+houses = db["house"]
+corps = db["corps"]
 weapons = db["weapons"]
 armor = db["armor"]
 skills = db["skills"]
@@ -22,6 +25,7 @@ police = db["police"]
 fixer = db["fixer"]
 nomads = db["nomads"]
 programs = db["programs"]
+inventory = db["inventory"]
 
 
 def getRole(getter):
@@ -79,6 +83,7 @@ def bank_gm(uid, msg):
                            "money": player + money
                        }})
 
+
 def send_ammo(uid, msg):
     getter = msg.replace(' для ', ',').split(',')
     find = Finder(uid)
@@ -91,21 +96,140 @@ def send_ammo(uid, msg):
     players.update_one({"name": getter[1]}, {
                        "$set": {"ammo": before + money}})
 
+
 def buy_ammo(uid, msg):
+    getter = msg.replace(' тип ', ',').split(',')
     find = Finder(uid)
     player = find.ammo()
     money = find.money()
-    before = int(player[0])
-    before1 = int(money)
-    ammo = int(msg)
-    price = ammo * 75
-    if money - price >= 0:
-        players.update_one({"_id": uid}, {"$set": {"ammo": before1 - price}})
-        players.update_one({"_id": uid}, {
-                        "$set": {"ammo": before + ammo}})
+    before = int(money)
+    ammo = int(getter[0])
+
+    if getter[1] == 'Стандартные' and getter[1] == 'Резиновые':
+        cost = 10
+
+    if getter[1] == 'Бронебойные' and getter[1] == 'Экспансивные' and getter[1] == 'Светошумовые' and getter[1] == 'Зажигательные' and getter[1] == 'Ядовитые':
+        cost = 100
+
+    if getter[1] == 'Биотоксин' and getter[1] == 'ЭМИ' and getter[1] == 'Усыпляющие' and getter[1] == 'Умные':
+        cost = 500
+
+    if getter[1] == 'Дымовые' and getter[1] == 'Слезоточивые':
+        cost = 50
+
+    price = ammo * cost
+
+    if getter[1] == 'Стандартные' and money - price >= 0:
+        players.update_one({"_id": uid}, {"$set": {"ammo": player[0] - money}})
+        players.update_one({"_id": uid}, {"$set": {"money": before - price}})
         return True
+
+    elif getter[1] == 'Бронебойные' and money - price >= 0:
+        players.update_one(
+            {"_id": uid}, {"$set": {"ammo_bb": player[0] - money}})
+        players.update_one({"_id": uid}, {"$set": {"money": before - price}})
+        return True
+
+    elif getter[1] == 'Биотоксин' and money - price >= 0:
+        players.update_one(
+            {"_id": uid}, {"$set": {"ammo_toxin": player[0] - money}})
+        players.update_one({"_id": uid}, {"$set": {"money": before - price}})
+        return True
+
+    elif getter[1] == 'ЭМИ' and money - price >= 0:
+        players.update_one(
+            {"_id": uid}, {"$set": {"ammo_emp": player[0] - money}})
+        players.update_one({"_id": uid}, {"$set": {"money": before - price}})
+        return True
+
+    elif getter[1] == 'Экспансивные' and money - price >= 0:
+        players.update_one(
+            {"_id": uid}, {"$set": {"ammo_expansive": player[0] - money}})
+        players.update_one({"_id": uid}, {"$set": {"money": before - price}})
+        return True
+
+    elif getter[1] == 'Светошумовые' and money - price >= 0:
+        players.update_one(
+            {"_id": uid}, {"$set": {"ammo_stun": player[0] - money}})
+        players.update_one({"_id": uid}, {"$set": {"money": before - price}})
+        return True
+
+    elif getter[1] == 'Зажигательные' and money - price >= 0:
+        players.update_one(
+            {"_id": uid}, {"$set": {"ammo_fire": player[0] - money}})
+        players.update_one({"_id": uid}, {"$set": {"money": before - price}})
+        return True
+
+    elif getter[1] == 'Ядовитые' and money - price >= 0:
+        players.update_one(
+            {"_id": uid}, {"$set": {"ammo_poison": player[0] - money}})
+        players.update_one({"_id": uid}, {"$set": {"money": before - price}})
+        return True
+
+    elif getter[1] == 'Резиновые' and money - price >= 0:
+        players.update_one(
+            {"_id": uid}, {"$set": {"ammo_rubber": player[0] - money}})
+        players.update_one({"_id": uid}, {"$set": {"money": before - price}})
+        return True
+
+    elif getter[1] == 'Усыпляющие' and money - price >= 0:
+        players.update_one(
+            {"_id": uid}, {"$set": {"ammo_sleep": player[0] - money}})
+        players.update_one({"_id": uid}, {"$set": {"money": before - price}})
+        return True
+
+    elif getter[1] == 'Умные' and money - price >= 0:
+        players.update_one(
+            {"_id": uid}, {"$set": {"ammo_smart": player[0] - money}})
+        players.update_one({"_id": uid}, {"$set": {"money": before - price}})
+        return True
+
+    elif getter[1] == 'Дымовые' and money - price >= 0:
+        players.update_one(
+            {"_id": uid}, {"$set": {"ammo_smoke": player[0] - money}})
+        players.update_one({"_id": uid}, {"$set": {"money": before - price}})
+        return True
+
+    elif getter[1] == 'Слезоточивые' and money - price >= 0:
+        players.update_one(
+            {"_id": uid}, {"$set": {"ammo_eye": player[0] - money}})
+        players.update_one({"_id": uid}, {"$set": {"money": before - price}})
+        return True
+
     else:
         return False
+
+
+def output(uid, msg):
+
+    find = Finder(uid)
+    player_armor = find.equipment()
+    player_wp = find.equipment()
+    msg = msg
+
+    if msg == "Броню" or msg == "броню":
+        if player_armor[2] != 0:
+            players.update_one({"_id": uid}, {
+                "$set": {"armor": 0}})
+            players.update_one({"_id": uid}, {
+                "$set": {"sp": 0}})
+            players.update_one({"_id": uid}, {
+                "$set": {"main_sp": 0}})
+        else:
+            return False
+
+    if msg == "Оружие" or msg == "оружие":
+        if player_wp[0] != 0:
+            players.update_one({"_id": uid}, {
+                "$set": {"weapon": 0}})
+            players.update_one({"_id": uid}, {
+                "$set": {"max_magazine": 0}})
+            players.update_one({"_id": uid}, {
+                "$set": {"magazine": 0}})
+            return True
+        else:
+            return False
+
 
 def giveItem(uid, msg):
     find = Finder(uid)
@@ -130,7 +254,7 @@ def giveItem(uid, msg):
         elif owner_item == 0:
             return False
         else:
-            if count < 10:
+            if count < 15:
                 count += 1
             else:
                 return False
@@ -147,7 +271,6 @@ def equip_wp(uid, msg):
 
     try:
         getWeapon = find.weapon(owner_item)
-        wtype = find.wtype(getWeapon[2])
     except:
         return False
 
@@ -156,7 +279,7 @@ def equip_wp(uid, msg):
         players.update_one({"_id": uid}, {
             "$set": {"weapon": getWeapon[1]}})
         players.update_one({"_id": uid}, {
-            "$set": {"max_magazine": wtype[4]}})
+            "$set": {"max_magazine": 30}})
         players.update_one({"_id": uid}, {
             "$set": {"slot"+str(slot): 0}})
         return True
@@ -186,84 +309,60 @@ def equip_armor(uid, msg):
             players.update_one({"_id": uid}, {
                 "$set": {"sp": getArmor[2]}})
             players.update_one({"_id": uid}, {
+                "$set": {"main_sp": getArmor[2]}})
+            players.update_one({"_id": uid}, {
                 "$set": {"slot"+str(slot): 0}})
             return True
     else:
         return False
 
 
-def output(uid, msg):
-
-    find = Finder(uid)
-    player_armor = find.equipment()
-    player_wp = find.equipment()
-    msg = msg
-
-    if msg == "Броню" or msg == "броню":
-        if player_armor[2] != 0:
-            players.update_one({"_id": uid}, {
-                "$set": {"armor": 0}})
-            players.update_one({"_id": uid}, {
-                "$set": {"sp": 0}})
-        else:
-            return False
-
-    if msg == "Оружие" or msg == "оружие":
-        if player_wp[0] != 0:
-            players.update_one({"_id": uid}, {
-                "$set": {"weapon": 0}})
-            players.update_one({"_id": uid}, {
-                "$set": {"max_magazine": 0}})
-            players.update_one({"_id": uid}, {
-                "$set": {"magazine": 0}})
-            return True
-        else:
-            return False
-
-
 def buyWp(uid, msg):
     find = Finder(uid)
     money = find.money()
     player_bp = find.backpack()
+    getter = msg.replace(' для ', ',').split(',')
+
     try:
-        getWeapon = find.weapon(msg)
-        wtype = find.wtype(getWeapon[2])
+        getWeapon = find.weapon(getter[0])
     except:
         return False
 
     count = 0
     for item in player_bp:
-        if item == 0 and money >= int(wtype[9]):
-            players.update_one({"_id": uid}, {
-                "$set": {"slot"+str(count+1): getWeapon[1]}})
-            players.update_one({"_id": uid}, {
-                "$set": {"money": int(money) - int(wtype[9])}})
+        if item == 0 and money >= int(getWeapon[3]):
+            players.update_one({"name": getter[1]}, {
+                "$set": {"slot"+str(count+1): getWeapon[0]}})
+            players.update_one({"name": getter[1]}, {
+                "$set": {"money": int(money) - int(getWeapon[3])}})
             return True
         else:
-            if count < 10:
+            if count < 15:
                 count += 1
             else:
                 return False
-                
+
+
 def buyArmor(uid, msg):
     find = Finder(uid)
     money = find.money()
     player_bp = find.backpack()
+    getter = msg.replace(' для ', ',').split(',')
     try:
-        getArmor= find.armor(msg)
+        getArmor = find.armor(getter[0])
     except:
         return False
 
     count = 0
     for item in player_bp:
         if item == 0 and money >= getArmor[3]:
-            players.update_one({"_id": uid}, {
-                "$set": {"slot"+str(count+1): getArmor[1]}})
-            players.update_one({"_id": uid}, {
-                "$set": {"money": int(money) - int(getArmor[3])}})
+            players.update_one({"name": getter[1]}, {
+                "$set": {"slot"+str(count+1): getArmor[0]}})
+            players.update_one({"name": getter[1]}, {
+                "$set": {"money": int(money) - int(getArmor[2])}})
             return True
         else:
-            if count < 10:
+            if count < 15:
                 count += 1
             else:
                 return False

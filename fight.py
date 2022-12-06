@@ -70,7 +70,7 @@ def reloading(uid):
     if magazine[0] < magazine[1]:
         mag = magazine[1] - magazine[0]
         players.update_one({"_id": uid}, {
-            "$set": {"ammo": ammo[0] - mag}})
+            "$set": {"ammo": ammo[0] - 1}})
         players.update_one({"_id": uid}, {
             "$set": {"magazine": magazine[1]}})
         return True

@@ -12,13 +12,6 @@ houses = db["house"]
 corps = db["corps"]
 weapons = db["weapons"]
 armor = db["armor"]
-wtypes = db["wtypes"]
-db = cluster["WoE"]
-players = db["players"]
-roles = db["class"]
-wtypes = db["wtypes"]
-weapons = db["weapons"]
-armor = db["armor"]
 skills = db["skills"]
 rockerboys = db["rockerboys"]
 solos = db["solos"]
@@ -31,6 +24,8 @@ police = db["police"]
 fixer = db["fixer"]
 nomads = db["nomads"]
 programs = db["programs"]
+implants = db["implants"]
+
 
 class Finder:
 
@@ -40,27 +35,48 @@ class Finder:
     def stats(self):
         for player in players.find({"_id": self.uid}):
             print('Done')
-        return [player['intelligence'], player['reaction'], player['dexterity'], player['technics'], player['charisma'], player['will'], player['luck'], player['speed'], player['bodytype'], player['empathy']]
+        return [player['intelligence'], player['reaction'], player['dexterity'], player['technics'], player['cool'], player['will'], player['luck'], player['speed'], player['bodytype'], player['empathy']]
+
+    def mainStats(self):
+        for player in players.find({"_id": self.uid}):
+            print('Done')
+        return [player['main_int'], player['main_rea'], player['main_dex'], player['main_tec'], player['main_coo'], player['main_wil'], player['main_luc'], player['main_spe'], player['main_bod'], player['main_emp']]
 
     def generalInfo(self):
         for player in players.find({"_id": self.uid}):
             print('Done')
-        return [player['name'], player['hero_class'], player['rank'], player['rank_exp'], player['car'], player['home']]
+        return [player['name'], player['hero_class'], player['rank'], player['rank_exp'], player['car'], player['home'], player['car_info']]
 
     def hpInfo(self):
         for player in players.find({"_id": self.uid}):
             print('Done')
-        return [player['max_hp'], player['hp'], player['severe_injury'], player['die_dice']]
+        return [player['max_hp'], player['hp'], player['severe_injury'], player['die_dice'], player['crit_dmg']]
 
     def equipment(self):
         for player in players.find({"_id": self.uid}):
             print('Done')
-        return [player['weapon'], player['armor'], player['sp']]
+        return [player['weapon'], player['armor'], player['sp'], player['main_sp']]
 
     def backpack(self):
         for player in players.find({"_id": self.uid}):
             print('Done')
-        return [player['slot1'], player['slot2'], player['slot3'], player['slot4'], player['slot5'], player['slot6'], player['slot7'], player['slot8'], player['slot9'], player['slot10']]
+        return [
+            player['slot1'],
+            player['slot2'],
+            player['slot3'],
+            player['slot4'],
+            player['slot5'],
+            player['slot6'],
+            player['slot7'],
+            player['slot8'],
+            player['slot9'],
+            player['slot10'],
+            player['slot11'],
+            player['slot12'],
+            player['slot13'],
+            player['slot14'],
+            player['slot15'],
+        ]
 
     def money(self):
         for player in players.find({"_id": self.uid}):
@@ -70,22 +86,17 @@ class Finder:
     def otherInfo(self):
         for player in players.find({"_id": self.uid}):
             print('Done')
-        return [player['gang'], player['corp']]
-
-    def missions(self):
-        for player in players.find({"_id": self.uid}):
-            print('Done')
-        return [player['mission'], player['mission_rank'], player['progress'], player['mission_count']]
+        return [player['gang'], player['corp'], player['organ']]
 
     def status(self):
         for player in players.find({"_id": self.uid}):
             print('Done')
-        return [player['admin'], player['gm'], player['status']]
+        return [player['admin'], player['gm'], player['status'], player['trauma']]
 
     def skills(self):
         for player in players.find({"_id": self.uid}):
             print('Done')
-        return [player['traits'], player['implants'], player['programs'], player['humanity'], player['status'], player['role_skill'], player['rs_rank']]
+        return [player['traits'], player['implants'], player['programs'], player['humanity'],  player['role_name']]
 
     def roles(self, id):
         for role in roles.find({"_id": id}):
@@ -113,17 +124,27 @@ class Finder:
     def ammo(self):
         for player in players.find({"_id": self.uid}):
             print('Done')
-        return [player['ammo'], player['rocket_ammo']]
+        return [
+            player['ammo'],
+            player['ammo_bb'],
+            player['ammo_toxin'],
+            player['ammo_emp'],
+            player['ammo_expansive'],
+            player['ammo_stun'],
+            player['ammo_fire'],
+            player['ammo_poison'],
+            player['ammo_rubber'],
+            player['ammo_sleep'],
+            player['ammo_smart'],
+            player['ammo_smoke'],
+            player['ammo_eye'],
+            player['ammo_type'],  # 13
+            player['rocket_ammo']]
 
     def magazine(self):
         for player in players.find({"_id": self.uid}):
             print('Done')
         return [player['magazine'], player['max_magazine']]
-
-    def dbSkills(self):
-        for player in players.find({"_id": self.uid}):
-            print('Done')
-        return [player['traits_db'], player['implants_db'], player['programs_db']]
 
     def moneyByName(self, name):
         for player in players.find({"name": name}):
@@ -141,7 +162,7 @@ class Finder:
             player['car'],
             player['home'],
             player['_id']
-            ]
+        ]
 
     def backpackByName(self, name):
         for player in players.find({"name": name}):
@@ -156,38 +177,28 @@ class Finder:
             player['slot7'],
             player['slot8'],
             player['slot9'],
-            player['slot10']]
+            player['slot10'],
+            player['slot11'],
+            player['slot12'],
+            player['slot13'],
+            player['slot14'],
+            player['slot15'],
+        ]
 
     def weapon(self, name):
         for weapon in weapons.find({"name": name}):
             print('Done')
-        return [weapon['_id'], weapon['name'], weapon['type']]
+        return [
+            weapon['name'],
+            weapon['magazine'],
+            weapon['type'],
+            weapon['price']
+        ]
 
     def armor(self, name):
         for arm in armor.find({"name": name}):
             print('Done')
-        return [arm['_id'], arm['name'], arm['sp'], arm['price']]
-
-    def wtype(self, type):
-        for wtype in wtypes.find({"_id": type}):
-            print('Done')
-        return [
-            wtype['_id'],
-            wtype['name'],
-            wtype['wp_skill'],
-            wtype['damage'],
-            wtype['magazine'],
-            wtype['type'],
-            wtype['alt'],
-            wtype['prop'],
-            wtype['grip'],
-            wtype['price']
-            ]
-
-    def ammoByName(self, name):
-        for player in players.find({"name": name}):
-            print('Done')
-        return [player['ammo'], player['rocket_ammo']]
+        return [arm['name'], arm['sp'], arm['price']]
 
     def getIdByName(self, name):
         for player in players.find({"name": name}):
@@ -210,7 +221,6 @@ class Finder:
         for nr in netrunners.find({"_id": self.uid}):
             print('Done')
         return [
-
             nr['program1'],
             nr['program2'],
             nr['program3'],
@@ -221,7 +231,27 @@ class Finder:
             nr['program8'],
             nr['program9'],
             nr['program10'],
-            nr['program11']
+            nr['program11'],
+            nr['program12'],
+            nr['program13'],
+            nr['program14'],
+            nr['program15']
+        ]
+
+    def nrEquip(self):
+        for nr in netrunners.find({"_id": self.uid}):
+            print('Done')
+        return [
+            nr['equip1'],
+            nr['equip2'],
+            nr['equip3'],
+            nr['equip4'],
+            nr['equip5'],
+            nr['equip6'],
+            nr['equip7'],
+            nr['equip8'],
+            nr['equip9'],
+            nr['equip10'],
         ]
 
     def getProgram(self, msg):
@@ -237,3 +267,263 @@ class Finder:
             nr['price'],
         ]
 
+    def rockerboy(self):
+        for nr in rockerboys.find({"_id": self.uid}):
+            print('Done')
+        return [
+            nr['player'],
+            nr['name'],
+            nr['lvl'],
+            nr['exp'],
+        ]
+
+    def solo(self):
+        for nr in solos.find({"_id": self.uid}):
+            print('Done')
+        return [
+            nr['player'],
+            nr['name'],
+            nr['lvl'],
+            nr['exp'],
+        ]
+
+    def media(self):
+        for nr in medias.find({"_id": self.uid}):
+            print('Done')
+        return [
+            nr['player'],
+            nr['name'],
+            nr['lvl'],
+            nr['exp'],
+        ]
+
+    def police(self):
+        for nr in police.find({"_id": self.uid}):
+            print('Done')
+        return [
+            nr['player'],
+            nr['name'],
+            nr['lvl'],
+            nr['exp'],
+        ]
+
+    def fixer(self):
+        for nr in fixer.find({"_id": self.uid}):
+            print('Done')
+        return [
+            nr['player'],
+            nr['name'],
+            nr['lvl'],
+            nr['exp'],
+        ]
+
+    def nomad(self):
+        for nr in nomads.find({"_id": self.uid}):
+            print('Done')
+        return [
+            nr['player'],
+            nr['name'],
+            nr['lvl'],
+            nr['exp'],
+            nr["car1"],
+            nr["car2"],
+            nr["car3"],
+            nr["car4"],
+            nr["car_info1"],
+            nr["car_info2"],
+            nr["car_info3"],
+            nr["car_info4"],
+        ]
+
+    def ekzek(self):
+        for nr in ekzeks.find({"_id": self.uid}):
+            print('Done')
+        return [
+            nr['player'],
+            nr['name'],
+            nr['lvl'],
+            nr['exp'],
+            nr["slave1"],
+            nr["slave2"],
+            nr["slave3"],
+        ]
+
+    def reaper(self):
+        for nr in reapers.find({"_id": self.uid}):
+            print('Done')
+        return [
+            nr['player'],
+            nr['name'],
+            nr['lvl'],
+            nr['exp'],
+            nr["points"],
+            nr["surgeon"],
+            nr["pharmacist"],
+            nr["сryo"],
+        ]
+
+    def tech(self):
+        for nr in techs.find({"_id": self.uid}):
+            print('Done')
+        return [
+            nr['player'],
+            nr['name'],
+            nr['lvl'],
+            nr['exp'],
+            nr["points"],
+            nr["modern"],
+            nr["crafter"],
+            nr["creator"],
+        ]
+
+    def storage(self):
+        for player in players.find({"_id": self.uid}):
+            print('Done')
+        return [
+            player['storage1'],
+            player['storage2'],
+            player['storage3'],
+            player['storage4'],
+            player['storage5'],
+            player['storage6'],
+            player['storage7'],
+            player['storage8'],
+            player['storage9'],
+            player['storage10'],
+        ]
+
+    def audio(self):
+        for iml in implants.find({"_id": self.uid}):
+            print('Done')
+        return [
+            iml['audio'],
+            iml['audio_slot1'],
+            iml['audio_slot2'],
+            iml['audio_slot3'],
+        ]
+
+    def right_eye(self):
+        for iml in implants.find({"_id": self.uid}):
+            print('Done')
+        return [
+            iml['right_eye'],
+            iml['right_eye_slot1'],
+            iml['right_eye_slot2'],
+            iml['right_eye_slot3'],
+        ]
+
+    def left_eye(self):
+        for iml in implants.find({"_id": self.uid}):
+            print('Done')
+        return [
+            iml['left_eye'],
+            iml['left_eye_slot1'],
+            iml['left_eye_slot2'],
+            iml['left_eye_slot3'],
+        ]
+
+    def neural(self):
+        for iml in implants.find({"_id": self.uid}):
+            print('Done')
+        return [
+            iml['neural'],
+            iml['neural_slot1'],
+            iml['neural_slot2'],
+            iml['neural_slot3'],
+            iml['neural_slot4'],
+            iml['neural_slot5'],
+        ]
+
+    def right_arm(self):
+        for iml in implants.find({"_id": self.uid}):
+            print('Done')
+        return [
+            iml['right_arm'],
+            iml['right_arm_slot1'],
+            iml['right_arm_slot2'],
+            iml['right_arm_slot3'],
+            iml['right_arm_slot4'],
+        ]
+
+    def left_arm(self):
+        for iml in implants.find({"_id": self.uid}):
+            print('Done')
+        return [
+            iml['left_arm'],
+            iml['left_arm_slot1'],
+            iml['left_arm_slot2'],
+            iml['left_arm_slot3'],
+            iml['left_arm_slot4'],
+        ]
+
+    def right_leg(self):
+        for iml in implants.find({"_id": self.uid}):
+            print('Done')
+        return [
+            iml['right_leg'],
+            iml['right_leg_slot1'],
+            iml['right_leg_slot2'],
+            iml['right_leg_slot3'],
+        ]
+
+    def left_leg(self):
+        for iml in implants.find({"_id": self.uid}):
+            print('Done')
+        return [
+            iml['left_leg'],
+            iml['left_leg_slot1'],
+            iml['left_leg_slot2'],
+            iml['left_leg_slot3'],
+        ]
+
+    def inside(self):
+        for iml in implants.find({"_id": self.uid}):
+            print('Done')
+        return [
+            iml['inside_slot1'],
+            iml['inside_slot2'],
+            iml['inside_slot3'],
+            iml['inside_slot4'],
+            iml['inside_slot5'],
+            iml['inside_slot6'],
+            iml['inside_slot7'],
+        ]
+
+    def outside(self):
+        for iml in implants.find({"_id": self.uid}):
+            print('Done')
+        return [
+            iml['outside_slot1'],
+            iml['outside_slot2'],
+            iml['outside_slot3'],
+            iml['outside_slot4'],
+            iml['outside_slot5'],
+            iml['outside_slot6'],
+            iml['outside_slot7'],
+        ]
+
+    def style(self):
+        for iml in implants.find({"_id": self.uid}):
+            print('Done')
+        return [
+            iml['style_slot1'],
+            iml['style_slot2'],
+            iml['style_slot3'],
+            iml['style_slot4'],
+            iml['style_slot5'],
+            iml['style_slot6'],
+            iml['style_slot7'],
+        ]
+
+    def borg(self):
+        for iml in implants.find({"_id": self.uid}):
+            print('Done')
+        return [
+            iml['borg_slot1'],
+            iml['borg_slot2'],
+            iml['borg_slot3'],
+            iml['borg_slot4'],
+            iml['borg_slot5'],
+            iml['borg_slot6'],
+            iml['borg_slot7'],
+        ]
