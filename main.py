@@ -8,6 +8,7 @@ from aiogram.dispatcher import FSMContext
 from pymongo import MongoClient
 from aiogram.utils import executor
 import re
+import d20
 
 from hero import Hero as hero
 from mongodb import Finder
@@ -18,7 +19,7 @@ from roles import Role
 
 import markups as nav
 from system import getRole, getSkill, send_money, send_exp, bank_gm, output, buy_ammo, giveItem, equip_wp, equip_armor, buyWp, buyArmor
-
+from fight import autoshot, reloading, hit, getDamage
 
 from ws import keep_alive
 
@@ -817,17 +818,62 @@ async def give(message: types.Message):
 @dp.message_handler(commands=['прокачать'])
 async def give(message: types.Message):
     uid = message.from_user.id
+    role = Role(uid)
     msg = message.get_args()
 
     if msg == "Модернизация" or msg == "Изготовитель" or msg == "Изобретатель":
-        Role.techPoint(msg)
+        role.techPoint(msg)
         await message.answer(f"Вы улучшили навык")
     elif msg == "Хирургия" or msg == "Фармацевтика" or msg == "Изобретатель":
-        Role.medPoint(msg)
+        role.medPoint(msg)
         await message.answer(f"Вы улучшили навык")
     else:
         await message.answer("У вас не вышло")
 
+@dp.message_handler(commands=['r'])
+async def cmd_wp(message: types.Message):
+    name = message.from_user.first_name
+    msg = message.get_args()
+    dice = d20.roll(str(msg))
+    await message.answer(f"{name}: {dice}")
+
+@dp.message_handler(commands=['автоогонь'])
+async def give(message: types.Message):
+    uid = message.from_user.id
+    msg = message.get_args()
+    func = autoshot(uid, msg)
+
+    await message.answer(f"Автоогонь: {func}")
+
+@dp.message_handler(commands=['перезарядка'])
+async def give(message: types.Message):
+    uid = message.from_user.id
+    msg = message.get_args()
+    func = reloading(uid, msg)
+
+    if func is True:
+        await message.answer(f"Вы успешно перезарядили оружие")
+    else:
+        await message.answer("У вас не вышло")
+
+@dp.message_handler(commands=['попадание'])
+async def give(message: types.Message):
+    uid = message.from_user.id
+    msg = message.get_args()
+    func = hit(uid, msg)
+
+    await message.answer(f"Попадание: {func}")
+
+@dp.message_handler(commands=['вычесть'])
+async def give(message: types.Message):
+    uid = message.from_user.id
+    msg = message.get_args()
+    func = getDamage(uid, msg)
+
+    if func is True:
+        await message.answer(f"Урон вычтен")
+    else:
+        await message.answer("У вас не вышло")
 
 @dp.message_handler(commands=['get'])
 async def cmd_get(message: types.Message):
