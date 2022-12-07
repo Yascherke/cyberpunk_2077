@@ -14,49 +14,14 @@ armor = db["armor"]
 wtypes = db["wtypes"]
 
 
-def initiate(uid):
-    find = Finder(uid)
-    stats = find.stats()
-
-    roll = d20.roll(f"1d10+"+str(stats[1]))
-
-    return roll
-
-
-def shot(uid):
-    find = Finder(uid)
-    equip = find.equipment()
-    magazine = find.magazine()
-
-    try:
-        getWeapon = find.weapon(equip[0])
-        wtype = find.wtype(getWeapon[2])
-    except:
-        return False
-
-    if magazine[0] != 0:
-        players.update_one({"_id": uid}, {
-            "$set": {"magazine": magazine[0] - 1}})
-        roll = d20.roll(str(wtype[3])+"d6")
-        return roll
-    else:
-        return False
-
 def autoshot(uid, msg):
     find = Finder(uid)
-    equip = find.equipment()
     magazine = find.magazine()
-
-    try:
-        getWeapon = find.weapon(equip[0])
-        wtype = find.wtype(getWeapon[2])
-    except:
-        return False
 
     if magazine[0] >= 3:
         players.update_one({"_id": uid}, {
-            "$set": {"magazine": magazine[0] - 3}})
-        roll = d20.roll(str(wtype[3])+"d6 * "+str(msg))
+            "$set": {"magazine": magazine[0] - 2}})
+        roll = d20.roll(str(msg))
         return roll
     else:
         return False
@@ -68,7 +33,6 @@ def reloading(uid):
     ammo = find.ammo()
 
     if magazine[0] < magazine[1]:
-        mag = magazine[1] - magazine[0]
         players.update_one({"_id": uid}, {
             "$set": {"ammo": ammo[0] - 1}})
         players.update_one({"_id": uid}, {
@@ -91,23 +55,17 @@ def getDamage(uid, msg):
         players.update_one({"_id": uid}, {
                 "$set": {"hp": int(hp)}})
 
-def hit(msg):
-    getter = msg.replace(' и ', ',').split(',')
+def hit(uid, msg):
+    find = Finder(uid)
+    magazine = find.magazine()
 
-    roll = d20.roll(f"1d10+{str(getter[0])}+"+str(getter[1]))
+    if magazine[0] != 0:
+        players.update_one({"_id": uid}, {
+            "$set": {"magazine": magazine[0] - 1}})
+        roll = d20.roll(str(msg))
 
-    return roll
-
-def enemyHit(msg):
-    getter = msg.replace(' и ', ',').split(',')
-
-    roll = d20.roll(f"1d10+{str(getter[0])}+"+str(getter[1]))
-
-    return roll
-
-def enemyShot(msg):
-
-    roll = d20.roll(str(msg)+"d6")
-
-    return roll
+        return roll
+    else:
+        return False
+    
 
