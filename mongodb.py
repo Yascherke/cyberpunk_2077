@@ -527,3 +527,13 @@ class Finder:
             iml['borg_slot6'],
             iml['borg_slot7'],
         ]
+
+    def weapMods(self):
+        for wp in players.find({"_id": self.uid}):
+            print('Done')
+        return [
+            wp["mag_mod"],
+            wp["scope"],
+            wp["barrel"],
+            wp["connector"],
+        ]
