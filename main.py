@@ -23,6 +23,7 @@ from fight import autoshot, reloading, hit, getDamage
 
 from ws import keep_alive
 
+keep_alive()
 logging.basicConfig(level=logging.INFO)
 
 API_TOKEN = "5667925194:AAErD4AwaG_4oRtPWX68Ar3rr8Qs-6uRCW8"
@@ -303,7 +304,7 @@ async def cmd_start(message: types.Message):
                 "lvl": 1,
                 "exp": 0,
             })
-            players.update_one({"_id": uid}, {
+            players.update_one({"name": p_name}, {
                 "$set": {"role_name": "Рокебой"}})
 
         if getter[0] == "Соло":
@@ -314,7 +315,7 @@ async def cmd_start(message: types.Message):
                 "lvl": 1,
                 "exp": 0,
             })
-            players.update_one({"_id": uid}, {
+            players.update_one({"name": p_name}, {
                 "$set": {"role_name": "Соло"}})
 
         if getter[0] == "Нетраннер":
@@ -352,7 +353,7 @@ async def cmd_start(message: types.Message):
                 "equip9": 0,
                 "equip10": 0,
             })
-            players.update_one({"_id": uid}, {
+            players.update_one({"name": p_name}, {
                 "$set": {"role_name": "Нетраннер"}})
 
         if getter[0] == "Техник":
@@ -367,7 +368,7 @@ async def cmd_start(message: types.Message):
                 "crafter": 0,
                 "creator": 0,
             })
-            players.update_one({"_id": uid}, {
+            players.update_one({"name": p_name}, {
                 "$set": {"role_name": "Техник"}})
 
         if getter[0] == "Медтехник":
@@ -382,7 +383,7 @@ async def cmd_start(message: types.Message):
                 "pharmacist": 0,
                 "сryo": 0,
             })
-            players.update_one({"_id": uid}, {
+            players.update_one({"name": p_name}, {
                 "$set": {"role_name": "Медтехник"}})
 
         if getter[0] == "Медиа":
@@ -393,7 +394,7 @@ async def cmd_start(message: types.Message):
                 "lvl": 1,
                 "exp": 0,
             })
-            players.update_one({"_id": uid}, {
+            players.update_one({"name": p_name}, {
                 "$set": {"role_name": "Медиа"}})
 
         if getter[0] == "Экзек":
@@ -407,7 +408,7 @@ async def cmd_start(message: types.Message):
                 "slave2": 0,
                 "slave3": 0,
             })
-            players.update_one({"_id": uid}, {
+            players.update_one({"name": p_name}, {
                 "$set": {"role_name": "Экзек"}})
 
         if getter[0] == "Законник":
@@ -418,7 +419,7 @@ async def cmd_start(message: types.Message):
                 "lvl": 1,
                 "exp": 0,
             })
-            players.update_one({"_id": uid}, {
+            players.update_one({"name": p_name}, {
                 "$set": {"role_name": "Законник"}})
 
         if getter[0] == "Фиксер":
@@ -429,7 +430,7 @@ async def cmd_start(message: types.Message):
                 "lvl": 1,
                 "exp": 0,
             })
-            players.update_one({"_id": uid}, {
+            players.update_one({"name": p_name}, {
                 "$set": {"role_name": "Фиксер"}})
 
         if getter[0] == "Кочевник":
@@ -449,7 +450,7 @@ async def cmd_start(message: types.Message):
                 "car_info3": [],
                 "car_info4": [],
             })
-            players.update_one({"_id": uid}, {
+            players.update_one({"name": p_name}, {
                 "$set": {"role_name": "Кочевник"}})
 
         await message.answer("Роль выдана")
@@ -585,7 +586,6 @@ async def cmd_start(message: types.Message):
                 "$set": {"main_emp": stat}})
 
         await message.answer("Навык выдан")
-        await message.delete()
     else:
         await message.answer("У вас недостаточно прав.")
 
