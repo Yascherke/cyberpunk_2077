@@ -18,8 +18,8 @@ from admin import Admin
 from roles import Role
 
 import markups as nav
-from system import getRole, getSkill, send_money, send_exp, bank_gm, output, buy_ammo, giveItem, equip_wp, equip_armor, buyWp, buyArmor
-from fight import autoshot, reloading, hit, getDamage
+from system import getRole, getSkill, send_money, send_exp, bank_gm, output, buy_ammo, giveItem, equip_wp, equip_armor, buyWp, buyArmor, bank_pl
+from fight import reloading, hit, getDamage, getHealth
 
 from ws import keep_alive
 
@@ -643,6 +643,18 @@ async def bank(message: types.Message):
     else:
         await message.answer("У вас нет прав")
 
+@dp.message_handler(commands=['оплатить'])
+async def bank(message: types.Message):
+    uid = message.from_user.id
+    find = Finder(uid)
+    status = find.money()
+    msg = message.get_args()
+    if int(msg) <= status:
+        bank_pl(uid, msg)
+        await message.answer("Средства перечислены")
+    else:
+        await message.answer("У вас недостаточно средств")
+
 
 @dp.message_handler(commands=['оружие'])
 async def equipwp(message: types.Message):
@@ -837,13 +849,6 @@ async def cmd_wp(message: types.Message):
     dice = d20.roll(str(msg))
     await message.answer(f"{name}: {dice}")
 
-@dp.message_handler(commands=['автоогонь'])
-async def give(message: types.Message):
-    uid = message.from_user.id
-    msg = message.get_args()
-    func = autoshot(uid, msg)
-
-    await message.answer(f"Автоогонь: {func}")
 
 @dp.message_handler(commands=['перезарядка'])
 async def give(message: types.Message):
@@ -856,13 +861,16 @@ async def give(message: types.Message):
     else:
         await message.answer("У вас не вышло")
 
-@dp.message_handler(commands=['попадание'])
+@dp.message_handler(commands=['выстрел'])
 async def give(message: types.Message):
     uid = message.from_user.id
     msg = message.get_args()
     func = hit(uid, msg)
 
-    await message.answer(f"Попадание: {func}")
+    if func is True:
+        await message.answer(f"Пуля потрачена")
+    else:
+        await message.answer("Магазин пуст")
 
 @dp.message_handler(commands=['вычесть'])
 async def give(message: types.Message):
@@ -870,15 +878,36 @@ async def give(message: types.Message):
     msg = message.get_args()
     func = getDamage(uid, msg)
 
-    if func is True:
+    if func is False:
         await message.answer(f"Урон вычтен")
     else:
         await message.answer("У вас не вышло")
 
+@dp.message_handler(commands=['уровень'])
+async def lup(message: types.Message):
+    uid = message.from_user.id
+    role = Role(uid)
+    
+    role.lvlUp()
+    await message.answer(f"Команда выполнена")
+
+@dp.message_handler(commands=['лечить'])
+async def cmd_armor(message: types.Message):
+    uid = message.from_user.id
+    msg = message.get_args()
+    find = Finder(uid)
+    status = find.status()
+
+    if status[0] is True or status[1] is True:
+        getHealth(uid, msg)
+        await message.answer(f"Вы успешно вылечили")
+    else:
+        await message.answer("У вас не вышло")
+
+
 @dp.message_handler(commands=['get'])
 async def cmd_get(message: types.Message):
     pass
-
 
 @dp.message_handler()
 async def cmd_prof(message: types.Message):

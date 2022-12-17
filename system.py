@@ -83,6 +83,14 @@ def bank_gm(uid, msg):
                            "money": player + money
                        }})
 
+def bank_pl(uid, msg):
+    find = Finder(uid)
+    player = find.money()
+    money = int(msg)
+    players.update_one({"_id": uid},
+                       {"$set": {
+                           "money": player - money
+                       }})
 
 def send_ammo(uid, msg):
     getter = msg.replace(' для ', ',').split(',')
