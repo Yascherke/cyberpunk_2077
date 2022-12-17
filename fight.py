@@ -14,18 +14,6 @@ armor = db["armor"]
 wtypes = db["wtypes"]
 
 
-def autoshot(uid, msg):
-    find = Finder(uid)
-    magazine = find.magazine()
-
-    if magazine[0] >= 3:
-        players.update_one({"_id": uid}, {
-            "$set": {"magazine": magazine[0] - 2}})
-        roll = d20.roll(str(msg))
-        return roll
-    else:
-        return False
-
 def reloading(uid):
     find = Finder(uid)
 
@@ -42,10 +30,10 @@ def reloading(uid):
         return False
 
 def getDamage(uid, msg):
+    getter = msg.replace(' - ', ',').split(',')
     find = Finder(uid)
     getHp = find.hpInfo()
-    equip = find.equipment()
-    dmg = int(msg) - equip[2]
+    dmg = int(getter[0]) - int(getter[1])
 
     if dmg <= 0:
         return True
@@ -54,6 +42,20 @@ def getDamage(uid, msg):
 
         players.update_one({"_id": uid}, {
                 "$set": {"hp": int(hp)}})
+        return False
+
+def getHealth(uid, msg):
+    getter = msg.replace(' для ', ',').split(',')
+    find = Finder(uid)
+    getHp = find.hpInfo()
+    dmg = int(getter[0]) + int(getHp[1])
+    if dmg <= getHp[0]:
+        players.update_one({"name": getter[1]}, {
+                "$set": {"hp": int(dmg)}})
+    else:
+        players.update_one({"name": getter[1]}, {
+                "$set": {"hp": int(getHp[0])}})
+        
 
 def hit(uid, msg):
     find = Finder(uid)
@@ -61,10 +63,9 @@ def hit(uid, msg):
 
     if magazine[0] != 0:
         players.update_one({"_id": uid}, {
-            "$set": {"magazine": magazine[0] - 1}})
-        roll = d20.roll(str(msg))
+            "$set": {"magazine": magazine[0] - int(msg)}})
 
-        return roll
+        return True
     else:
         return False
     

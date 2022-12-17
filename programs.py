@@ -27,7 +27,7 @@ fixer = db["fixer"]
 nomads = db["nomads"]
 programs = db["programs"]
 inventory = db["inventory"]
-
+lvls = db["lvls"]
 
 
 class Interface:
@@ -61,8 +61,6 @@ class Interface:
             if item == 0 and int(money) >= getProgram[6]:
                 netrunners.update_one({"_id": player}, {
                     "$set": {"program"+str(count+1): getProgram[0]}})
-                players.update_one({"_id": player}, {
-                    "$set": {"money": int(money) - int(getProgram[6])}})
                 return True
             else:
                 if count < 11:
@@ -91,23 +89,17 @@ class Interface:
         finder = Finder(self.uid)
         gen_info = finder.getNRunner()
         
-        if gen_info[3] < 250:
-            netrunners.update_one({"_id": self.uid}, {"$set": {"lvl": 1}})
-        if gen_info[3] >= 250 and gen_info[3] < 500:
-            netrunners.update_one({"_id": self.uid}, {"$set": {"lvl": 2}})
-        if gen_info[3] >= 500 and gen_info[3] < 1000:
-            netrunners.update_one({"_id": self.uid}, {"$set": {"lvl": 3}})
-        if gen_info[3] >= 1000 and gen_info[3] < 2000:
-            netrunners.update_one({"_id": self.uid}, {"$set": {"lvl": 4}})
-        if gen_info[3] >= 2000 and gen_info[3] < 4000:
-            netrunners.update_one({"_id": self.uid}, {"$set": {"lvl": 5}})
-        if gen_info[3] >= 4000 and gen_info[3] < 8000:
-            netrunners.update_one({"_id": self.uid}, {"$set": {"lvl": 6}})
-        if gen_info[3] >= 8000 and gen_info[3] < 10000:
-            netrunners.update_one({"_id": self.uid}, {"$set": {"lvl": 7}})
-        if gen_info[3] >= 10000 and gen_info[3] < 15000:
-            netrunners.update_one({"_id": self.uid}, {"$set": {"lvl": 8}})      
-        if gen_info[3] >= 15000 and gen_info[3] < 20000:
-            netrunners.update_one({"_id": self.uid}, {"$set": {"lvl": 9}})
-        if gen_info[3] >= 30000:
-            netrunners.update_one({"_id": self.uid}, {"$set": {"lvl": 10}})
+        ulvl = gen_info[2] + 1
+        for lvl in lvls.find({"_id": ulvl}):
+            print("Lvl finder done")
+
+        check = gen_info[3] - lvl['cost']
+
+        if gen_info[3] < lvl['cost'] or check < 0:
+            return False
+        else:
+            netrunners.update_one({"_id": self.uid}, {
+                             "$set": {"exp": gen_info[3] - lvl['cost']}})
+            netrunners.update_one({"_id": self.uid}, {
+                             "$set": {"lvl": gen_info[2] + 1}})
+            return True

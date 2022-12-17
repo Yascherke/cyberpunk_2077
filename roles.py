@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 from mongodb import Finder
-import d20
+from programs import Interface
 
 cluster = MongoClient(
     "mongodb+srv://Nere:0662@woe.vj1q67r.mongodb.net/test"
@@ -27,7 +27,7 @@ fixer = db["fixer"]
 nomads = db["nomads"]
 programs = db["programs"]
 inventory = db["inventory"]
-
+lvls = db["lvls"]
 
 class Role:
 
@@ -38,229 +38,203 @@ class Role:
         finder = Finder(self.uid)
         gen_info = finder.rockerboy()
         
-        if gen_info[3] < 250:
-            rockerboys.update_one({"_id": self.uid}, {"$set": {"lvl": 1}})
-        if gen_info[3] >= 250 and gen_info[3] < 500:
-            rockerboys.update_one({"_id": self.uid}, {"$set": {"lvl": 2}})
-        if gen_info[3] >= 500 and gen_info[3] < 1000:
-            rockerboys.update_one({"_id": self.uid}, {"$set": {"lvl": 3}})
-        if gen_info[3] >= 1000 and gen_info[3] < 2000:
-            rockerboys.update_one({"_id": self.uid}, {"$set": {"lvl": 4}})
-        if gen_info[3] >= 2000 and gen_info[3] < 4000:
-            rockerboys.update_one({"_id": self.uid}, {"$set": {"lvl": 5}})
-        if gen_info[3] >= 4000 and gen_info[3] < 8000:
-            rockerboys.update_one({"_id": self.uid}, {"$set": {"lvl": 6}})
-        if gen_info[3] >= 8000 and gen_info[3] < 10000:
-            rockerboys.update_one({"_id": self.uid}, {"$set": {"lvl": 7}})
-        if gen_info[3] >= 10000 and gen_info[3] < 15000:
-            rockerboys.update_one({"_id": self.uid}, {"$set": {"lvl": 8}})      
-        if gen_info[3] >= 15000 and gen_info[3] < 20000:
-            rockerboys.update_one({"_id": self.uid}, {"$set": {"lvl": 9}})
-        if gen_info[3] >= 30000:
-            rockerboys.update_one({"_id": self.uid}, {"$set": {"lvl": 10}})
+        ulvl = gen_info[2] + 1
+        for lvl in lvls.find({"_id": ulvl}):
+            print("Lvl finder done")
+
+        check = gen_info[3] - lvl['cost']
+
+        if gen_info[3] < lvl['cost'] or check < 0:
+            return False
+        else:
+            rockerboys.update_one({"_id": self.uid}, {
+                             "$set": {"exp": gen_info[3] - lvl['cost']}})
+            rockerboys.update_one({"_id": self.uid}, {
+                             "$set": {"lvl": gen_info[2] + 1}})
+            return True
     
     def solo(self):
         finder = Finder(self.uid)
         gen_info = finder.solo()
         
-        if gen_info[3] < 250:
-            solos.update_one({"_id": self.uid}, {"$set": {"lvl": 1}})
-        if gen_info[3] >= 250 and gen_info[3] < 500:
-            solos.update_one({"_id": self.uid}, {"$set": {"lvl": 2}})
-        if gen_info[3] >= 500 and gen_info[3] < 1000:
-            solos.update_one({"_id": self.uid}, {"$set": {"lvl": 3}})
-        if gen_info[3] >= 1000 and gen_info[3] < 2000:
-            solos.update_one({"_id": self.uid}, {"$set": {"lvl": 4}})
-        if gen_info[3] >= 2000 and gen_info[3] < 4000:
-            solos.update_one({"_id": self.uid}, {"$set": {"lvl": 5}})
-        if gen_info[3] >= 4000 and gen_info[3] < 8000:
-            solos.update_one({"_id": self.uid}, {"$set": {"lvl": 6}})
-        if gen_info[3] >= 8000 and gen_info[3] < 10000:
-            solos.update_one({"_id": self.uid}, {"$set": {"lvl": 7}})
-        if gen_info[3] >= 10000 and gen_info[3] < 15000:
-            solos.update_one({"_id": self.uid}, {"$set": {"lvl": 8}})      
-        if gen_info[3] >= 15000 and gen_info[3] < 20000:
-            solos.update_one({"_id": self.uid}, {"$set": {"lvl": 9}})
-        if gen_info[3] >= 30000:
-            solos.update_one({"_id": self.uid}, {"$set": {"lvl": 10}})
+        ulvl = gen_info[2] + 1
+        for lvl in lvls.find({"_id": ulvl}):
+            print("Lvl finder done")
+
+        check = gen_info[3] - lvl['cost']
+
+        if gen_info[3] < lvl['cost'] or check < 0:
+            return False
+        else:
+            solos.update_one({"_id": self.uid}, {
+                             "$set": {"exp": gen_info[3] - lvl['cost']}})
+            solos.update_one({"_id": self.uid}, {
+                             "$set": {"lvl": gen_info[2] + 1}})
+            return True
     
     def media(self):
         finder = Finder(self.uid)
         gen_info = finder.media()
         
-        if gen_info[3] < 250:
-            medias.update_one({"_id": self.uid}, {"$set": {"lvl": 1}})
-        if gen_info[3] >= 250 and gen_info[3] < 500:
-            medias.update_one({"_id": self.uid}, {"$set": {"lvl": 2}})
-        if gen_info[3] >= 500 and gen_info[3] < 1000:
-            medias.update_one({"_id": self.uid}, {"$set": {"lvl": 3}})
-        if gen_info[3] >= 1000 and gen_info[3] < 2000:
-            medias.update_one({"_id": self.uid}, {"$set": {"lvl": 4}})
-        if gen_info[3] >= 2000 and gen_info[3] < 4000:
-            medias.update_one({"_id": self.uid}, {"$set": {"lvl": 5}})
-        if gen_info[3] >= 4000 and gen_info[3] < 8000:
-            medias.update_one({"_id": self.uid}, {"$set": {"lvl": 6}})
-        if gen_info[3] >= 8000 and gen_info[3] < 10000:
-            medias.update_one({"_id": self.uid}, {"$set": {"lvl": 7}})
-        if gen_info[3] >= 10000 and gen_info[3] < 15000:
-            medias.update_one({"_id": self.uid}, {"$set": {"lvl": 8}})      
-        if gen_info[3] >= 15000 and gen_info[3] < 20000:
-            medias.update_one({"_id": self.uid}, {"$set": {"lvl": 9}})
-        if gen_info[3] >= 30000:
-            medias.update_one({"_id": self.uid}, {"$set": {"lvl": 10}})
+        ulvl = gen_info[2] + 1
+        for lvl in lvls.find({"_id": ulvl}):
+            print("Lvl finder done")
+
+        check = gen_info[3] - lvl['cost']
+
+        if gen_info[3] < lvl['cost'] or check < 0:
+            return False
+        else:
+            medias.update_one({"_id": self.uid}, {
+                             "$set": {"exp": gen_info[3] - lvl['cost']}})
+            medias.update_one({"_id": self.uid}, {
+                             "$set": {"lvl": gen_info[2] + 1}})
+            return True
     
     def police(self):
         finder = Finder(self.uid)
         gen_info = finder.police()
         
-        if gen_info[3] < 250:
-            police.update_one({"_id": self.uid}, {"$set": {"lvl": 1}})
-        if gen_info[3] >= 250 and gen_info[3] < 500:
-            police.update_one({"_id": self.uid}, {"$set": {"lvl": 2}})
-        if gen_info[3] >= 500 and gen_info[3] < 1000:
-            police.update_one({"_id": self.uid}, {"$set": {"lvl": 3}})
-        if gen_info[3] >= 1000 and gen_info[3] < 2000:
-            police.update_one({"_id": self.uid}, {"$set": {"lvl": 4}})
-        if gen_info[3] >= 2000 and gen_info[3] < 4000:
-            police.update_one({"_id": self.uid}, {"$set": {"lvl": 5}})
-        if gen_info[3] >= 4000 and gen_info[3] < 8000:
-            police.update_one({"_id": self.uid}, {"$set": {"lvl": 6}})
-        if gen_info[3] >= 8000 and gen_info[3] < 10000:
-            police.update_one({"_id": self.uid}, {"$set": {"lvl": 7}})
-        if gen_info[3] >= 10000 and gen_info[3] < 15000:
-            police.update_one({"_id": self.uid}, {"$set": {"lvl": 8}})      
-        if gen_info[3] >= 15000 and gen_info[3] < 20000:
-            police.update_one({"_id": self.uid}, {"$set": {"lvl": 9}})
-        if gen_info[3] >= 30000:
-            police.update_one({"_id": self.uid}, {"$set": {"lvl": 10}})
+        ulvl = gen_info[2] + 1
+        for lvl in lvls.find({"_id": ulvl}):
+            print("Lvl finder done")
+
+        check = gen_info[3] - lvl['cost']
+
+        if gen_info[3] < lvl['cost'] or check < 0:
+            return False
+        else:
+            police.update_one({"_id": self.uid}, {
+                             "$set": {"exp": gen_info[3] - lvl['cost']}})
+            police.update_one({"_id": self.uid}, {
+                             "$set": {"lvl": gen_info[2] + 1}})
+            return True
     
     def fixer(self):
         finder = Finder(self.uid)
         gen_info = finder.fixer()
         
-        if gen_info[3] < 250:
-            fixer.update_one({"_id": self.uid}, {"$set": {"lvl": 1}})
-        if gen_info[3] >= 250 and gen_info[3] < 500:
-            fixer.update_one({"_id": self.uid}, {"$set": {"lvl": 2}})
-        if gen_info[3] >= 500 and gen_info[3] < 1000:
-            fixer.update_one({"_id": self.uid}, {"$set": {"lvl": 3}})
-        if gen_info[3] >= 1000 and gen_info[3] < 2000:
-            fixer.update_one({"_id": self.uid}, {"$set": {"lvl": 4}})
-        if gen_info[3] >= 2000 and gen_info[3] < 4000:
-            fixer.update_one({"_id": self.uid}, {"$set": {"lvl": 5}})
-        if gen_info[3] >= 4000 and gen_info[3] < 8000:
-            fixer.update_one({"_id": self.uid}, {"$set": {"lvl": 6}})
-        if gen_info[3] >= 8000 and gen_info[3] < 10000:
-            fixer.update_one({"_id": self.uid}, {"$set": {"lvl": 7}})
-        if gen_info[3] >= 10000 and gen_info[3] < 15000:
-            fixer.update_one({"_id": self.uid}, {"$set": {"lvl": 8}})      
-        if gen_info[3] >= 15000 and gen_info[3] < 20000:
-            fixer.update_one({"_id": self.uid}, {"$set": {"lvl": 9}})
-        if gen_info[3] >= 30000:
-            fixer.update_one({"_id": self.uid}, {"$set": {"lvl": 10}})
+        ulvl = gen_info[2] + 1
+        for lvl in lvls.find({"_id": ulvl}):
+            print("Lvl finder done")
+
+        check = gen_info[3] - lvl['cost']
+
+        if gen_info[3] < lvl['cost'] or check < 0:
+            return False
+        else:
+            fixer.update_one({"_id": self.uid}, {
+                             "$set": {"exp": gen_info[3] - lvl['cost']}})
+            fixer.update_one({"_id": self.uid}, {
+                             "$set": {"lvl": gen_info[2] + 1}})
+            return True
     
     def nomad(self):
         finder = Finder(self.uid)
         gen_info = finder.nomad()
         
-        if gen_info[3] < 250:
-            nomads.update_one({"_id": self.uid}, {"$set": {"lvl": 1}})
-        if gen_info[3] >= 250 and gen_info[3] < 500:
-            nomads.update_one({"_id": self.uid}, {"$set": {"lvl": 2}})
-        if gen_info[3] >= 500 and gen_info[3] < 1000:
-            nomads.update_one({"_id": self.uid}, {"$set": {"lvl": 3}})
-        if gen_info[3] >= 1000 and gen_info[3] < 2000:
-            nomads.update_one({"_id": self.uid}, {"$set": {"lvl": 4}})
-        if gen_info[3] >= 2000 and gen_info[3] < 4000:
-            nomads.update_one({"_id": self.uid}, {"$set": {"lvl": 5}})
-        if gen_info[3] >= 4000 and gen_info[3] < 8000:
-            nomads.update_one({"_id": self.uid}, {"$set": {"lvl": 6}})
-        if gen_info[3] >= 8000 and gen_info[3] < 10000:
-            nomads.update_one({"_id": self.uid}, {"$set": {"lvl": 7}})
-        if gen_info[3] >= 10000 and gen_info[3] < 15000:
-            nomads.update_one({"_id": self.uid}, {"$set": {"lvl": 8}})      
-        if gen_info[3] >= 15000 and gen_info[3] < 20000:
-            nomads.update_one({"_id": self.uid}, {"$set": {"lvl": 9}})
-        if gen_info[3] >= 30000:
-            nomads.update_one({"_id": self.uid}, {"$set": {"lvl": 10}})
+        ulvl = gen_info[2] + 1
+        for lvl in lvls.find({"_id": ulvl}):
+            print("Lvl finder done")
+
+        check = gen_info[3] - lvl['cost']
+
+        if gen_info[3] < lvl['cost'] or check < 0:
+            return False
+        else:
+            nomads.update_one({"_id": self.uid}, {
+                             "$set": {"exp": gen_info[3] - lvl['cost']}})
+            nomads.update_one({"_id": self.uid}, {
+                             "$set": {"lvl": gen_info[2] + 1}})
+            return True
     
     def ekzek(self):
         finder = Finder(self.uid)
         gen_info = finder.ekzek()
         
-        if gen_info[3] < 250:
-            ekzeks.update_one({"_id": self.uid}, {"$set": {"lvl": 1}})
-        if gen_info[3] >= 250 and gen_info[3] < 500:
-            ekzeks.update_one({"_id": self.uid}, {"$set": {"lvl": 2}})
-        if gen_info[3] >= 500 and gen_info[3] < 1000:
-            ekzeks.update_one({"_id": self.uid}, {"$set": {"lvl": 3}})
-        if gen_info[3] >= 1000 and gen_info[3] < 2000:
-            ekzeks.update_one({"_id": self.uid}, {"$set": {"lvl": 4}})
-        if gen_info[3] >= 2000 and gen_info[3] < 4000:
-            ekzeks.update_one({"_id": self.uid}, {"$set": {"lvl": 5}})
-        if gen_info[3] >= 4000 and gen_info[3] < 8000:
-            ekzeks.update_one({"_id": self.uid}, {"$set": {"lvl": 6}})
-        if gen_info[3] >= 8000 and gen_info[3] < 10000:
-            ekzeks.update_one({"_id": self.uid}, {"$set": {"lvl": 7}})
-        if gen_info[3] >= 10000 and gen_info[3] < 15000:
-            ekzeks.update_one({"_id": self.uid}, {"$set": {"lvl": 8}})      
-        if gen_info[3] >= 15000 and gen_info[3] < 20000:
-            ekzeks.update_one({"_id": self.uid}, {"$set": {"lvl": 9}})
-        if gen_info[3] >= 30000:
-            ekzeks.update_one({"_id": self.uid}, {"$set": {"lvl": 10}})
+        ulvl = gen_info[2] + 1
+        for lvl in lvls.find({"_id": ulvl}):
+            print("Lvl finder done")
+
+        check = gen_info[3] - lvl['cost']
+
+        if gen_info[3] < lvl['cost'] or check < 0:
+            return False
+        else:
+            ekzeks.update_one({"_id": self.uid}, {
+                             "$set": {"exp": gen_info[3] - lvl['cost']}})
+            ekzeks.update_one({"_id": self.uid}, {
+                             "$set": {"lvl": gen_info[2] + 1}})
+            return True
         
     def reaper(self):
         finder = Finder(self.uid)
         gen_info = finder.reaper()
         
-        if gen_info[3] < 250:
-            reapers.update_one({"_id": self.uid}, {"$set": {"lvl": 1}})
-        if gen_info[3] >= 250 and gen_info[3] < 500:
-            reapers.update_one({"_id": self.uid}, {"$set": {"lvl": 2}})
-        if gen_info[3] >= 500 and gen_info[3] < 1000:
-            reapers.update_one({"_id": self.uid}, {"$set": {"lvl": 3}})
-        if gen_info[3] >= 1000 and gen_info[3] < 2000:
-            reapers.update_one({"_id": self.uid}, {"$set": {"lvl": 4}})
-        if gen_info[3] >= 2000 and gen_info[3] < 4000:
-            reapers.update_one({"_id": self.uid}, {"$set": {"lvl": 5}})
-        if gen_info[3] >= 4000 and gen_info[3] < 8000:
-            reapers.update_one({"_id": self.uid}, {"$set": {"lvl": 6}})
-        if gen_info[3] >= 8000 and gen_info[3] < 10000:
-            reapers.update_one({"_id": self.uid}, {"$set": {"lvl": 7}})
-        if gen_info[3] >= 10000 and gen_info[3] < 15000:
-            reapers.update_one({"_id": self.uid}, {"$set": {"lvl": 8}})      
-        if gen_info[3] >= 15000 and gen_info[3] < 20000:
-            reapers.update_one({"_id": self.uid}, {"$set": {"lvl": 9}})
-        if gen_info[3] >= 30000:
-            reapers.update_one({"_id": self.uid}, {"$set": {"lvl": 10}})
+        ulvl = gen_info[2] + 1
+        for lvl in lvls.find({"_id": ulvl}):
+            print("Lvl finder done")
+
+        check = gen_info[3] - lvl['cost']
+
+        if gen_info[3] < lvl['cost'] or check < 0:
+            return False
+        else:
+            reapers.update_one({"_id": self.uid}, {
+                             "$set": {"exp": gen_info[3] - lvl['cost']}})
+            reapers.update_one({"_id": self.uid}, {
+                             "$set": {"lvl": gen_info[2] + 1}})
+            reapers.update_one({"_id": self.uid}, {"$set": {"points": gen_info[4] + 2}})
+            return True
     
     def tech(self):
         finder = Finder(self.uid)
         gen_info = finder.tech()
         
-        if gen_info[3] < 250:
-            techs.update_one({"_id": self.uid}, {"$set": {"lvl": 1}})
-        if gen_info[3] >= 250 and gen_info[3] < 500:
-            techs.update_one({"_id": self.uid}, {"$set": {"lvl": 2}})
-        if gen_info[3] >= 500 and gen_info[3] < 1000:
-            techs.update_one({"_id": self.uid}, {"$set": {"lvl": 3}})
-        if gen_info[3] >= 1000 and gen_info[3] < 2000:
-            techs.update_one({"_id": self.uid}, {"$set": {"lvl": 4}})
-        if gen_info[3] >= 2000 and gen_info[3] < 4000:
-            techs.update_one({"_id": self.uid}, {"$set": {"lvl": 5}})
-        if gen_info[3] >= 4000 and gen_info[3] < 8000:
-            techs.update_one({"_id": self.uid}, {"$set": {"lvl": 6}})
-        if gen_info[3] >= 8000 and gen_info[3] < 10000:
-            techs.update_one({"_id": self.uid}, {"$set": {"lvl": 7}})
-        if gen_info[3] >= 10000 and gen_info[3] < 15000:
-            techs.update_one({"_id": self.uid}, {"$set": {"lvl": 8}})      
-        if gen_info[3] >= 15000 and gen_info[3] < 20000:
-            techs.update_one({"_id": self.uid}, {"$set": {"lvl": 9}})
-        if gen_info[3] >= 30000:
-            techs.update_one({"_id": self.uid}, {"$set": {"lvl": 10}})
+        ulvl = gen_info[2] + 1
+        for lvl in lvls.find({"_id": ulvl}):
+            print("Lvl finder done")
 
+        check = gen_info[3] - lvl['cost']
+
+        if gen_info[3] < lvl['cost'] or check < 0:
+            return False
+        else:
+            techs.update_one({"_id": self.uid}, {
+                             "$set": {"exp": gen_info[3] - lvl['cost']}})
+            techs.update_one({"_id": self.uid}, {
+                             "$set": {"lvl": gen_info[2] + 1}})
+            techs.update_one({"_id": self.uid}, {"$set": {"points": gen_info[4] + 2}})
+            return True
+
+    def lvlUp(self):
+        finder = Finder(self.uid)
+        gen = finder.generalInfo()
+        nr = Interface(self.uid)
+
+        if gen[1] == 'Рокербой':
+            self.rocker()
+        if gen[1] == 'Соло':
+            self.solo()
+        if gen[1] == 'Фиксер':
+            self.fixer()
+        if gen[1] == 'Медиа':
+            self.media()
+        if gen[1] == 'Экзек':
+            self.ekzek()
+        if gen[1] == 'Медтехник':
+            self.reaper()
+        if gen[1] == 'Техник':
+            self.tech()
+        if gen[1] == 'Кочевник':
+            self.nomad()
+        if gen[1] == 'Законник':
+            self.police()
+        if gen[1] == 'Нетраннер':
+            nr.lvlUp()
+    
+    
     def techPoint(self, msg):
-
         find = Finder(self.uid)
         role = find.tech()
 

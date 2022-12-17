@@ -112,7 +112,7 @@ class View:
 
     Оружие: {equip[0]}
     Магазин: {magazine[0]} из {magazine[1]}
-    Типо боеприпасов: {ammo[13]}
+    Тип боеприпасов: {ammo[13]}
 
     Обвесы:
     Магазан: {mods[0]}
@@ -165,7 +165,6 @@ class View:
         bp = finder.nrPrograms()
         equip = finder.nrEquip()
         inter = Interface(self.uid)
-        inter.lvlUp()
         inter.updateAction()
         deka = finder.getNRunner()
         text = f"""
@@ -215,8 +214,6 @@ class View:
     
     def rockeboy(self):
         finder = Finder(self.uid)
-        rocker = Role(self.uid)
-        rocker.rocker()
         info = finder.rockerboy()
         text = f"""
 ------------------------------------------------
@@ -232,8 +229,6 @@ class View:
 
     def solo(self):
         finder = Finder(self.uid)
-        rocker = Role(self.uid)
-        rocker.solo()
         info = finder.solo()
         text = f"""
 ------------------------------------------------
@@ -249,8 +244,6 @@ class View:
     
     def media(self):
         finder = Finder(self.uid)
-        rocker = Role(self.uid)
-        rocker.media()
         info = finder.media()
         text = f"""
 ------------------------------------------------
@@ -266,8 +259,6 @@ class View:
 
     def police(self):
         finder = Finder(self.uid)
-        rocker = Role(self.uid)
-        rocker.police()
         info = finder.police()
         text = f"""
 ------------------------------------------------
@@ -283,8 +274,6 @@ class View:
     
     def fixer(self):
         finder = Finder(self.uid)
-        rocker = Role(self.uid)
-        rocker.fixer()
         info = finder.fixer()
         text = f"""
 ------------------------------------------------
@@ -300,8 +289,6 @@ class View:
     
     def ekzek(self):
         finder = Finder(self.uid)
-        rocker = Role(self.uid)
-        rocker.ekzek()
         info = finder.ekzek()
         text = f"""
 ------------------------------------------------
@@ -323,8 +310,6 @@ class View:
 
     def nomad(self):
         finder = Finder(self.uid)
-        rocker = Role(self.uid)
-        rocker.nomad()
         info = finder.nomad()
         text = f"""
 ------------------------------------------------
@@ -352,8 +337,6 @@ class View:
 
     def tech(self):
         finder = Finder(self.uid)
-        rocker = Role(self.uid)
-        rocker.tech()
         info = finder.tech()
         text = f"""
 ------------------------------------------------
@@ -377,8 +360,6 @@ class View:
     
     def reaper(self):
         finder = Finder(self.uid)
-        rocker = Role(self.uid)
-        rocker.reaper()
         info = finder.reaper()
         text = f"""
 ------------------------------------------------

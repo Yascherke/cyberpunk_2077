@@ -83,6 +83,14 @@ def bank_gm(uid, msg):
                            "money": player + money
                        }})
 
+def bank_pl(uid, msg):
+    find = Finder(uid)
+    player = find.money()
+    money = int(msg)
+    players.update_one({"_id": uid},
+                       {"$set": {
+                           "money": player - money
+                       }})
 
 def send_ammo(uid, msg):
     getter = msg.replace(' для ', ',').split(',')
@@ -333,8 +341,6 @@ def buyWp(uid, msg):
         if item == 0 and money >= int(getWeapon[3]):
             players.update_one({"name": getter[1]}, {
                 "$set": {"slot"+str(count+1): getWeapon[0]}})
-            players.update_one({"name": getter[1]}, {
-                "$set": {"money": int(money) - int(getWeapon[3])}})
             return True
         else:
             if count < 15:
@@ -358,8 +364,6 @@ def buyArmor(uid, msg):
         if item == 0 and money >= getArmor[3]:
             players.update_one({"name": getter[1]}, {
                 "$set": {"slot"+str(count+1): getArmor[0]}})
-            players.update_one({"name": getter[1]}, {
-                "$set": {"money": int(money) - int(getArmor[2])}})
             return True
         else:
             if count < 15:
