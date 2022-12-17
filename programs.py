@@ -61,8 +61,6 @@ class Interface:
             if item == 0 and int(money) >= getProgram[6]:
                 netrunners.update_one({"_id": player}, {
                     "$set": {"program"+str(count+1): getProgram[0]}})
-                players.update_one({"_id": player}, {
-                    "$set": {"money": int(money) - int(getProgram[6])}})
                 return True
             else:
                 if count < 11:
