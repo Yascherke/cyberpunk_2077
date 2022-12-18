@@ -487,7 +487,7 @@ async def sendfame(message: types.Message):
     msg = message.get_args()
     finder = Finder(uid)
     plr = finder.generalByName(msg)
-    find = Finder(plr[6])
+    find = Finder(plr[6])5
     status = finder.status()
     stats = find.stats()
     
