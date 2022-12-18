@@ -484,7 +484,9 @@ async def cmd_start(message: types.Message):
 @dp.message_handler(commands=['считать_статы'])
 async def sendfame(message: types.Message):
     uid = message.from_user.id
-    find = Finder(uid)
+    finder = Finder(uid)
+    plr = finder.generalByName()
+    find = Finder(plr[6])
     status = find.status()
     stats = find.stats()
     msg = message.get_args()
