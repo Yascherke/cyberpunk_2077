@@ -484,12 +484,13 @@ async def cmd_start(message: types.Message):
 @dp.message_handler(commands=['считать_статы'])
 async def sendfame(message: types.Message):
     uid = message.from_user.id
-    finder = Finder(uid)
-    plr = finder.generalByName()
-    find = Finder(plr[6])
-    status = find.status()
-    stats = find.stats()
     msg = message.get_args()
+    finder = Finder(uid)
+    plr = finder.generalByName(msg)
+    find = Finder(plr[6])
+    status = finder.status()
+    stats = find.stats()
+    
     hp = 10 + (5 * (ceil(mean([stats[8], stats[5]]))))
     severe_injury = round(hp / 2)
     die_dice = round(hp / 5)
