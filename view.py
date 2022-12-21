@@ -104,13 +104,14 @@ class View:
         equip = finder.equipment()
         magazine = finder.magazine()
         ammo = finder.ammo()
+        weapon = finder.weaponId(equip[0])
         mods = finder.weapMods()
 
         text = f"""
 ------------------------------------------------
                     Экипировка
 
-    Оружие: {equip[0]}
+    Оружие: {weapon[0]}
     Магазин: {magazine[0]} из {magazine[1]}
     Тип боеприпасов: {ammo[13]}
 

@@ -195,6 +195,17 @@ class Finder:
             weapon['quality'],
             weapon['price']
         ]
+    
+    def weaponId(self, wid):
+        for weapon in weapons.find({"_id": wid}):
+            print('Done')
+        return [
+            weapon['name'],
+            weapon['magazine'],
+            weapon['type'],
+            weapon['quality'],
+            weapon['price']
+        ]
 
     def armor(self, name):
         for arm in armor.find({"name": name}):
