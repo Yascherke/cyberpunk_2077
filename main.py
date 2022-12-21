@@ -18,7 +18,7 @@ from admin import Admin
 from roles import Role
 
 import markups as nav
-from system import getRole, getSkill, send_money, send_exp, bank_gm, output, buy_ammo, giveItem, equip_wp, equip_armor, buyWp, buyArmor, bank_pl
+from system import getRole, getSkill, send_money, send_exp, bank_gm, output, buy_ammo, giveItem, equip_wp, equip_armor, buyWp, buyArmor, bank_pl, changeAmmo
 from fight import reloading, hit, getDamage, getHealth
 
 from ws import keep_alive
@@ -485,12 +485,13 @@ async def cmd_start(message: types.Message):
 @dp.message_handler(commands=['считать_статы'])
 async def sendfame(message: types.Message):
     uid = message.from_user.id
-    finder = Finder(uid)
-    plr = finder.generalByName()
-    find = Finder(plr[6])
-    status = find.status()
-    stats = find.stats()
     msg = message.get_args()
+    finder = Finder(uid)
+    plr = finder.generalByName(msg)
+    find = Finder(plr[6])
+    status = finder.status()
+    stats = find.stats()
+    
     hp = 10 + (5 * (ceil(mean([stats[8], stats[5]]))))
     severe_injury = round(hp / 2)
     die_dice = round(hp / 5)
@@ -906,10 +907,23 @@ async def cmd_armor(message: types.Message):
     else:
         await message.answer("У вас не вышло")
 
+@dp.message_handler(commands=['сменить_патроны'])
+async def cmd_wp(message: types.Message):
+    uid = message.from_user.id
+    msg = message.get_args()
+    func = changeAmmo(uid, msg)
+
+    if func is True:
+        await message.answer(f"Вы сменили тип боепримасов на {msg}")
+    else:
+        await message.answer("У вас не вышло")
+
 
 @dp.message_handler(commands=['get'])
 async def cmd_get(message: types.Message):
+    # houses.insert_many([
     pass
+    #     ])
 
 @dp.message_handler()
 async def cmd_prof(message: types.Message):
