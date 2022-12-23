@@ -921,9 +921,48 @@ async def cmd_wp(message: types.Message):
 
 @dp.message_handler(commands=['get'])
 async def cmd_get(message: types.Message):
-    # houses.insert_many([
-    pass
-    #     ])
+   armor.insert_many([
+        {
+            "_id": 1,
+            "name": "Кожа",
+            "sp": "4",
+        },
+        {
+            "_id": 2,
+            "name": "Кевлар",
+            "sp": "7",
+        },
+        {
+            "_id": 3,
+            "name": "Легкий Бронекостюм",
+            "sp": "11",
+        },
+        {
+            "_id": 4,
+            "name": "Комбинезон Бодивейт",
+            "sp": "11",
+        },
+        {
+            "_id": 5,
+            "name": "Средний Бронекостюм",
+            "sp": "12",
+        },
+        {
+            "_id": 6,
+            "name": "Тяжелый Бронекостюм",
+            "sp": "13",
+        },
+        {
+            "_id": 7,
+            "name": "Взрывозащитная Броня",
+            "sp": "15",
+        },
+        {
+            "_id": 8,
+            "name": "Металгир",
+            "sp": "18",
+        },
+   ])
 
 @dp.message_handler()
 async def cmd_prof(message: types.Message):
