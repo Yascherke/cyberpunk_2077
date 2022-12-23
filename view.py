@@ -107,11 +107,16 @@ class View:
         weapon = finder.weaponId(equip[0])
         mods = finder.weapMods()
 
+        if equip[0] == 0:
+            text = "Отсутствует"
+        else:
+            text = weapon[0]
+
         text = f"""
 ------------------------------------------------
                     Экипировка
 
-    Оружие: {weapon[0]}
+    Оружие: {text}
     Магазин: {magazine[0]} из {magazine[1]}
     Тип боеприпасов: {ammo[13]}
 

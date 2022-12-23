@@ -549,3 +549,11 @@ class Finder:
             wp["barrel"],
             wp["connector"],
         ]
+
+    def house(self):
+        for h in houses.find({"_id": self.uid}):
+            print('Done')
+        return [
+            h["name"],
+            h["cost"],
+        ]   
