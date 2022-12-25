@@ -316,11 +316,11 @@ def equip_armor(uid, msg):
             return 1
         else:
             players.update_one({"_id": uid}, {
-                "$set": {"armor": getArmor[1]}})
+                "$set": {"armor": getArmor[0]}})
             players.update_one({"_id": uid}, {
-                "$set": {"sp": getArmor[2]}})
+                "$set": {"sp": getArmor[1]}})
             players.update_one({"_id": uid}, {
-                "$set": {"main_sp": getArmor[2]}})
+                "$set": {"main_sp": getArmor[1]}})
             players.update_one({"_id": uid}, {
                 "$set": {"slot"+str(slot): 0}})
             return True
@@ -330,18 +330,17 @@ def equip_armor(uid, msg):
 
 def buyWp(uid, msg):
     find = Finder(uid)
-    money = find.money()
-    player_bp = find.backpack()
     getter = msg.replace(' для ', ',').split(',')
+    player_bp = find.backpackByName(getter[1])
 
-    try:
-        getWeapon = find.weapon(getter[0])
-    except:
-        return False
+    # try:
+    getWeapon = find.weapon(getter[0])
+    # except:
+    #     return False
 
     count = 0
     for item in player_bp:
-        if item == 0 and money >= int(getWeapon[3]):
+        if item == 0:
             players.update_one({"name": getter[1]}, {
                 "$set": {"slot"+str(count+1): getWeapon[0]}})
             return True
@@ -354,19 +353,17 @@ def buyWp(uid, msg):
 
 def buyArmor(uid, msg):
     find = Finder(uid)
-    money = find.money()
-    player_bp = find.backpack()
     getter = msg.replace(' для ', ',').split(',')
-    try:
-        getArmor = find.armor(getter[0])
-    except:
-        return False
-
+    player_bp = find.backpackByName(getter[1])
+  
+    getArmor = find.armor(getter[0])
+    print(getArmor[0], getter[0], getter[1])
     count = 0
     for item in player_bp:
-        if item == 0 and money >= getArmor[3]:
+        if item == 0:
             players.update_one({"name": getter[1]}, {
                 "$set": {"slot"+str(count+1): getArmor[0]}})
+                
             return True
         else:
             if count < 15:

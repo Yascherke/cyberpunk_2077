@@ -34,5 +34,5 @@ class Implants:
     def __init__(self, uid):
         self.uid = uid
 
-    def setupImplants(self, msg):
+    def setupAudioImplants(self, msg):
         getter = msg.replace(' для ', ',').split(',')

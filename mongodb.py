@@ -78,6 +78,27 @@ class Finder:
             player['slot15'],
         ]
 
+    def backpackByName(self, name):
+        for player in players.find({"name": name}):
+            print('Done')
+        return [
+            player['slot1'],
+            player['slot2'],
+            player['slot3'],
+            player['slot4'],
+            player['slot5'],
+            player['slot6'],
+            player['slot7'],
+            player['slot8'],
+            player['slot9'],
+            player['slot10'],
+            player['slot11'],
+            player['slot12'],
+            player['slot13'],
+            player['slot14'],
+            player['slot15'],
+        ]
+
     def money(self):
         for player in players.find({"_id": self.uid}):
             print('Done')
@@ -210,7 +231,7 @@ class Finder:
     def armor(self, name):
         for arm in armor.find({"name": name}):
             print('Done')
-        return [arm['name'], arm['sp'], arm['price']]
+        return [arm['name'], arm['sp']]
 
     def getIdByName(self, name):
         for player in players.find({"name": name}):
@@ -557,3 +578,5 @@ class Finder:
             h["name"],
             h["cost"],
         ]   
+
+    

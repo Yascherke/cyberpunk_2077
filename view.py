@@ -104,13 +104,14 @@ class View:
         equip = finder.equipment()
         magazine = finder.magazine()
         ammo = finder.ammo()
-        weapon = finder.weaponId(equip[0])
+        
         mods = finder.weapMods()
-
+      
         if equip[0] == 0:
-            text = "Отсутствует"
+            weap = "Отсутствует"
         else:
-            text = weapon[0]
+            weapon = finder.weaponId(equip[0])
+            weap = weapon[0]
 
         text = f"""
 ------------------------------------------------
