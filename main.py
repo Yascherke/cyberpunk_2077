@@ -857,7 +857,7 @@ async def cmd_wp(message: types.Message):
 async def give(message: types.Message):
     uid = message.from_user.id
     msg = message.get_args()
-    func = reloading(uid, msg)
+    func = reloading(uid)
 
     if func is True:
         await message.answer(f"Вы успешно перезарядили оружие")

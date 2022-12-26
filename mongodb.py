@@ -213,7 +213,6 @@ class Finder:
             weapon['name'],
             weapon['magazine'],
             weapon['type'],
-            weapon['quality'],
             weapon['price']
         ]
     
