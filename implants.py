@@ -28,11 +28,38 @@ nomads = db["nomads"]
 programs = db["programs"]
 inventory = db["inventory"]
 lvls = db["lvls"]
+implants = db["implants"]
 
 class Implants:
 
     def __init__(self, uid):
         self.uid = uid
 
-    def setupAudioImplants(self, msg):
+    def setupPorts(self, msg):
         getter = msg.replace(' для ', ',').split(',')
+        imp = getter[0]
+
+        if imp == "Кибераудио":
+            implants.update_one({"name": getter[1]}, {
+                "$set": {"audio": getter[0]}})
+        elif imp == "Нейролинк":
+            implants.update_one({"name": getter[1]}, {
+                "$set": {"neural": getter[0]}})
+        elif imp == "Правый киберглаз":
+            implants.update_one({"name": getter[1]}, {
+                "$set": {"right_eye": getter[0]}})
+        elif imp == "Левый киберглаз":
+            implants.update_one({"name": getter[1]}, {
+                "$set": {"left_eye": getter[0]}})
+        elif imp == "Правая киберрука":
+            implants.update_one({"name": getter[1]}, {
+                "$set": {"right_arm": getter[0]}})
+        elif imp == "Левая киберрука":
+            implants.update_one({"name": getter[1]}, {
+                "$set": {"left_arm": getter[0]}})
+        elif imp == "Правая кибернога":
+            implants.update_one({"name": getter[1]}, {
+                "$set": {"right_leg": getter[0]}})
+        elif imp == "Левая кибернога":
+            implants.update_one({"name": getter[1]}, {
+                "$set": {"left_leg": getter[0]}})
