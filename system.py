@@ -280,10 +280,8 @@ def equip_wp(uid, msg):
     owner_item = owner[for_key]
     player_wp = find.equipment()
 
-    try:
-        getWeapon = find.weapon(owner_item)
-    except:
-        return False
+    getWeapon = find.weapon(owner_item)
+
 
     if owner_item != 0 and player_wp[0] == 0:
 
@@ -306,10 +304,8 @@ def equip_armor(uid, msg):
     for_key = slot-1
     owner_item = owner[for_key]
     player_armor = find.equipment()
-    try:
-        getArmor = find.armor(owner_item)
-    except:
-        return False
+
+    getArmor = find.armor(owner_item)
 
     if owner_item != 0 and player_armor[1] == 0:
         if player_armor[1] != 0:
