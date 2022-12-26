@@ -100,7 +100,7 @@ class View:
         if equip[0] == 0:
             weap = "Отсутствует"
         else:
-            weapon = finder.weaponId(equip[0])
+            weapon = finder.weapon(equip[0])
             weap = weapon[0]
 
         text = f"""
