@@ -30,10 +30,9 @@ def reloading(uid):
         return False
 
 def getDamage(uid, msg):
-    getter = msg.replace(' - ', ',').split(',')
     find = Finder(uid)
     getHp = find.hpInfo()
-    dmg = int(getter[0]) - int(getter[1])
+    dmg = int(msg)
 
     if dmg <= 0:
         return True
