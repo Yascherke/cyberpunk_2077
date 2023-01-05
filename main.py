@@ -24,6 +24,7 @@ from fight import reloading, hit, getDamage, getHealth
 
 from ws import keep_alive
 
+keep_alive()
 logging.basicConfig(level=logging.INFO)
 
 API_TOKEN = "5667925194:AAErD4AwaG_4oRtPWX68Ar3rr8Qs-6uRCW8"
@@ -307,6 +308,7 @@ async def cmd_start(message: types.Message):
             players.update_one({"name": p_name}, {
                 "$set": {"role_name": "Рокербой"}})
 
+
         if getter[0] == "Соло":
             solos.insert_one({
                 "_id": pid,
@@ -580,7 +582,6 @@ async def cmd_start(message: types.Message):
                 "$set": {"main_emp": stat}})
 
         await message.answer("Навык выдан")
-        await message.delete()
     else:
         await message.answer("У вас недостаточно прав.")
 
