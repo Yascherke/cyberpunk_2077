@@ -428,7 +428,6 @@ class Finder:
         for iml in implants.find({"_id": self.uid}):
             print('Done')
         return [
-            iml['audio'],
             iml['audio_slot1'],
             iml['audio_slot2'],
             iml['audio_slot3'],
@@ -438,7 +437,6 @@ class Finder:
         for iml in implants.find({"_id": self.uid}):
             print('Done')
         return [
-            iml['right_eye'],
             iml['right_eye_slot1'],
             iml['right_eye_slot2'],
             iml['right_eye_slot3'],
@@ -448,7 +446,6 @@ class Finder:
         for iml in implants.find({"_id": self.uid}):
             print('Done')
         return [
-            iml['left_eye'],
             iml['left_eye_slot1'],
             iml['left_eye_slot2'],
             iml['left_eye_slot3'],
@@ -458,7 +455,6 @@ class Finder:
         for iml in implants.find({"_id": self.uid}):
             print('Done')
         return [
-            iml['neural'],
             iml['neural_slot1'],
             iml['neural_slot2'],
             iml['neural_slot3'],
@@ -470,7 +466,6 @@ class Finder:
         for iml in implants.find({"_id": self.uid}):
             print('Done')
         return [
-            iml['right_arm'],
             iml['right_arm_slot1'],
             iml['right_arm_slot2'],
             iml['right_arm_slot3'],
@@ -481,7 +476,6 @@ class Finder:
         for iml in implants.find({"_id": self.uid}):
             print('Done')
         return [
-            iml['left_arm'],
             iml['left_arm_slot1'],
             iml['left_arm_slot2'],
             iml['left_arm_slot3'],
@@ -492,7 +486,6 @@ class Finder:
         for iml in implants.find({"_id": self.uid}):
             print('Done')
         return [
-            iml['right_leg'],
             iml['right_leg_slot1'],
             iml['right_leg_slot2'],
             iml['right_leg_slot3'],
@@ -502,7 +495,6 @@ class Finder:
         for iml in implants.find({"_id": self.uid}):
             print('Done')
         return [
-            iml['left_leg'],
             iml['left_leg_slot1'],
             iml['left_leg_slot2'],
             iml['left_leg_slot3'],
@@ -569,13 +561,3 @@ class Finder:
             wp["barrel"],
             wp["connector"],
         ]
-
-    def house(self):
-        for h in houses.find({"_id": self.uid}):
-            print('Done')
-        return [
-            h["name"],
-            h["cost"],
-        ]   
-
-    

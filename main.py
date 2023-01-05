@@ -16,6 +16,7 @@ from view import View
 from programs import Interface
 from admin import Admin
 from roles import Role
+from implants import Implants
 
 import markups as nav
 from system import getRole, getSkill, send_money, send_exp, bank_gm, output, buy_ammo, giveItem, equip_wp, equip_armor, buyWp, buyArmor, bank_pl, changeAmmo
@@ -295,7 +296,7 @@ async def cmd_start(message: types.Message):
         players.update_one({"name": p_name}, {
                            "$set": {"hero_class": player_role}})
 
-        if getter[0] == "Рокебой":
+        if getter[0] == "Рокербой":
             rockerboys.insert_one({
                 "_id": pid,
                 "player": getter[1],
@@ -303,8 +304,8 @@ async def cmd_start(message: types.Message):
                 "lvl": 1,
                 "exp": 0,
             })
-            players.update_one({"_id": uid}, {
-                "$set": {"role_name": "Рокебой"}})
+            players.update_one({"name": p_name}, {
+                "$set": {"role_name": "Рокербой"}})
 
         if getter[0] == "Соло":
             solos.insert_one({
@@ -314,7 +315,7 @@ async def cmd_start(message: types.Message):
                 "lvl": 1,
                 "exp": 0,
             })
-            players.update_one({"_id": uid}, {
+            players.update_one({"name": p_name}, {
                 "$set": {"role_name": "Соло"}})
 
         if getter[0] == "Нетраннер":
@@ -352,7 +353,7 @@ async def cmd_start(message: types.Message):
                 "equip9": 0,
                 "equip10": 0,
             })
-            players.update_one({"_id": uid}, {
+            players.update_one({"name": p_name}, {
                 "$set": {"role_name": "Нетраннер"}})
 
         if getter[0] == "Техник":
@@ -367,7 +368,7 @@ async def cmd_start(message: types.Message):
                 "crafter": 0,
                 "creator": 0,
             })
-            players.update_one({"_id": uid}, {
+            players.update_one({"name": p_name}, {
                 "$set": {"role_name": "Техник"}})
 
         if getter[0] == "Медтехник":
@@ -382,7 +383,7 @@ async def cmd_start(message: types.Message):
                 "pharmacist": 0,
                 "сryo": 0,
             })
-            players.update_one({"_id": uid}, {
+            players.update_one({"name": p_name}, {
                 "$set": {"role_name": "Медтехник"}})
 
         if getter[0] == "Медиа":
@@ -393,7 +394,7 @@ async def cmd_start(message: types.Message):
                 "lvl": 1,
                 "exp": 0,
             })
-            players.update_one({"_id": uid}, {
+            players.update_one({"name": p_name}, {
                 "$set": {"role_name": "Медиа"}})
 
         if getter[0] == "Экзек":
@@ -407,7 +408,7 @@ async def cmd_start(message: types.Message):
                 "slave2": 0,
                 "slave3": 0,
             })
-            players.update_one({"_id": uid}, {
+            players.update_one({"name": p_name}, {
                 "$set": {"role_name": "Экзек"}})
 
         if getter[0] == "Законник":
@@ -418,7 +419,7 @@ async def cmd_start(message: types.Message):
                 "lvl": 1,
                 "exp": 0,
             })
-            players.update_one({"_id": uid}, {
+            players.update_one({"name": p_name}, {
                 "$set": {"role_name": "Законник"}})
 
         if getter[0] == "Фиксер":
@@ -429,7 +430,7 @@ async def cmd_start(message: types.Message):
                 "lvl": 1,
                 "exp": 0,
             })
-            players.update_one({"_id": uid}, {
+            players.update_one({"name": p_name}, {
                 "$set": {"role_name": "Фиксер"}})
 
         if getter[0] == "Кочевник":
@@ -439,17 +440,8 @@ async def cmd_start(message: types.Message):
                 "name": "Мото",
                 "lvl": 1,
                 "exp": 0,
-                "car1": 0,
-                "car2": 0,
-                "car3": 0,
-                "car4": 0,
-
-                "car_info1": [],
-                "car_info2": [],
-                "car_info3": [],
-                "car_info4": [],
             })
-            players.update_one({"_id": uid}, {
+            players.update_one({"name": p_name}, {
                 "$set": {"role_name": "Кочевник"}})
 
         await message.answer("Роль выдана")
@@ -895,7 +887,7 @@ async def lup(message: types.Message):
     await message.answer(f"Команда выполнена")
 
 @dp.message_handler(commands=['лечить'])
-async def cmd_armor(message: types.Message):
+async def cmd_heal(message: types.Message):
     uid = message.from_user.id
     msg = message.get_args()
     find = Finder(uid)
@@ -907,6 +899,20 @@ async def cmd_armor(message: types.Message):
     else:
         await message.answer("У вас не вышло")
 
+@dp.message_handler(commands=['человечность'])
+async def cmd_hum(message: types.Message):
+    uid = message.from_user.id
+    msg = message.get_args()
+    find = Finder(uid)
+    status = find.status()
+    admin = Admin(uid)
+
+    if status[0] is True or status[1] is True:
+        admin.humman(msg)
+        await message.answer(f"Вы успешно лишили человечности")
+    else:
+        await message.answer("У вас не вышло")
+
 @dp.message_handler(commands=['сменить_патроны'])
 async def cmd_wp(message: types.Message):
     uid = message.from_user.id
@@ -915,6 +921,174 @@ async def cmd_wp(message: types.Message):
 
     if func is True:
         await message.answer(f"Вы сменили тип боепримасов на {msg}")
+    else:
+        await message.answer("У вас не вышло")
+
+@dp.message_handler(commands=['кибеимплант'])
+async def cmd_armor(message: types.Message):
+    uid = message.from_user.id
+    msg = message.get_args()
+    find = Finder(uid)
+    imp = Implants(uid)
+    status = find.status()
+
+    if status[0] is True or status[1] is True:
+        imp.setupPorts(msg)
+        await message.answer(f"Имплант установлен")
+    else:
+        await message.answer("У вас не вышло")
+
+@dp.message_handler(commands=['нейролинк'])
+async def cmd_armor(message: types.Message):
+    uid = message.from_user.id
+    msg = message.get_args()
+    find = Finder(uid)
+    imp = Implants(uid)
+    status = find.status()
+
+    if status[0] is True or status[1] is True:
+        imp.neur(msg)
+        await message.answer(f"Имплант установлен")
+    else:
+        await message.answer("У вас не вышло")
+
+@dp.message_handler(commands=['правый_глаз'])
+async def cmd_armor(message: types.Message):
+    uid = message.from_user.id
+    msg = message.get_args()
+    find = Finder(uid)
+    imp = Implants(uid)
+    status = find.status()
+
+    if status[0] is True or status[1] is True:
+        imp.reye(msg)
+        await message.answer(f"Имплант установлен")
+    else:
+        await message.answer("У вас не вышло")
+
+@dp.message_handler(commands=['левый_глаз'])
+async def cmd_armor(message: types.Message):
+    uid = message.from_user.id
+    msg = message.get_args()
+    find = Finder(uid)
+    imp = Implants(uid)
+    status = find.status()
+
+    if status[0] is True or status[1] is True:
+        imp.leye(msg)
+        await message.answer(f"Имплант установлен")
+    else:
+        await message.answer("У вас не вышло")
+
+@dp.message_handler(commands=['правая_рука'])
+async def cmd_armor(message: types.Message):
+    uid = message.from_user.id
+    msg = message.get_args()
+    find = Finder(uid)
+    imp = Implants(uid)
+    status = find.status()
+
+    if status[0] is True or status[1] is True:
+        imp.rarm(msg)
+        await message.answer(f"Имплант установлен")
+    else:
+        await message.answer("У вас не вышло")
+
+@dp.message_handler(commands=['левая_рука'])
+async def cmd_armor(message: types.Message):
+    uid = message.from_user.id
+    msg = message.get_args()
+    find = Finder(uid)
+    imp = Implants(uid)
+    status = find.status()
+
+    if status[0] is True or status[1] is True:
+        imp.larm(msg)
+        await message.answer(f"Имплант установлен")
+    else:
+        await message.answer("У вас не вышло")
+
+@dp.message_handler(commands=['правая_нога'])
+async def cmd_armor(message: types.Message):
+    uid = message.from_user.id
+    msg = message.get_args()
+    find = Finder(uid)
+    imp = Implants(uid)
+    status = find.status()
+
+    if status[0] is True or status[1] is True:
+        imp.rleg(msg)
+        await message.answer(f"Имплант установлен")
+    else:
+        await message.answer("У вас не вышло")
+
+@dp.message_handler(commands=['левая_нога'])
+async def cmd_armor(message: types.Message):
+    uid = message.from_user.id
+    msg = message.get_args()
+    find = Finder(uid)
+    imp = Implants(uid)
+    status = find.status()
+
+    if status[0] is True or status[1] is True:
+        imp.lleg(msg)
+        await message.answer(f"Имплант установлен")
+    else:
+        await message.answer("У вас не вышло")
+
+@dp.message_handler(commands=['внутри'])
+async def cmd_armor(message: types.Message):
+    uid = message.from_user.id
+    msg = message.get_args()
+    find = Finder(uid)
+    imp = Implants(uid)
+    status = find.status()
+
+    if status[0] is True or status[1] is True:
+        imp.inside(msg)
+        await message.answer(f"Имплант установлен")
+    else:
+        await message.answer("У вас не вышло")
+
+@dp.message_handler(commands=['снаружи'])
+async def cmd_armor(message: types.Message):
+    uid = message.from_user.id
+    msg = message.get_args()
+    find = Finder(uid)
+    imp = Implants(uid)
+    status = find.status()
+
+    if status[0] is True or status[1] is True:
+        imp.outs(msg)
+        await message.answer(f"Имплант установлен")
+    else:
+        await message.answer("У вас не вышло")
+
+@dp.message_handler(commands=['стиль'])
+async def cmd_armor(message: types.Message):
+    uid = message.from_user.id
+    msg = message.get_args()
+    find = Finder(uid)
+    imp = Implants(uid)
+    status = find.status()
+
+    if status[0] is True or status[1] is True:
+        imp.style(msg)
+        await message.answer(f"Имплант установлен")
+    else:
+        await message.answer("У вас не вышло")
+
+@dp.message_handler(commands=['борг'])
+async def cmd_armor(message: types.Message):
+    uid = message.from_user.id
+    msg = message.get_args()
+    find = Finder(uid)
+    imp = Implants(uid)
+    status = find.status()
+
+    if status[0] is True or status[1] is True:
+        imp.borg(msg)
+        await message.answer(f"Имплант установлен")
     else:
         await message.answer("У вас не вышло")
 

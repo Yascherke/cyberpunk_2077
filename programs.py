@@ -63,7 +63,7 @@ class Interface:
                     "$set": {"program"+str(count+1): getProgram[0]}})
                 return True
             else:
-                if count < 11:
+                if count < 15:
                     count += 1
                 else:
                     return False

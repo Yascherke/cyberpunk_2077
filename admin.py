@@ -39,49 +39,68 @@ class Admin:
         find = Finder(self.uid)
         getter = msg.replace(' для ', ',').split(',')
         role_id = find.getIdByName(getter[1])
-        status = find.skills()
-        nr = find.getNRunner()
-
-        dice = d20.roll(getter[0])
-        reward = dice.total
+        finder = Finder(role_id)
+        status = finder.skills()
+        print(getter[0])
+        reward = int(getter[0])
+        print(reward)
 
         if status[4] == "Рокербой":
+            rocker = finder.rockerboy()
             rockerboys.update_one({"_id": role_id}, {
-                    "$set": {"exp": nr[3] + reward}})
+                    "$set": {"exp": rocker[3] + reward}})
             return reward
-        if status[4] == "Соло":
+        elif status[4] == "Соло":
+            sl = finder.solo()
             solos.update_one({"_id": role_id}, {
-                    "$set": {"exp": nr[3] + reward}})
+                    "$set": {"exp": sl[3] + reward}})
             return reward
-        if status[4] == "Нетраннер":
+        elif status[4] == "Нетраннер":
+            netr = finder.getNRunner()
             netrunners.update_one({"_id": role_id}, {
-                    "$set": {"exp": nr[3] + reward}})
+                    "$set": {"exp": netr[3] + reward}})
             return reward
-        if status[4] == "Техник":
+        elif status[4] == "Техник":
+            tech = finder.tech()
             techs.update_one({"_id": role_id}, {
-                    "$set": {"exp": nr[3] + reward}})
+                    "$set": {"exp": tech[3] + reward}})
             return reward
-        if status[4] == "Медтехник":
+        elif status[4] == "Медтехник":
+            reaper = finder.reaper()
             reapers.update_one({"_id": role_id}, {
-                    "$set": {"exp": nr[3] + reward}})
+                    "$set": {"exp": reaper[3] + reward}})
             return reward
-        if status[4] == "Медиа":
+        elif status[4] == "Медиа":
+            media = finder.media()
             medias.update_one({"_id": role_id}, {
-                    "$set": {"exp": nr[3] + reward}})
+                    "$set": {"exp": media[3] + reward}})
             return reward
-        if status[4] == "Законник":
+        elif status[4] == "Законник":
+            pol = finder.police()
             police.update_one({"_id": role_id}, {
-                    "$set": {"exp": nr[3] + reward}})
+                    "$set": {"exp": pol[3] + reward}})
             return reward
-        if status[4] == "Экзек":
+        elif status[4] == "Экзек":
+            ekzek = finder.ekzek()
             ekzeks.update_one({"_id": role_id}, {
-                    "$set": {"exp": nr[3] + reward}})
+                    "$set": {"exp": ekzek[3] + reward}})
             return reward
-        if status[4] == "Фиксер":
+        elif status[4] == "Фиксер":
+            fix = finder.fixer()
             fixer.update_one({"_id": role_id}, {
-                    "$set": {"exp": nr[3] + reward}})
+                    "$set": {"exp": fix[3] + reward}})
             return reward
-        if status[4] == "Кочевник":
+        elif status[4] == "Кочевник":
+            nom = finder.nomad()
             nomads.update_one({"_id": role_id}, {
-                    "$set": {"exp": nr[3] + reward}})
+                    "$set": {"exp": nom[3] + reward}})
             return reward
+
+    def humman(self, msg):
+        getter = msg.replace(' для ', ',').split(',')
+        find = Finder(self.uid)
+        getInf = find.skills()
+        hum = int(getInf[3]) - int(getter[0]) 
+        players.update_one({"name": getter[1]}, {
+            "$set": {"humanity": int(hum)}})
+ 
