@@ -259,7 +259,7 @@ class Role:
         role = find.reaper()
 
         if role[4] != 0 and msg == "Хирургия":
-            reapers.update_one({"_id": self.uid}, {"$set": {"surgeon": role[5] + 1}})
+            reapers.update_one({"_id": self.uid}, {"$set": {"surgeon": role[5] + 2}})
             reapers.update_one({"_id": self.uid}, {"$set": {"points": role[4] - 1}})
             return True
         elif role[4] != 0 and msg == "Фармацевтика":
