@@ -99,7 +99,9 @@ class Admin:
     def humman(self, msg):
         getter = msg.replace(' для ', ',').split(',')
         find = Finder(self.uid)
-        getInf = find.skills()
+        rid = find.getIdByName(getter[1])
+        finder = Finder(rid)
+        getInf = finder.skills()
         hum = int(getInf[3]) - int(getter[0]) 
         players.update_one({"name": getter[1]}, {
             "$set": {"humanity": int(hum)}})
