@@ -72,7 +72,7 @@ async def cmd_start(message: types.Message):
     p_id = findUserParamByID(uid)
     if p_id is None:
         await hero.name.set()
-        await message.answer("Как зовут вашего персонажа")
+        await message.answer("Как зовут вашего персонажа(ПУНКТ 2 АНКЕТЫ, ЕСЛИ ВЫ НЕ ЭКЗЕК)")
 
         @dp.message_handler(state=hero.name)
         async def cmd_name(message: types.Message, state: FSMContext):
@@ -1139,7 +1139,7 @@ async def cmd_prof(message: types.Message):
             await message.answer(view.netrunner(), reply_markup=nav.back)
         if role[4] == "Техник":
             await message.answer(view.tech(), reply_markup=nav.back)
-        if role[4] == "Рипер":
+        if role[4] == "Медтехник":
             await message.answer(view.reaper(), reply_markup=nav.back)
         if role[4] == "Медиа":
             await message.answer(view.media(), reply_markup=nav.back)

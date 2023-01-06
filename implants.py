@@ -67,7 +67,9 @@ class Implants:
     def audio(self, msg):
         getter = msg.replace(' для ', ',').split(',')
         find = Finder(self.uid)
-        audio = find.audio()
+        rid = find.getIdByName(getter[1])
+        finder = Finder(rid)
+        audio = finder.audio()
         count = 0
         for item in audio:
             if item == 0:
@@ -83,7 +85,9 @@ class Implants:
     def reye(self, msg):
         getter = msg.replace(' для ', ',').split(',')
         find = Finder(self.uid)
-        audio = find.right_eye()
+        rid = find.getIdByName(getter[1])
+        finder = Finder(rid)
+        audio = finder.right_eye()
         count = 0
         for item in audio:
             if item == 0:
@@ -99,7 +103,9 @@ class Implants:
     def leye(self, msg):
         getter = msg.replace(' для ', ',').split(',')
         find = Finder(self.uid)
-        audio = find.left_eye()
+        rid = find.getIdByName(getter[1])
+        finder = Finder(rid)
+        audio = finder.left_eye()
         count = 0
         for item in audio:
             if item == 0:
@@ -115,7 +121,9 @@ class Implants:
     def rarm(self, msg):
         getter = msg.replace(' для ', ',').split(',')
         find = Finder(self.uid)
-        audio = find.right_arm()
+        rid = find.getIdByName(getter[1])
+        finder = Finder(rid)
+        audio = finder.right_arm()
         count = 0
         for item in audio:
             if item == 0:
@@ -131,7 +139,9 @@ class Implants:
     def larm(self, msg):
         getter = msg.replace(' для ', ',').split(',')
         find = Finder(self.uid)
-        audio = find.left_arm()
+        rid = find.getIdByName(getter[1])
+        finder = Finder(rid)
+        audio = finder.left_arm()
         count = 0
         for item in audio:
             if item == 0:
@@ -147,7 +157,9 @@ class Implants:
     def rleg(self, msg):
         getter = msg.replace(' для ', ',').split(',')
         find = Finder(self.uid)
-        audio = find.right_leg()
+        rid = find.getIdByName(getter[1])
+        finder = Finder(rid)
+        audio = finder.right_leg()
         count = 0
         for item in audio:
             if item == 0:
@@ -163,7 +175,9 @@ class Implants:
     def lleg(self, msg):
         getter = msg.replace(' для ', ',').split(',')
         find = Finder(self.uid)
-        audio = find.left_leg()
+        rid = find.getIdByName(getter[1])
+        finder = Finder(rid)
+        audio = finder.left_leg()
         count = 0
         for item in audio:
             if item == 0:
@@ -179,7 +193,9 @@ class Implants:
     def neur(self, msg):
         getter = msg.replace(' для ', ',').split(',')
         find = Finder(self.uid)
-        audio = find.neural()
+        rid = find.getIdByName(getter[1])
+        finder = Finder(rid)
+        audio = finder.neural()
         count = 0
         for item in audio:
             if item == 0:
@@ -195,7 +211,9 @@ class Implants:
     def inside(self, msg):
         getter = msg.replace(' для ', ',').split(',')
         find = Finder(self.uid)
-        audio = find.inside()
+        rid = find.getIdByName(getter[1])
+        finder = Finder(rid)
+        audio = finder.inside()
         count = 0
         for item in audio:
             if item == 0:
@@ -211,7 +229,9 @@ class Implants:
     def style(self, msg):
         getter = msg.replace(' для ', ',').split(',')
         find = Finder(self.uid)
-        audio = find.style()
+        rid = find.getIdByName(getter[1])
+        finder = Finder(rid)
+        audio = finder.style()
         count = 0
         for item in audio:
             if item == 0:
@@ -227,7 +247,9 @@ class Implants:
     def outs(self, msg):
         getter = msg.replace(' для ', ',').split(',')
         find = Finder(self.uid)
-        audio = find.outside()
+        rid = find.getIdByName(getter[1])
+        finder = Finder(rid)
+        audio = finder.outside()
         count = 0
         for item in audio:
             if item == 0:
@@ -243,7 +265,9 @@ class Implants:
     def borg(self, msg):
         getter = msg.replace(' для ', ',').split(',')
         find = Finder(self.uid)
-        audio = find.borg()
+        rid = find.getIdByName(getter[1])
+        finder = Finder(rid)
+        audio = finder.borg()
         count = 0
         for item in audio:
             if item == 0:
