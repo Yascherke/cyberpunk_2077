@@ -505,6 +505,33 @@ async def sendfame(message: types.Message):
     else:
         await message.answer("У вас нет прав")
 
+@dp.message_handler(commands=['киберсчитать'])
+async def sendfame(message: types.Message):
+    uid = message.from_user.id
+    msg = message.get_args()
+    finder = Finder(uid)
+    plr = finder.generalByName(msg)
+    find = Finder(plr[6])
+    status = finder.status()
+    stats = find.stats()
+    
+    hp = 10 + (5 * (ceil(mean([stats[8], stats[5]]))))
+    severe_injury = round(hp / 2)
+    die_dice = round(hp / 5)
+    if status[0] != False or status[1] != False:
+        players.update_one({"name": msg}, {
+            "$set": {"max_hp": hp}})
+        players.update_one({"name": msg}, {
+            "$set": {"hp": hp}})
+        players.update_one({"name": msg}, {
+            "$set": {"severe_injury": severe_injury}})
+        players.update_one({"name": msg}, {
+            "$set": {"die_dice": die_dice}})
+
+        await message.answer("Статы посчитаны")
+    else:
+        await message.answer("У вас нет прав")
+
 
 @dp.message_handler(commands=['стат'])
 async def cmd_start(message: types.Message):
@@ -585,6 +612,64 @@ async def cmd_start(message: types.Message):
     else:
         await message.answer("У вас недостаточно прав.")
 
+@dp.message_handler(commands=['киберстат'])
+async def cmd_start(message: types.Message):
+    uid = message.from_user.id
+    msg = message.get_args()
+    rep = {" для ": ",", " на ": ","}
+    rep = dict((re.escape(k), v) for k, v in rep.items())
+    pattern = re.compile("|".join(rep.keys()))
+    msg = pattern.sub(lambda m: rep[re.escape(m.group(0))], msg)
+    getter = msg.replace(',', ',').split(',')
+    p_name = str(getter[2])
+    stat = int(getter[1])
+    finder = Finder(uid)
+    status = finder.status()
+    if status[0] is True or status[1] is True:
+
+        if getter[0] == "Интеллект":
+            players.update_one({"name": p_name}, {
+                "$set": {"intelligence": stat}})
+
+        if getter[0] == "Реакция":
+            players.update_one({"name": p_name}, {
+                "$set": {"reaction": stat}})
+
+        if getter[0] == "Ловкость":
+            players.update_one({"name": p_name}, {
+                "$set": {"dexterity": stat}})
+
+        if getter[0] == "Техника":
+            players.update_one({"name": p_name}, {
+                "$set": {"technics": stat}})
+
+        if getter[0] == "Крутость":
+            players.update_one({"name": p_name}, {
+                "$set": {"cool": stat}})
+
+        if getter[0] == "Воля":
+            players.update_one({"name": p_name}, {
+                "$set": {"will": stat}})
+
+        if getter[0] == "Удача":
+            players.update_one({"name": p_name}, {
+                "$set": {"luck": stat}})
+
+        if getter[0] == "Скорость":
+            players.update_one({"name": p_name}, {
+                "$set": {"speed": stat}})
+
+        if getter[0] == "Телосложение":
+            players.update_one({"name": p_name}, {
+                "$set": {"bodytype": stat}})
+
+        if getter[0] == "Эмпатия":
+            players.update_one({"name": p_name}, {
+                "$set": {"empathy": stat}})
+
+        await message.answer("Навык выдан")
+    else:
+        await message.answer("У вас недостаточно прав.")
 
 @dp.message_handler(commands=['навык'])
 async def cmd_start(message: types.Message):
