@@ -552,6 +552,20 @@ class Finder:
             iml['borg_slot7'],
         ]
 
+    def ports(self):
+        for iml in implants.find({"_id": self.uid}):
+            print('Done')
+        return [
+            iml['audio'],
+            iml['right_eye'],
+            iml['left_eye'],
+            iml['right_arm'],
+            iml['left_arm'],
+            iml['right_leg'],
+            iml['left_leg'],
+            iml['neural'],
+        ]
+
     def weapMods(self):
         for wp in players.find({"_id": self.uid}):
             print('Done')
