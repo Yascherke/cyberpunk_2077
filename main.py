@@ -964,13 +964,16 @@ async def give(message: types.Message):
     else:
         await message.answer("У вас не вышло")
 
+
 @dp.message_handler(commands=['уровень'])
 async def lup(message: types.Message):
     uid = message.from_user.id
     role = Role(uid)
-    
-    role.lvlUp()
-    await message.answer(f"Команда выполнена")
+    a = role.lvlUp()
+    if a is True:
+        await message.answer(f"Команда выполнена успешно")
+    else:
+        await message.answer(f"У вас недостаточно опыта")
 
 @dp.message_handler(commands=['лечить'])
 async def cmd_heal(message: types.Message):
